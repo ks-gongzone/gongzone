@@ -1,19 +1,19 @@
 -- 0.CREATE DB/USER
-DROP DATABASE IF EXISTS gongzone_dev;
+DROP DATABASE IF EXISTS ks51team02db;
 
-CREATE DATABASE gongzone_dev;
+CREATE DATABASE ks51team02db;
 
-DROP USER IF EXISTS 'gongzone_dev'@'%';
+DROP USER IF EXISTS 'ks51team02id'@'%';
 
-CREATE USER 'gongzone_dev'@'%' IDENTIFIED BY '1234';
+CREATE USER 'ks51team02id'@'%' IDENTIFIED BY 'ks51team02pw';
 
-GRANT ALL PRIVILEGES ON gongzone_dev.* TO 'gongzone_dev'@'%';
+GRANT ALL PRIVILEGES ON ks51team02db.* TO 'ks51team02id'@'%';
 
 FLUSH PRIVILEGES;
 
 
 -- 1.CREATE TABLE
-USE gongzone_dev;
+USE ks51team02db;
 
 -- 회원 권한 테이블
 CREATE TABLE member_level
