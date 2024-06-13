@@ -21,19 +21,22 @@
         <result property="memberStatus" column="status_code" />
     </resultMap>
 
-    <select id="findByNumber" parameterType="String" resultMap="MemberResultMap">
-        SELECT * FROM member WHERE m_no = #{memberNo}
-    </select>
-
-    <select id="findAll" resultMap="MemberResultMap">
-        SELECT * FROM member
-    </select>
-
+    <!-- Create -->
     <insert id="insert" parameterType="Member">
         INSERT INTO member(m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
         VALUES(#{memberNo}, #{memberLevel}, #{memberId}, #{memberPw}, #{memberName}, #{memberEmail}, #{memberPhone}, #{memberGender}, #{memberAddress}, #{memberBirthday}, #{memberNick}, #{memberStatus})
     </insert>
 
+    <!-- Read -->
+    <select id="findAll" resultMap="MemberResultMap">
+        SELECT * FROM member
+    </select>
+
+    <select id="findByNo" parameterType="String" resultMap="MemberResultMap">
+        SELECT * FROM member WHERE m_no = #{memberNo}
+    </select>
+
+    <!-- Update -->
     <update id="update" parameterType="Member">
         UPDATE member SET
             m_level = #{memberLevel},
@@ -50,6 +53,7 @@
         WHERE m_no = #{memberNo}
     </update>
 
+    <!-- Delete -->
     <delete id="delete" parameterType="String">
         DELETE FROM member WHERE m_no = #{memberNo}
     </delete>
