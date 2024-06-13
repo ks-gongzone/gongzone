@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Member {
     private String memberNo;
-    private int memberLevel;
+    private int memberLevel = 1;
     private String memberId;
     private String memberPw;
     private String memberName;
