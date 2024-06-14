@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.mapper.TokenMapper">
+
+    <!-- Result Mapping -->
+    <resultMap id="TokenResultMap" type="Token">
+        <id property="tokenNo" column="token_no" />
+        <result property="memberNo" column="m_no" />
+        <result property="tokenType" column="token_type" />
+        <result property="tokenValueAcc" column="token_value_acc" />
+        <result property="tokenValueRef" column="token_value_ref" />
+        <result property="tokenExpiresAcc" column="token_expires_acc" />
+        <result property="tokenExpiresRef" column="token_expires_ref" />
+        <result property="tokenLastUpdate" column="token_last_update" />
+    </resultMap>
+
+    <!-- Create -->
+    <insert id="insert" parameterType="Token">
+        INSERT INTO token(m_no, token_type, token_value_acc, token_value_ref, token_expires_acc, token_expires_ref, token_last_update)
+        VALUES(#{memberNo}, #{tokenType}, #{tokenValueAcc}, #{tokenValueRef}, #{tokenExpiresAcc}, #{tokenExpiresRef}, #{tokenLastUpdate})
+    </insert>
+
+    <!-- Read -->
+    <select id="findAll" resultMap="TokenResultMap">
+        SELECT * FROM token
+    </select>
+
+    <select id="findByMemberNo" parameterType="String" resultMap="TokenResultMap">
+        SELECT * FROM token WHERE m_no = #{memberNo}
+    </select>
+
+    <!-- Update -->
+    <update id="update" parameterType="Token">
+        UPDATE token SET
+                         token_value_acc = #{tokenValueAcc},
+                         token_value_ref = #{tokenValueRef},
+                         token_expires_acc = #{tokenExpiresAcc},
+                         token_expires_ref = #{tokenExpiresRef},
+                         token_last_update = #{tokenLastUpdate}
+        WHERE m_no = #{memberNo}
+    </update>
+
+    <!-- Delete -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM token WHERE token_no = #{tokenNo}
+    </delete>
+</mapper>
+
