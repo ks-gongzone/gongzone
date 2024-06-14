@@ -14,7 +14,5 @@ public interface MemberMapper {
     Member findByNo(String memberNo);
     void update(Member member);
     void delete(String member);
-
-    @Select("SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) FROM member")
-    int findMemberNo();
+//    int findMemberNo();
 }

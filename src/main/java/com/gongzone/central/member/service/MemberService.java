@@ -12,10 +12,10 @@ public interface MemberService {
     Member getMemberByNo(String memberNo);
     void updateMember(Member member);
     void deleteMember(String memberNo);
+
     Token registerToken(Token token);
     List<Token> getAllTokens();
     Token getTokenByMemberNo(String memberNo);
     void updateToken(Token token);
     void deleteToken(int tokenNo);
-
 }

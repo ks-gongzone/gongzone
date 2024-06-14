@@ -7,19 +7,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @Builder
 public class Member {
-    private String memberNo;
-    private int memberLevel = 1;
-    private String memberId;
-    private String memberPw;
-    private String memberName;
-    private String memberEmail;
-    private String memberPhone;
-    private String memberGender;
-    private String memberAddress;
-    private String memberBirthday;
-    private String memberNick;
-    private String memberStatus;
+    private final String memberNo;
+    private final int memberLevel;
+    private final String memberId;
+    private final String memberPw;
+    private final String memberName;
+    private final String memberEmail;
+    private final String memberPhone;
+    private final String memberGender;
+    private final String memberAddress;
+    private final String memberBirthday;
+    private final String memberNick;
+    private final String memberStatus;
 }

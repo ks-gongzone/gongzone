@@ -23,18 +23,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member registerMember(Member member) {
-        String newMemberNo = giveMemberNo();
+       /* String newMemberNo = giveMemberNo();
         member.setMemberNo(newMemberNo);
         member.setMemberLevel(1);
-        member.setMemberStatus("S010101");
+        member.setMemberStatus("S010101");*/
         memberMapper.insert(member);
         return member;
     }
 
-    private String giveMemberNo() {
+    /*private String giveMemberNo() {
         int number = memberMapper.findMemberNo();
         return "M" + (number + 1);
-    }
+    }*/
 
     @Override
     public List<Member> getAllMembers() {
