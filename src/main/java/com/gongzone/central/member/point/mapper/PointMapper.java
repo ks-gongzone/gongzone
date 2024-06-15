@@ -1,11 +1,14 @@
 package com.gongzone.central.member.point.mapper;
 
 import com.gongzone.central.member.point.domain.Point;
+import com.gongzone.central.member.point.domain.PointHistory;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PointMapper {
-	Point get(@Param("memberNo") String memberNo);
+	List<PointHistory> getAllHistory(String memberNo);
+
+	Point getCurrentPoint(String memberNo);
 
 }

@@ -5,61 +5,66 @@
 
 <mapper namespace="com.gongzone.central.member.mapper.MemberMapper">
 
-    <!-- Result Mapping -->
-    <resultMap id="MemberResultMap" type="Member">
-        <id property="memberNo" column="m_no" />
-        <result property="memberLevel" column="m_level" />
-        <result property="memberId" column="m_id" />
-        <result property="memberPw" column="m_pw" />
-        <result property="memberName" column="m_name" />
-        <result property="memberEmail" column="m_email" />
-        <result property="memberPhone" column="m_phone" />
-        <result property="memberGender" column="m_gender" />
-        <result property="memberAddress" column="m_addr" />
-        <result property="memberBirthday" column="m_birthday" />
-        <result property="memberNick" column="m_nick" />
-        <result property="memberStatus" column="status_code" />
-    </resultMap>
+  <!-- Result Mapping -->
+  <resultMap id="MemberResultMap" type="Member">
+    <id property="memberNo" column="m_no"/>
+    <result property="memberLevel" column="m_level"/>
+    <result property="memberId" column="m_id"/>
+    <result property="memberPw" column="m_pw"/>
+    <result property="memberName" column="m_name"/>
+    <result property="memberEmail" column="m_email"/>
+    <result property="memberPhone" column="m_phone"/>
+    <result property="memberGender" column="m_gender"/>
+    <result property="memberAddress" column="m_addr"/>
+    <result property="memberBirthday" column="m_birthday"/>
+    <result property="memberNick" column="m_nick"/>
+    <result property="memberStatus" column="status_code"/>
+  </resultMap>
 
-    <!-- Create -->
-    <insert id="insert" parameterType="Member">
-        INSERT INTO member(m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
-        VALUES( CONCAT('M', (SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) + 1 FROM member)),
-               1, #{memberId}, #{memberPw}, #{memberName}, #{memberEmail}, #{memberPhone}, #{memberGender}, #{memberAddress}, #{memberBirthday}, #{memberNick}, 'S010101')
-    </insert>
+  <!-- Create -->
+  <insert id="insert" parameterType="Member">
+    INSERT INTO member(m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
+    VALUES (CONCAT('M', (SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) + 1 FROM member)),
+            1, #{memberId}, #{memberPw}, #{memberName}, #{memberEmail}, #{memberPhone}, #{memberGender}, #{memberAddress}, #{memberBirthday}, #{memberNick}, 'S010101')
+  </insert>
 
-    <!-- Read -->
-    <select id="findAll" resultMap="MemberResultMap">
-        SELECT * FROM member
-    </select>
+  <!-- Read -->
+  <select id="findAll" resultMap="MemberResultMap">
+    SELECT *
+    FROM member
+  </select>
 
-    <select id="findByNo" parameterType="String" resultMap="MemberResultMap">
-        SELECT * FROM member WHERE m_no = #{memberNo}
-    </select>
+  <select id="findByNo" parameterType="String" resultMap="MemberResultMap">
+    SELECT *
+    FROM member
+    WHERE m_no = #{memberNo}
+  </select>
 
-   <!-- <select id="findMemberNo" resultType="int">
-        SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) FROM member
-    </select>-->
+  <!-- <select id="findMemberNo" resultType="int">
+       SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) FROM member
+   </select>-->
 
-    <!-- Update -->
-    <update id="update" parameterType="Member">
-        UPDATE member SET
-            m_level = #{memberLevel},
-            m_id = #{memberId},
-            m_pw = #{memberPw},
-            m_name = #{memberName},
-            m_email = #{memberEmail},
-            m_phone = #{memberPhone},
-            m_gender = #{memberGender},
-            m_addr = #{memberAddress},
-            m_birthday = #{memberBirthday},
-            m_nick = #{memberNick},
-            status_code = #{memberStatus}
-        WHERE m_no = #{memberNo}
-    </update>
+  <!-- Update -->
+  <update id="update" parameterType="Member">
+    UPDATE member
+    SET m_level     = #{memberLevel},
+        m_id        = #{memberId},
+        m_pw        = #{memberPw},
+        m_name      = #{memberName},
+        m_email     = #{memberEmail},
+        m_phone     = #{memberPhone},
+        m_gender    = #{memberGender},
+        m_addr      = #{memberAddress},
+        m_birthday  = #{memberBirthday},
+        m_nick      = #{memberNick},
+        status_code = #{memberStatus}
+    WHERE m_no = #{memberNo}
+  </update>
 
-    <!-- Delete -->
-    <delete id="delete" parameterType="String">
-        DELETE FROM member WHERE m_no = #{memberNo}
-    </delete>
+  <!-- Delete -->
+  <delete id="delete" parameterType="String">
+    DELETE
+    FROM member
+    WHERE m_no = #{memberNo}
+  </delete>
 </mapper>

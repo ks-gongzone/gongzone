@@ -5,13 +5,44 @@
 
 <mapper namespace="com.gongzone.central.member.point.mapper.PointMapper">
 
+  <!-- Result Mapping -->
   <resultMap id="PointResultMap" type="Point">
     <id property="memberPointNo" column="m_point_no"/>
     <result property="memberId" column="m_id"/>
     <result property="memberPoint" column="memberPoint"/>
   </resultMap>
 
-  <select id="get" parameterType="String" resultMap="PointResultMap">
+  <resultMap id="PointHistoryResultMap" type="PointHistory">
+    <id property="pointHistoryNo" column="point_history_no"/>
+    <result property="memberPointNo" column="m_point_no"/>
+    <result property="type" column="type_code"/>
+    <result property="pointHistoryBefore" column="point_history_before"/>
+    <result property="pointHistoryChange" column="point_history_change"/>
+    <result property="pointHistoryAfter" column="point_history_after"/>
+    <result property="pointHistoryDate" column="point_history_date"/>
+    <result property="status" column="status_code"/>
+  </resultMap>
+
+
+  <!-- Query -->
+  <select id="getAllHistory" parameterType="String" resultMap="PointHistoryResultMap">
+    SELECT h.point_history_no,
+           h.m_point_no,
+           h.type_code,
+           h.point_history_before,
+           h.point_history_change,
+           h.point_history_after,
+           h.point_history_date,
+           h.status_code
+    FROM member_point AS p
+           JOIN
+         point_history AS h
+         ON
+           p.m_point_no = h.m_point_no
+    WHERE p.m_no = #{memberNo};
+  </select>
+
+  <select id="getCurrentPoint" parameterType="String" resultMap="PointResultMap">
     SELECT m_point_no, m_no, m_point
     FROM member_point
     WHERE m_no = #{memberNo};

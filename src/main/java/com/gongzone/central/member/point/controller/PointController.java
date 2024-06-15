@@ -1,6 +1,7 @@
 package com.gongzone.central.member.point.controller;
 
 import com.gongzone.central.member.point.domain.Point;
+import com.gongzone.central.member.point.domain.PointHistory;
 import com.gongzone.central.member.point.service.PointService;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,28 @@ public class PointController {
 	}
 
 
+	/**
+	 * 회원의 포인트 사용 내역을 응답으로 반환한다.
+	 *
+	 * @param memberNo
+	 * @return
+	 */
+	@GetMapping("/{memberNo}/point/history")
+	public Map<String, List<PointHistory>> getMemberPointHistory(@PathVariable String memberNo) {
+		Map<String, List<PointHistory>> response = pointService.getAllHistory(memberNo);
+
+		return response;
+	}
+
+	/**
+	 * 회원이 현재 보유한 포인트를 응답으로 반환한다.
+	 *
+	 * @param memberNo
+	 * @return
+	 */
 	@GetMapping("/{memberNo}/point")
 	public Map<String, Point> getMemberPoint(@PathVariable String memberNo) {
-		Map<String, Point> response = pointService.get(memberNo);
+		Map<String, Point> response = pointService.getCurrentPoint(memberNo);
 
 		return response;
 	}
