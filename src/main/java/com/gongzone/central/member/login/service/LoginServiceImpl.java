@@ -17,9 +17,13 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        Member member = loginMapper.getMemberFromId(loginRequest.getLoginId()); //여기가 문제다
-        if (member != null && member.getMemberPw().equals(loginRequest.getLoginPw())) {
-            return new LoginResponse(member.getMemberId());
+        Member member = loginMapper.getMemberFromId(loginRequest.getLoginId());
+        if (member != null) {
+            if(member.getMemberPw().equals(loginRequest.getLoginPw())) {
+                return new LoginResponse("로그인 성공" + member.getMemberId());
+            } else {
+                throw new IllegalArgumentException("비밀번호 다름");
+            }
         } else {
             throw new IllegalArgumentException("없는 계정");
         }
