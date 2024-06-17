@@ -1,4 +1,4 @@
-package com.gongzone.central.member.domain;
+package com.gongzone.central.member.socialLogin.domain;
 
 import lombok.Builder;
 import lombok.Data;
