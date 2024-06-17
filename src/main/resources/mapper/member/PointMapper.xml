@@ -42,8 +42,8 @@
     WHERE p.m_no = #{memberNo};
   </select>
 
-  <select id="getCurrentPoint" parameterType="String" resultMap="PointResultMap">
-    SELECT m_point_no, m_no, m_point
+  <select id="getCurrentPoint" parameterType="String" resultType="int">
+    SELECT m_point
     FROM member_point
     WHERE m_no = #{memberNo};
   </select>

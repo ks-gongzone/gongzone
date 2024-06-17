@@ -1,6 +1,5 @@
 package com.gongzone.central.member.point.service;
 
-import com.gongzone.central.member.point.domain.Point;
 import com.gongzone.central.member.point.domain.PointHistory;
 import com.gongzone.central.member.point.mapper.PointMapper;
 import java.util.HashMap;
@@ -30,9 +29,9 @@ public class PointServiceImpl implements PointService {
 	}
 
 	@Override
-	public Map<String, Point> getCurrentPoint(String memberNo) {
-		Point point = pointMapper.getCurrentPoint(memberNo);
-		Map<String, Point> result = new HashMap<>(
+	public Map<String, Integer> getCurrentPoint(String memberNo) {
+		Integer point = pointMapper.getCurrentPoint(memberNo);
+		Map<String, Integer> result = new HashMap<>(
 				Map.of("result", point)
 		);
 

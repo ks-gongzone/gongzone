@@ -1,6 +1,5 @@
 package com.gongzone.central.member.point.controller;
 
-import com.gongzone.central.member.point.domain.Point;
 import com.gongzone.central.member.point.domain.PointHistory;
 import com.gongzone.central.member.point.service.PointService;
 import java.util.List;
@@ -41,8 +40,8 @@ public class PointController {
 	 * @return
 	 */
 	@GetMapping("/{memberNo}/point")
-	public Map<String, Point> getMemberPoint(@PathVariable String memberNo) {
-		Map<String, Point> response = pointService.getCurrentPoint(memberNo);
+	public Map<String, Integer> getMemberPoint(@PathVariable String memberNo) {
+		Map<String, Integer> response = pointService.getCurrentPoint(memberNo);
 
 		return response;
 	}
