@@ -27,8 +27,8 @@ public class LoginServiceImpl implements LoginService {
             throw new IllegalArgumentException("없는 계정");
         }
     }
-
-    /*@Override
+/*
+@Override
     public boolean login(LoginRequest login) {
         LoginRequest loginRequest = loginMapper.getMemberFromId(login.getLoginId());
         if (loginRequest != null && loginRequest.getLoginPw().equals(login.getLoginPw())) {
@@ -37,4 +37,5 @@ public class LoginServiceImpl implements LoginService {
             return false;
         }
     }*/
+
 }

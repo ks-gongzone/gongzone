@@ -27,7 +27,9 @@ public class MemberDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
 
-        // memberLevel 값 확인
+        System.out.println("Loaded member: " + member);
+        System.out.println("Member level: " + member.getMemberLevel());
+
         int memberLevelValue = member.getMemberLevel();
         if (memberLevelValue == 0) {
             throw new IllegalArgumentException("Invalid member level: " + memberLevelValue);
@@ -38,7 +40,7 @@ public class MemberDetailsService implements UserDetailsService {
         // 빌더 패턴 사용하여 Member 객체 재구성
         member = Member.builder()
                 .memberNo(member.getMemberNo())
-                .memberLevel(member.getMemberLevel())
+                .memberLevel(level.getLevel())
                 .memberId(member.getMemberId())
                 .memberPw(member.getMemberPw())
                 .memberName(member.getMemberName())

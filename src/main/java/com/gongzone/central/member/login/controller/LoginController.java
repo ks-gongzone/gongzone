@@ -55,15 +55,16 @@ public class LoginController {
             // 사용자 정보 로드
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
 
+            System.out.println("Loaded member details: " + memberDetails);
             // 비밀번호 검증 (해시를 사용하지 않고 평문 비교)
             if (!loginRequest.getLoginPw().equals(memberDetails.getPassword())) {
                 throw new AuthenticationException("Incorrect username or password") {};
             }
 
-            // 사용자 인증
+           /* // 사용자 인증
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getLoginPw())
-            );
+            );*/
 
             // JWT 토큰 생성
             final String jwt = jwtUtil.generateToken(memberDetails);

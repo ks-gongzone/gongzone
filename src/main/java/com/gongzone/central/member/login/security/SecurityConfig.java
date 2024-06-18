@@ -26,9 +26,9 @@ public class SecurityConfig {
     // 보안 필터 체인을 정의
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable()) // 비활성화
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/api/login").permitAll()
+                    .requestMatchers("/api/login").permitAll() // 로그인 경로 접근 허용
                     .anyRequest().authenticated()
             )
                 .exceptionHandling(exception -> exception
@@ -48,10 +48,10 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // 비밀번호 암호화
+    /*// 비밀번호 암호화
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*/
 }
 

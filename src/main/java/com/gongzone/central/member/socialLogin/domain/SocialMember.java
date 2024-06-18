@@ -17,3 +17,7 @@ public class SocialMember {
     private Date accessTokenExpiry;     // 액세스 토큰 만료 시간
     private Date refreshTokenExpiry;    // 리프레시 토큰 만료 시간
 }
+// 다른건
+// 임시는 순서 아이디 소셜타입 이순서가 본인 마음대로 해도 상과없는데
+// 실제 db에존재하는 dto들은 순서가 똑같아야해요 왜그러냐
+//mapper 레파지토리 mysql에 mybatis방식으로 해서 mapper를쓰기 때문에
