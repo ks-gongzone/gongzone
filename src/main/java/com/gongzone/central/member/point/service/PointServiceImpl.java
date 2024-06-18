@@ -1,5 +1,6 @@
 package com.gongzone.central.member.point.service;
 
+import com.gongzone.central.member.point.domain.PointCharge;
 import com.gongzone.central.member.point.domain.PointHistory;
 import com.gongzone.central.member.point.mapper.PointMapper;
 import java.util.HashMap;
@@ -36,6 +37,22 @@ public class PointServiceImpl implements PointService {
 		);
 
 		return result;
+	}
+
+	@Override
+	public Map<String, String> chargeMemberPoint(String memberNo, PointCharge request) {
+		String result = null;
+		try {
+			int amount = request.getAmount();
+			pointMapper.chargeMemberPoint(memberNo, amount);
+			result = "SUCCESS";
+		} catch (Exception ignored) {
+			result = "FAILED";
+		}
+		Map<String, String> response = new HashMap<>(
+				Map.of("result", result)
+		);
+		return response;
 	}
 
 }

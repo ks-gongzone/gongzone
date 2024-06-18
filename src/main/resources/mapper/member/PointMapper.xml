@@ -7,20 +7,20 @@
 
   <!-- Result Mapping -->
   <resultMap id="PointResultMap" type="Point">
-    <id property="memberPointNo" column="m_point_no"/>
-    <result property="memberId" column="m_id"/>
-    <result property="memberPoint" column="memberPoint"/>
+    <id property="memberPointNo" column="m_point_no" />
+    <result property="memberId" column="m_id" />
+    <result property="memberPoint" column="memberPoint" />
   </resultMap>
 
   <resultMap id="PointHistoryResultMap" type="PointHistory">
-    <id property="pointHistoryNo" column="point_history_no"/>
-    <result property="memberPointNo" column="m_point_no"/>
-    <result property="type" column="type_code"/>
-    <result property="pointHistoryBefore" column="point_history_before"/>
-    <result property="pointHistoryChange" column="point_history_change"/>
-    <result property="pointHistoryAfter" column="point_history_after"/>
-    <result property="pointHistoryDate" column="point_history_date"/>
-    <result property="status" column="status_code"/>
+    <id property="pointHistoryNo" column="point_history_no" />
+    <result property="memberPointNo" column="m_point_no" />
+    <result property="type" column="type_code" />
+    <result property="pointHistoryBefore" column="point_history_before" />
+    <result property="pointHistoryChange" column="point_history_change" />
+    <result property="pointHistoryAfter" column="point_history_after" />
+    <result property="pointHistoryDate" column="point_history_date" />
+    <result property="status" column="status_code" />
   </resultMap>
 
 
@@ -47,5 +47,11 @@
     FROM member_point
     WHERE m_no = #{memberNo};
   </select>
+
+  <update id="chargeMemberPoint">
+    UPDATE member_point
+    SET m_point = m_point + #{amount}
+    WHERE m_no = #{memberNo};
+  </update>
 
 </mapper>
