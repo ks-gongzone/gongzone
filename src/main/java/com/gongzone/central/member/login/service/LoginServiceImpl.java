@@ -1,7 +1,6 @@
 package com.gongzone.central.member.login.service;
 
 import com.gongzone.central.member.domain.Member;
-import com.gongzone.central.member.login.domain.LoginResponse;
 import com.gongzone.central.member.login.domain.LoginRequest;
 import com.gongzone.central.member.login.mapper.LoginMapper;
 import org.springframework.stereotype.Service;
@@ -16,11 +15,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        Member member = loginMapper.getMemberFromId(loginRequest.getLoginId());
+    public Member login(String loginId, String loginPw) {
+        Member member = loginMapper.getMemberFromId(loginId);
         if (member != null) {
-            if(member.getMemberPw().equals(loginRequest.getLoginPw())) {
-                return new LoginResponse("로그인 성공" + member.getMemberId());
+            if(member.getMemberPw().equals(loginPw)) {
+                return member;
             } else {
                 throw new IllegalArgumentException("비밀번호 다름");
             }
