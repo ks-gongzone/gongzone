@@ -1,8 +1,7 @@
 package com.gongzone.central.point.controller;
 
-import com.gongzone.central.point.domain.PointCharge;
+import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.PointWithdraw;
 import com.gongzone.central.point.service.PointService;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +55,8 @@ public class PointController {
 	 */
 	@PostMapping("/{memberPointNo}/point/charge")
 	public Map<String, String> postPointCharge(@PathVariable String memberPointNo,
-											   @RequestBody PointCharge request) {
-		Map<String, String> response = pointService.chargeMemberPoint(memberPointNo, request);
+											   @RequestBody PointChange request) {
+		Map<String, String> response = pointService.updateMemberPoint(memberPointNo, request);
 
 		return response;
 	}
@@ -71,8 +70,8 @@ public class PointController {
 	 */
 	@PostMapping("/{memberPointNo}/point/withdraw")
 	public Map<String, String> postPointWithdraw(@PathVariable String memberPointNo,
-												 @RequestBody PointWithdraw request) {
-		Map<String, String> response = pointService.withdrawMemberPoint(memberPointNo, request);
+												 @RequestBody PointChange request) {
+		Map<String, String> response = pointService.updateMemberPoint(memberPointNo, request);
 
 		return response;
 	}

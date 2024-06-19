@@ -1,15 +1,9 @@
 package com.gongzone.central.point.service;
 
-import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_FAILED;
-import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_SUCCESS;
-import static com.gongzone.central.utils.TypeCode.TYPE_POINT_DECREASE_WITHDRAW;
-import static com.gongzone.central.utils.TypeCode.TYPE_POINT_INCREASE_CHARGE;
-
-import com.gongzone.central.point.domain.PointCharge;
+import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.PointWithdraw;
 import com.gongzone.central.point.mapper.PointMapper;
-import com.gongzone.central.utils.MySqlUtil;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
+	private final PointTransactionService pointTransactionService;
+	private final PointHistoryService pointHistoryService;
 	private final PointMapper pointMapper;
 
 
@@ -45,68 +41,19 @@ public class PointServiceImpl implements PointService {
 	}
 
 	@Override
-	public Map<String, String> chargeMemberPoint(String memberPointNo, PointCharge request) {
-		PointHistory pointHistory = new PointHistory();
-		pointHistory.setMemberPointNo(memberPointNo);
-		int current = pointMapper.getCurrentPoint(memberPointNo);
-		pointHistory.setPointHistoryBefore(String.valueOf(current));
-		pointHistory.setPointHistoryChange(String.valueOf(request.getAmount()));
-		pointHistory.setPointHistoryAfter(String.valueOf(current + request.getAmount()));
-		pointHistory.setTypeCode(TYPE_POINT_INCREASE_CHARGE.getCode());
-
-		String status = null;
+	public Map<String, String> updateMemberPoint(String memberPointNo, PointChange request) {
+		PointChange pointChange = null;
 		try {
-			int amount = request.getAmount();
-			pointMapper.chargeMemberPoint(memberPointNo, amount);
-			status = "SUCCESS";
-			pointHistory.setStatusCode(STATUS_POINT_HISTORY_SUCCESS.getCode());
-		} catch (Exception ignored) {
-			status = "FAILED";
-			pointHistory.setStatusCode(STATUS_POINT_HISTORY_FAILED.getCode());
+			pointChange = pointTransactionService.updateMemberPoint(memberPointNo, request);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		insertPointHistory(pointHistory);
+		String result = pointHistoryService.insertPointHistory(memberPointNo, pointChange);
 		Map<String, String> response = new HashMap<>(
-				Map.of("result", status)
+				Map.of("result", result)
 		);
 
 		return response;
-	}
-
-	@Override
-	public Map<String, String> withdrawMemberPoint(String memberPointNo, PointWithdraw request) {
-		PointHistory pointHistory = new PointHistory();
-		pointHistory.setMemberPointNo(memberPointNo);
-		int current = pointMapper.getCurrentPoint(memberPointNo);
-		pointHistory.setPointHistoryBefore(String.valueOf(current));
-		pointHistory.setPointHistoryChange(String.valueOf(-request.getWithdrawAmount()));
-		pointHistory.setPointHistoryAfter(String.valueOf(current - request.getWithdrawAmount()));
-		pointHistory.setTypeCode(TYPE_POINT_DECREASE_WITHDRAW.getCode());
-
-		String status = null;
-		try {
-			int amount = request.getWithdrawAmount();
-			pointMapper.withdrawMemberPoint(memberPointNo, amount);
-			status = "SUCCESS";
-			pointHistory.setStatusCode(STATUS_POINT_HISTORY_SUCCESS.getCode());
-		} catch (Exception ignored) {
-			status = "FAILED";
-			pointHistory.setStatusCode(STATUS_POINT_HISTORY_FAILED.getCode());
-		}
-		insertPointHistory(pointHistory);
-		Map<String, String> response = new HashMap<>(
-				Map.of("result", status)
-		);
-
-		return response;
-	}
-
-	@Override
-	public void insertPointHistory(PointHistory pointHistory) {
-		String last = pointMapper.getLastHistoryPk();
-		String pointHistoryNo = MySqlUtil.generatePrimaryKey(last);
-		pointHistory.setPointHistoryNo(pointHistoryNo);
-
-		pointMapper.insertPointHistory(pointHistory);
 	}
 
 }

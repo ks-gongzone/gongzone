@@ -2,16 +2,18 @@ package com.gongzone.central.point.domain;
 
 import com.gongzone.central.utils.StatusCode;
 import com.gongzone.central.utils.TypeCode;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class PointHistory {
 	private String pointHistoryNo;
 	private String memberPointNo;
 	private String type;
-	private String pointHistoryBefore;
-	private String pointHistoryChange;
-	private String pointHistoryAfter;
+	private int pointHistoryBefore;
+	private int pointHistoryChange;
+	private int pointHistoryAfter;
 	private String pointHistoryDate;
 	private String status;
 

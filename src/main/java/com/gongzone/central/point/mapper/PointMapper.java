@@ -11,11 +11,8 @@ public interface PointMapper {
 
 	Integer getCurrentPoint(String memberPointNo);
 
-	void chargeMemberPoint(@Param("memberPointNo") String memberPointNo,
-						   @Param("amount") int amount);
-
-	void withdrawMemberPoint(@Param("memberPointNo") String memberPointNo,
-							 @Param("amount") int amount);
+	void updateMemberPoint(@Param("memberPointNo") String memberPointNo,
+						   @Param("change") int change);
 
 	void insertPointHistory(PointHistory pointHistory);
 

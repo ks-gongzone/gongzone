@@ -60,16 +60,9 @@
     LIMIT 1;
   </select>
 
-  <update id="chargeMemberPoint">
+  <update id="updateMemberPoint">
     UPDATE member_point
-    SET m_point = m_point + #{amount}
-    WHERE
-      m_point_no = #{memberPointNo};
-  </update>
-
-  <update id="withdrawMemberPoint">
-    UPDATE member_point
-    SET m_point = m_point - #{amount}
+    SET m_point = m_point + #{change}
     WHERE
       m_point_no = #{memberPointNo};
   </update>
