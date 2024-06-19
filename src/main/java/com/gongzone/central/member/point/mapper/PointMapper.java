@@ -7,15 +7,15 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PointMapper {
-    List<PointHistory> getAllHistory(String memberPointNo);
+	List<PointHistory> getAllHistory(String memberPointNo);
 
-    Integer getCurrentPoint(String memberPointNo);
+	Integer getCurrentPoint(String memberPointNo);
 
-    void chargeMemberPoint(@Param("memberPointNo") String memberPointNo,
-                           @Param("amount") int amount);
+	void chargeMemberPoint(@Param("memberPointNo") String memberPointNo,
+						   @Param("amount") int amount);
 
-    void insertPointHistory(PointHistory pointHistory);
+	void insertPointHistory(PointHistory pointHistory);
 
-    String getLastHistoryPk();
+	String getLastHistoryPk();
 
 }

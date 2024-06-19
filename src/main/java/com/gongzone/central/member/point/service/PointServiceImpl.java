@@ -11,74 +11,72 @@ import com.gongzone.central.utils.MySqlUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
-    private final PointMapper pointMapper;
-
-    public PointServiceImpl(PointMapper pointMapper) {
-        this.pointMapper = pointMapper;
-    }
+	private final PointMapper pointMapper;
 
 
-    @Override
-    public Map<String, List<PointHistory>> getAllHistory(String memberPointNo) {
-        List<PointHistory> histories = pointMapper.getAllHistory(memberPointNo);
-        Map<String, List<PointHistory>> result = new HashMap<>(
-                Map.of("result", histories)
-        );
+	@Override
+	public Map<String, List<PointHistory>> getAllHistory(String memberPointNo) {
+		List<PointHistory> histories = pointMapper.getAllHistory(memberPointNo);
+		Map<String, List<PointHistory>> result = new HashMap<>(
+				Map.of("result", histories)
+		);
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public Map<String, Integer> getCurrentPoint(String memberPointNo) {
-        Integer point = pointMapper.getCurrentPoint(memberPointNo);
-        Map<String, Integer> result = new HashMap<>(
-                Map.of("result", point)
-        );
+	@Override
+	public Map<String, Integer> getCurrentPoint(String memberPointNo) {
+		Integer point = pointMapper.getCurrentPoint(memberPointNo);
+		Map<String, Integer> result = new HashMap<>(
+				Map.of("result", point)
+		);
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public Map<String, String> chargeMemberPoint(String memberPointNo, PointCharge request) {
-        PointHistory pointHistory = new PointHistory();
-        pointHistory.setMemberPointNo(memberPointNo);
-        int current = pointMapper.getCurrentPoint(memberPointNo);
-        pointHistory.setPointHistoryBefore(String.valueOf(current));
-        pointHistory.setPointHistoryChange(String.valueOf(request.getAmount()));
-        pointHistory.setPointHistoryAfter(String.valueOf(current + request.getAmount()));
-        pointHistory.setTypeCode(TYPE_POINT_INCREASE_CHARGE.getCode());
+	@Override
+	public Map<String, String> chargeMemberPoint(String memberPointNo, PointCharge request) {
+		PointHistory pointHistory = new PointHistory();
+		pointHistory.setMemberPointNo(memberPointNo);
+		int current = pointMapper.getCurrentPoint(memberPointNo);
+		pointHistory.setPointHistoryBefore(String.valueOf(current));
+		pointHistory.setPointHistoryChange(String.valueOf(request.getAmount()));
+		pointHistory.setPointHistoryAfter(String.valueOf(current + request.getAmount()));
+		pointHistory.setTypeCode(TYPE_POINT_INCREASE_CHARGE.getCode());
 
-        String status = null;
-        try {
-            int amount = request.getAmount();
-            pointMapper.chargeMemberPoint(memberPointNo, amount);
-            status = "SUCCESS";
-            pointHistory.setStatusCode(STATUS_POINT_HISTORY_SUCCESS.getCode());
-        } catch (Exception ignored) {
-            status = "FAILED";
-            pointHistory.setStatusCode(STATUS_POINT_HISTORY_FAILED.getCode());
-        }
-        insertPointHistory(pointHistory);
-        Map<String, String> response = new HashMap<>(
-                Map.of("result", status)
-        );
+		String status = null;
+		try {
+			int amount = request.getAmount();
+			pointMapper.chargeMemberPoint(memberPointNo, amount);
+			status = "SUCCESS";
+			pointHistory.setStatusCode(STATUS_POINT_HISTORY_SUCCESS.getCode());
+		} catch (Exception ignored) {
+			status = "FAILED";
+			pointHistory.setStatusCode(STATUS_POINT_HISTORY_FAILED.getCode());
+		}
+		insertPointHistory(pointHistory);
+		Map<String, String> response = new HashMap<>(
+				Map.of("result", status)
+		);
 
-        return response;
-    }
+		return response;
+	}
 
-    @Override
-    public void insertPointHistory(PointHistory pointHistory) {
-        String last = pointMapper.getLastHistoryPk();
-        String pointHistoryNo = MySqlUtil.generatePrimaryKey(last);
-        pointHistory.setPointHistoryNo(pointHistoryNo);
+	@Override
+	public void insertPointHistory(PointHistory pointHistory) {
+		String last = pointMapper.getLastHistoryPk();
+		String pointHistoryNo = MySqlUtil.generatePrimaryKey(last);
+		pointHistory.setPointHistoryNo(pointHistoryNo);
 
-        pointMapper.insertPointHistory(pointHistory);
-    }
+		pointMapper.insertPointHistory(pointHistory);
+	}
 
 }
