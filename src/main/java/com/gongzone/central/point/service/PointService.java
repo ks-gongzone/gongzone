@@ -1,7 +1,7 @@
-package com.gongzone.central.member.point.service;
+package com.gongzone.central.point.service;
 
-import com.gongzone.central.member.point.domain.PointCharge;
-import com.gongzone.central.member.point.domain.PointHistory;
+import com.gongzone.central.point.domain.PointCharge;
+import com.gongzone.central.point.domain.PointHistory;
 import java.util.List;
 import java.util.Map;
 

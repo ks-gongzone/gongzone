@@ -1,6 +1,6 @@
-package com.gongzone.central.member.point.mapper;
+package com.gongzone.central.point.mapper;
 
-import com.gongzone.central.member.point.domain.PointHistory;
+import com.gongzone.central.point.domain.PointHistory;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

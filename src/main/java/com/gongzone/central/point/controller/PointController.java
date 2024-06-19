@@ -1,8 +1,8 @@
-package com.gongzone.central.member.point.controller;
+package com.gongzone.central.point.controller;
 
-import com.gongzone.central.member.point.domain.PointCharge;
-import com.gongzone.central.member.point.domain.PointHistory;
-import com.gongzone.central.member.point.service.PointService;
+import com.gongzone.central.point.domain.PointCharge;
+import com.gongzone.central.point.domain.PointHistory;
+import com.gongzone.central.point.service.PointService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

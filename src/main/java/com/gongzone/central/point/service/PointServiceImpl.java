@@ -1,12 +1,12 @@
-package com.gongzone.central.member.point.service;
+package com.gongzone.central.point.service;
 
 import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_FAILED;
 import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_SUCCESS;
 import static com.gongzone.central.utils.TypeCode.TYPE_POINT_INCREASE_CHARGE;
 
-import com.gongzone.central.member.point.domain.PointCharge;
-import com.gongzone.central.member.point.domain.PointHistory;
-import com.gongzone.central.member.point.mapper.PointMapper;
+import com.gongzone.central.point.domain.PointCharge;
+import com.gongzone.central.point.domain.PointHistory;
+import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
 import java.util.HashMap;
 import java.util.List;

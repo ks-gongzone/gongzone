@@ -1,4 +1,4 @@
-package com.gongzone.central.member.point.domain;
+package com.gongzone.central.point.domain;
 
 import com.gongzone.central.utils.StatusCode;
 import com.gongzone.central.utils.TypeCode;
