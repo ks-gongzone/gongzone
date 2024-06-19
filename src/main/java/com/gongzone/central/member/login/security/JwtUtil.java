@@ -35,12 +35,15 @@ public class JwtUtil {
         return (username.equals(memberDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token) {
+    public Date getExpirationDateFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
-                .getExpiration()
-                .before(new Date());
+                .getExpiration();
+    }
+
+    private boolean isTokenExpired(String token) {
+        return getExpirationDateFromToken(token).before(new Date());
     }
 }

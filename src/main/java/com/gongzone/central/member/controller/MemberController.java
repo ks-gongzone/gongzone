@@ -24,10 +24,6 @@ public class MemberController {
         return ResponseEntity.ok(registeredMember);
     }
 
-   /* @PostMapping
-    public ResponseEntity<Member> login(@RequestBody Member member) {
-        return null;
-    }*/
 
     public ResponseEntity<Member> findMemberById(@RequestBody Member member) {
         return null;

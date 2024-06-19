@@ -5,15 +5,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
-    private String loginToken;
-    private String message;
+    private String grantType;
+    private String accessToken;
+    private long tokenExpiresIn;
+    private String errorMessage;
 
+    public LoginResponse(String grantType, String accessToken, long tokenExpiresIn, String errorMessage) {
+        this.grantType = grantType;
+        this.accessToken = accessToken;
+        this.tokenExpiresIn = tokenExpiresIn;
+        this.errorMessage = errorMessage;
+    }
 
-    // JWT 토큰만 반환하는 경우를 위한 생성자
-    public LoginResponse(String loginToken) {
-        this.loginToken = loginToken;
+    public LoginResponse(String errorMessage) {
+        this(null, null, 0, errorMessage);
     }
 }

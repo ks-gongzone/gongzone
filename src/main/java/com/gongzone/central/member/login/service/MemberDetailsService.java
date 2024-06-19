@@ -21,14 +21,11 @@ public class MemberDetailsService implements UserDetailsService {
     private LoginMapper loginMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = loginMapper.getMemberFromId(username);
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        Member member = loginMapper.getMemberFromId(loginId);
         if (member == null) {
             throw new UsernameNotFoundException("User not found");
         }
-
-        System.out.println("Loaded member: " + member);
-        System.out.println("Member level: " + member.getMemberLevel());
 
         int memberLevelValue = member.getMemberLevel();
         if (memberLevelValue == 0) {
@@ -37,7 +34,6 @@ public class MemberDetailsService implements UserDetailsService {
 
         MemberLevel level = MemberLevel.fromLevel(memberLevelValue);
 
-        // 빌더 패턴 사용하여 Member 객체 재구성
         member = Member.builder()
                 .memberNo(member.getMemberNo())
                 .memberLevel(level.getLevel())

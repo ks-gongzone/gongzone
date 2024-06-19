@@ -38,14 +38,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
+        // 토큰 추출후 검증
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwt = requestTokenHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                System.out.println("토큰이 없습니다");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                System.out.println("토큰 만료");
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
@@ -58,11 +59,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(jwt, (MemberDetails) userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
         chain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return "/api/login".equals(request.getRequestURI());
     }
 }
