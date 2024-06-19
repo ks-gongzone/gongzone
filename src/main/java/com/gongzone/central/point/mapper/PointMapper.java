@@ -14,6 +14,9 @@ public interface PointMapper {
 	void chargeMemberPoint(@Param("memberPointNo") String memberPointNo,
 						   @Param("amount") int amount);
 
+	void withdrawMemberPoint(@Param("memberPointNo") String memberPointNo,
+							 @Param("amount") int amount);
+
 	void insertPointHistory(PointHistory pointHistory);
 
 	String getLastHistoryPk();

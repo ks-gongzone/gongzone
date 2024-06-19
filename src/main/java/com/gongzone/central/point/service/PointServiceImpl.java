@@ -2,10 +2,12 @@ package com.gongzone.central.point.service;
 
 import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_FAILED;
 import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_SUCCESS;
+import static com.gongzone.central.utils.TypeCode.TYPE_POINT_DECREASE_WITHDRAW;
 import static com.gongzone.central.utils.TypeCode.TYPE_POINT_INCREASE_CHARGE;
 
 import com.gongzone.central.point.domain.PointCharge;
 import com.gongzone.central.point.domain.PointHistory;
+import com.gongzone.central.point.domain.PointWithdraw;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
 import java.util.HashMap;
@@ -56,6 +58,34 @@ public class PointServiceImpl implements PointService {
 		try {
 			int amount = request.getAmount();
 			pointMapper.chargeMemberPoint(memberPointNo, amount);
+			status = "SUCCESS";
+			pointHistory.setStatusCode(STATUS_POINT_HISTORY_SUCCESS.getCode());
+		} catch (Exception ignored) {
+			status = "FAILED";
+			pointHistory.setStatusCode(STATUS_POINT_HISTORY_FAILED.getCode());
+		}
+		insertPointHistory(pointHistory);
+		Map<String, String> response = new HashMap<>(
+				Map.of("result", status)
+		);
+
+		return response;
+	}
+
+	@Override
+	public Map<String, String> withdrawMemberPoint(String memberPointNo, PointWithdraw request) {
+		PointHistory pointHistory = new PointHistory();
+		pointHistory.setMemberPointNo(memberPointNo);
+		int current = pointMapper.getCurrentPoint(memberPointNo);
+		pointHistory.setPointHistoryBefore(String.valueOf(current));
+		pointHistory.setPointHistoryChange(String.valueOf(-request.getWithdrawAmount()));
+		pointHistory.setPointHistoryAfter(String.valueOf(current - request.getWithdrawAmount()));
+		pointHistory.setTypeCode(TYPE_POINT_DECREASE_WITHDRAW.getCode());
+
+		String status = null;
+		try {
+			int amount = request.getWithdrawAmount();
+			pointMapper.withdrawMemberPoint(memberPointNo, amount);
 			status = "SUCCESS";
 			pointHistory.setStatusCode(STATUS_POINT_HISTORY_SUCCESS.getCode());
 		} catch (Exception ignored) {

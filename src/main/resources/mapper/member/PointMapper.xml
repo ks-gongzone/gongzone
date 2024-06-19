@@ -67,6 +67,13 @@
       m_point_no = #{memberPointNo};
   </update>
 
+  <update id="withdrawMemberPoint">
+    UPDATE member_point
+    SET m_point = m_point - #{amount}
+    WHERE
+      m_point_no = #{memberPointNo};
+  </update>
+
   <insert id="insertPointHistory">
     INSERT INTO
       point_history (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after, status_code)

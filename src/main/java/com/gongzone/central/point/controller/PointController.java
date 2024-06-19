@@ -2,6 +2,7 @@ package com.gongzone.central.point.controller;
 
 import com.gongzone.central.point.domain.PointCharge;
 import com.gongzone.central.point.domain.PointHistory;
+import com.gongzone.central.point.domain.PointWithdraw;
 import com.gongzone.central.point.service.PointService;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,21 @@ public class PointController {
 	public Map<String, String> postPointCharge(@PathVariable String memberPointNo,
 											   @RequestBody PointCharge request) {
 		Map<String, String> response = pointService.chargeMemberPoint(memberPointNo, request);
+
+		return response;
+	}
+
+	/**
+	 * 회원의 포인트를 인출하고 결과를 반환한다.
+	 *
+	 * @param memberPointNo 회원 포인트 번호
+	 * @param request       인출 정보가 담긴 요청
+	 * @return 포인트 인출 결과
+	 */
+	@PostMapping("/{memberPointNo}/point/withdraw")
+	public Map<String, String> postPointWithdraw(@PathVariable String memberPointNo,
+												 @RequestBody PointWithdraw request) {
+		Map<String, String> response = pointService.withdrawMemberPoint(memberPointNo, request);
 
 		return response;
 	}
