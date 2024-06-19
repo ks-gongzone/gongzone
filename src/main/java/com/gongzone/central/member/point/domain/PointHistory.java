@@ -6,21 +6,29 @@ import lombok.Data;
 
 @Data
 public class PointHistory {
-	private String pointHistoryNo;
-	private String memberPointNo;
-	private String type;
-	private String pointHistoryBefore;
-	private String pointHistoryChange;
-	private String pointHistoryAfter;
-	private String pointHistoryDate;
-	private String status;
+    private String pointHistoryNo;
+    private String memberPointNo;
+    private String type;
+    private String pointHistoryBefore;
+    private String pointHistoryChange;
+    private String pointHistoryAfter;
+    private String pointHistoryDate;
+    private String status;
 
-	public void setType(String type) {
-		this.type = TypeCode.getDescriptionByCode(type);
-	}
+    public void setType(String code) {
+        this.type = TypeCode.getDescriptionByCode(code);
+    }
 
-	public void setStatus(String status) {
-		this.status = StatusCode.getDescriptionByCode(status);
-	}
+    public void setTypeCode(String code) {
+        this.type = code;
+    }
+
+    public void setStatus(String code) {
+        this.status = StatusCode.getDescriptionByCode(code);
+    }
+
+    public void setStatusCode(String code) {
+        this.status = code;
+    }
 
 }

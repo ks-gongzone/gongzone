@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface PointService {
-	Map<String, List<PointHistory>> getAllHistory(String memberNo);
+    Map<String, List<PointHistory>> getAllHistory(String memberPointNo);
 
-	Map<String, Integer> getCurrentPoint(String memberNo);
+    Map<String, Integer> getCurrentPoint(String memberPointNo);
 
-	Map<String, String> chargeMemberPoint(String memberNo, PointCharge request);
+    Map<String, String> chargeMemberPoint(String memberPointNo, PointCharge request);
+
+    void insertPointHistory(PointHistory pointHistory);
 
 }

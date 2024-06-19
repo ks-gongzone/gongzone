@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/members")
 public class PointController {
-	private final PointService pointService;
+    private final PointService pointService;
 
 
-	public PointController(PointService pointService) {
-		this.pointService = pointService;
-	}
+    public PointController(PointService pointService) {
+        this.pointService = pointService;
+    }
 
 
-	/**
-	 * 회원의 포인트 사용 내역을 응답으로 반환한다.
-	 *
-	 * @param memberNo
-	 * @return
-	 */
-	@GetMapping("/{memberNo}/point/history")
-	public Map<String, List<PointHistory>> getMemberPointHistory(@PathVariable String memberNo) {
-		Map<String, List<PointHistory>> response = pointService.getAllHistory(memberNo);
+    /**
+     * 회원의 포인트 사용 내역을 응답으로 반환한다.
+     *
+     * @param memberPointNo
+     * @return
+     */
+    @GetMapping("/{memberPointNo}/point/history")
+    public Map<String, List<PointHistory>> getMemberPointHistory(@PathVariable String memberPointNo) {
+        Map<String, List<PointHistory>> response = pointService.getAllHistory(memberPointNo);
 
-		return response;
-	}
+        return response;
+    }
 
-	/**
-	 * 회원이 현재 보유한 포인트를 응답으로 반환한다.
-	 *
-	 * @param memberNo
-	 * @return
-	 */
-	@GetMapping("/{memberNo}/point")
-	public Map<String, Integer> getMemberPoint(@PathVariable String memberNo) {
-		Map<String, Integer> response = pointService.getCurrentPoint(memberNo);
+    /**
+     * 회원이 현재 보유한 포인트를 응답으로 반환한다.
+     *
+     * @param memberPointNo
+     * @return
+     */
+    @GetMapping("/{memberPointNo}/point")
+    public Map<String, Integer> getMemberPoint(@PathVariable String memberPointNo) {
+        Map<String, Integer> response = pointService.getCurrentPoint(memberPointNo);
 
-		return response;
-	}
+        return response;
+    }
 
-	@PostMapping("/{memberNo}/point/charge")
-	public Map<String, String> postPointCharge(@PathVariable String memberNo,
-											   @RequestBody PointCharge request) {
-		Map<String, String> response = pointService.chargeMemberPoint(memberNo, request);
+    @PostMapping("/{memberPointNo}/point/charge")
+    public Map<String, String> postPointCharge(@PathVariable String memberPointNo,
+                                               @RequestBody PointCharge request) {
+        Map<String, String> response = pointService.chargeMemberPoint(memberPointNo, request);
 
-		return response;
-	}
+        return response;
+    }
 
 }
