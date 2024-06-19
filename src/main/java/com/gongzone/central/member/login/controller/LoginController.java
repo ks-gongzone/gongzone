@@ -38,7 +38,6 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
         try {
-            System.out.println("Attempting to load user: " + loginRequest.getLoginId());
             // 사용자 정보 로드
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
 
@@ -55,10 +54,8 @@ public class LoginController {
             return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, null));
 
         } catch (UsernameNotFoundException e) {
-            System.out.println("UsernameNotFoundException: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("존재하지 않는 사용자 입니다."));
         } catch (BadCredentialsException e) {
-            System.out.println("AuthenticationException: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("잘못된 사용자이거나 비밀번호가 일치하지 않습니다."));
         } catch (Exception e) {
             e.printStackTrace();

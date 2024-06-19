@@ -4,15 +4,12 @@ import com.gongzone.central.member.domain.Member;
 
 import com.gongzone.central.member.domain.MemberLevel;
 import com.gongzone.central.member.login.mapper.LoginMapper;
-import com.gongzone.central.member.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MemberDetailsService implements UserDetailsService {
