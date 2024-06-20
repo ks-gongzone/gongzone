@@ -47,9 +47,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(Member member) {
-        memberMapper.update(member);
-    }
+    public void updateMember(Member member) { memberMapper.update(member); }
 
     @Override
     public void deleteMember(String memberNo) {
