@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+    <resultMap id="BoardListResultMap" type="BoardSearch">
+        <id property="boardNo" column="b_no"/>
+        <result property="boardTitle" column="b_title"/>
+        <result property="boardCate" column="c_code"/>
+        <result property="boardImage" column="b_image_source"/>
+
+
+    </resultMap>
+
+    <select id="getBoardList" parameterType="String" resultMap="BoardListResultMap">
+        SELECT
+            b.b_no,
+            b.b_title,
+            p.c_code,
+            i.b_image_source
+        FROM
+            board AS b
+                Join
+            board_image AS i
+            ON
+                b.b_no = i.b_no
+                Join
+            party AS p
+            ON
+                b.b_no = p.b_no
+        WHERE
+            b.b_no = 'B000002';
+    </select>
+</mapper>
