@@ -7,5 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
-    List<BoardSearch> getAllList(String location, String category, String content);
+    List<BoardSearch> getBoardList(String location, String category, String content);
 }

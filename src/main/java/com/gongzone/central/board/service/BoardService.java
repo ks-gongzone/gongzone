@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
-    Map<String, List<BoardSearch>> getAllList(String location, String category, String content);
+    Map<String, List<BoardSearch>> getBoardList(String location, String category, String content);
 }

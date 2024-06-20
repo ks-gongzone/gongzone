@@ -17,8 +17,8 @@ public class BoardServiceImpl implements BoardService{
     public BoardServiceImpl(BoardMapper boardMapper) { this.boardMapper = boardMapper; }
 
     @Override
-    public Map<String, List<BoardSearch>> getAllList(String location, String category, String content){
-        List<BoardSearch> Lists = boardMapper.getAllList(location, category, content);
+    public Map<String, List<BoardSearch>> getBoardList(String location, String category, String content){
+        List<BoardSearch> Lists = boardMapper.getBoardList(location, category, content);
         Map<String, List<BoardSearch>> result = new HashMap<>(
                 Map.of("result", Lists)
         );

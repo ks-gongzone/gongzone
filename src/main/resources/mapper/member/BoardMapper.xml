@@ -13,7 +13,7 @@
 
     </resultMap>
 
-    <select id="getAllList" parameterType="String" resultMap="BoardListResultMap">
+    <select id="getBoardList" parameterType="String" resultMap="BoardListResultMap">
         SELECT
             b.b_no,
             b.b_title,

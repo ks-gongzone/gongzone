@@ -18,9 +18,9 @@ public class BoardController {
 
     public BoardController(BoardService boardService) { this.boardService = boardService; }
 
-    @GetMapping("/search")
+    @GetMapping("/list")
     public Map<String, List<BoardSearch>> getBoardList(@RequestParam String location, @RequestParam String category, @RequestParam String content) {
-        Map<String, List<BoardSearch>> response = boardService.getAllList(location, category, content);
+        Map<String, List<BoardSearch>> response = boardService.getBoardList(location, category, content);
 
         return response;
     }
