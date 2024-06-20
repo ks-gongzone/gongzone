@@ -13,7 +13,7 @@ public class PointHistoryService {
 	private final PointMapper pointMapper;
 
 
-	public String insertPointHistory(String memberPointNo, PointChange pointChange) {
+	public void insertPointHistory(String memberPointNo, PointChange pointChange) throws RuntimeException {
 		String last = pointMapper.getLastHistoryPk();
 		PointHistory pointHistory = PointHistory.builder()
 												.pointHistoryNo(MySqlUtil.generatePrimaryKey(last))
@@ -25,14 +25,11 @@ public class PointHistoryService {
 												.status(pointChange.getChangeStatus())
 												.build();
 
-		String result;
 		try {
 			pointMapper.insertPointHistory(pointHistory);
-			result = "SUCCESS";
-		} catch (Exception ignored) {
-			result = "FAILED";
+		} catch (RuntimeException ignored) {
+			throw new RuntimeException();
 		}
-		return result;
 	}
 
 }

@@ -68,8 +68,8 @@
   </update>
 
   <insert id="insertPointHistory">
-    INSERT INTO
-      point_history (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after, status_code)
+    INSERT INTO point_history
+      (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after, status_code)
     VALUES
       (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter}, #{status});
   </insert>

@@ -3,16 +3,13 @@ package com.gongzone.central.point.service;
 import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.mapper.PointMapper;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
 	private final PointTransactionService pointTransactionService;
@@ -41,17 +38,11 @@ public class PointServiceImpl implements PointService {
 	}
 
 	@Override
-	public Map<String, String> updateMemberPoint(String memberPointNo, PointChange request) {
-		PointChange pointChange = null;
-		try {
-			pointChange = pointTransactionService.updateMemberPoint(memberPointNo, request);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		String result = pointHistoryService.insertPointHistory(memberPointNo, pointChange);
-		Map<String, String> response = new HashMap<>(
-				Map.of("result", result)
-		);
+	public Map<String, String> updateMemberPoint(String memberPointNo, PointChange request) throws RuntimeException {
+		Map<String, String> response = new HashMap<>();
+		PointChange pointChange = pointTransactionService.updateMemberPoint(memberPointNo, request);
+
+		pointHistoryService.insertPointHistory(memberPointNo, pointChange);
 
 		return response;
 	}

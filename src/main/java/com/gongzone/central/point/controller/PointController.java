@@ -3,6 +3,7 @@ package com.gongzone.central.point.controller;
 import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.service.PointService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +29,7 @@ public class PointController {
 	 */
 	@GetMapping("/{memberPointNo}/point/history")
 	public Map<String, List<PointHistory>> getMemberPointHistory(@PathVariable String memberPointNo) {
-		Map<String, List<PointHistory>> response = pointService.getAllHistory(memberPointNo);
-
-		return response;
+		return pointService.getAllHistory(memberPointNo);
 	}
 
 	/**
@@ -41,9 +40,7 @@ public class PointController {
 	 */
 	@GetMapping("/{memberPointNo}/point")
 	public Map<String, Integer> getMemberPoint(@PathVariable String memberPointNo) {
-		Map<String, Integer> response = pointService.getCurrentPoint(memberPointNo);
-
-		return response;
+		return pointService.getCurrentPoint(memberPointNo);
 	}
 
 	/**
@@ -56,7 +53,18 @@ public class PointController {
 	@PostMapping("/{memberPointNo}/point/charge")
 	public Map<String, String> postPointCharge(@PathVariable String memberPointNo,
 											   @RequestBody PointChange request) {
-		Map<String, String> response = pointService.updateMemberPoint(memberPointNo, request);
+		Map<String, String> response = new HashMap<>();
+		if (request.getChangeType() == null) {
+			response.put("result", "FAILED_BAD_REQUEST");
+			return response;
+		}
+
+		try {
+			pointService.updateMemberPoint(memberPointNo, request);
+			response.put("result", "SUCCESS");
+		} catch (RuntimeException ignored) {
+			response.put("result", "FAILED_INTERNAL_ERROR");
+		}
 
 		return response;
 	}
@@ -71,7 +79,18 @@ public class PointController {
 	@PostMapping("/{memberPointNo}/point/withdraw")
 	public Map<String, String> postPointWithdraw(@PathVariable String memberPointNo,
 												 @RequestBody PointChange request) {
-		Map<String, String> response = pointService.updateMemberPoint(memberPointNo, request);
+		Map<String, String> response = new HashMap<>();
+		if (request.getChangeType() == null) {
+			response.put("result", "FAILED_BAD_REQUEST");
+			return response;
+		}
+
+		try {
+			pointService.updateMemberPoint(memberPointNo, request);
+			response.put("result", "SUCCESS");
+		} catch (RuntimeException ignored) {
+			response.put("result", "FAILED_INTERNAL_ERROR");
+		}
 
 		return response;
 	}

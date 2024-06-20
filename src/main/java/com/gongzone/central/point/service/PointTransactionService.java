@@ -5,7 +5,6 @@ import static com.gongzone.central.utils.StatusCode.STATUS_POINT_HISTORY_SUCCESS
 
 import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.mapper.PointMapper;
-import java.sql.SQLException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class PointTransactionService {
 	private final PointMapper pointMapper;
 
-	public PointChange updateMemberPoint(String memberPointNo, PointChange pointChange) throws SQLException {
+	public PointChange updateMemberPoint(String memberPointNo, PointChange pointChange) {
 		int current = pointMapper.getCurrentPoint(memberPointNo);
 		int change = pointChange.getPointChange();
 		int after = current + change;
@@ -26,7 +25,7 @@ public class PointTransactionService {
 		} catch (Exception ignored) {
 			status = STATUS_POINT_HISTORY_FAILED.getCode();
 		}
-		
+
 		pointChange.setPointBefore(current);
 		pointChange.setPointChange(change);
 		pointChange.setPointAfter(after);
