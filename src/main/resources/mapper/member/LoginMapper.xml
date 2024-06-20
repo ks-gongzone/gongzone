@@ -6,8 +6,18 @@
 <mapper namespace="com.gongzone.central.member.login.mapper.LoginMapper">
 
     <select id="getMemberFromId" resultType="Member">
-        SELECT m_id AS 'memberId'
-             , m_pw AS 'memberPw'
+        SELECT m_no AS 'memberNo',
+               m_level AS 'memberLevel',
+               m_id AS 'memberId',
+               m_pw AS 'memberPw',
+               m_name AS 'memberName',
+               m_email AS 'memberEmail',
+               m_phone AS 'memberPhone',
+               m_gender AS 'memberGender',
+               m_addr AS 'memberAddress',
+               m_birthday AS 'memberBirthday',
+               m_nick AS 'memberNick',
+               status_code AS 'memberStatus'
         FROM member
         WHERE m_id = #{loginId};
     </select>

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -19,7 +21,7 @@ public class Member {
     private final String memberPhone;
     private final String memberGender;
     private final String memberAddress;
-    private final String memberBirthday;
+    private final LocalDate memberBirthday;
     private final String memberNick;
     private final String memberStatus;
 }
