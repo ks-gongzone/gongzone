@@ -24,9 +24,10 @@ public class MemberController {
         return ResponseEntity.ok(registeredMember);
     }
 
-
-    public ResponseEntity<Member> findMemberById(@RequestBody Member member) {
-        return null;
+    @PostMapping("/check")
+    public ResponseEntity<Boolean> findMemberById(@RequestBody String memberId) {
+        Boolean checkId = memberService.getMemberById();
+        return ResponseEntity.ok(checkId);
     }
 
     public ResponseEntity<List<Member>> findAllMembers() {

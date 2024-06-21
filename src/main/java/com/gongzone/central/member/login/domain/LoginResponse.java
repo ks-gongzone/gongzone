@@ -1,6 +1,7 @@
 package com.gongzone.central.member.login.domain;
 
-import lombok.AllArgsConstructor;
+import com.gongzone.central.member.domain.Member;
+import com.gongzone.central.member.login.service.MemberDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

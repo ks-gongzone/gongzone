@@ -41,7 +41,7 @@
         SELECT * FROM member WHERE m_no = #{memberNo}
     </select>
 
-    <select id="findById" parameterType="String" resultType="Member">
+    <select id="findById" parameterType="String" resultType="Boolean">
         SELECT m_id, m_pw FROM member WHERE m_id = #{memberId}
     </select>
 

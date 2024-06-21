@@ -43,6 +43,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Boolean getMemberById() {
+        return memberMapper.findById();
+    }
+
+    @Override
     public void updateMember(Member member) {
         memberMapper.update(member);
     }
