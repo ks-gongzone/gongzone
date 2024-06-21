@@ -14,10 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyInformation {
-    private String newPassword;
-
-    // private String currentMemberNick; // null 가능
-    // private String newMemberNick; // null 가능
+    private String newPassword; // null 가능
+    private String newMemberNick; // null 가능
 
     // private String currentMemberAddress; // null 가능
     // private String newMemberAddress; // null 가능

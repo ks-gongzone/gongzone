@@ -4,7 +4,6 @@ import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

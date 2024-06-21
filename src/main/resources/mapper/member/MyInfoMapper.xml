@@ -9,18 +9,19 @@
         * @수정일: 2024-06-19
         * @내용: member의 기본키 memberNo를 이용해 password 조회 및 업데이트
         */-->
-<mapper namespace="com.gongzone.central.member.myInfo.mapper.PasswordMapper">
+<mapper namespace="com.gongzone.central.member.myInfo.mapper.MyInfoMapper">
 
     <!-- Result Mapping -->
     <resultMap id="PasswordResultMap" type="com.gongzone.central.member.domain.Member">
         <id     property="memberNo" column="m_no" />
         <result property="memberId" column="m_id" />
         <result property="memberPw" column="m_pw" />
+        <result property="memberNick" column="m_nick" />
     </resultMap>
 
     <!-- Read -->
     <select id="findByNo" parameterType="String" resultMap="PasswordResultMap">
-        SELECT m_no,m_id, m_pw
+        SELECT m_no,m_id, m_pw, m_nick
         FROM member
         WHERE m_no = #{memberNo}
     </select>
@@ -28,6 +29,11 @@
     <!-- Update -->
     <update id="updatePassword" parameterType="map">
         UPDATE member SET m_pw = #{newPassword}
+        WHERE m_no = #{memberNo}
+    </update>
+
+    <update id="updateMemberNick" parameterType="map">
+        UPDATE member SET m_nick = #{newMemberNick}
         WHERE m_no = #{memberNo}
     </update>
     

@@ -2,7 +2,7 @@ package com.gongzone.central.member.myInfo.service;
 
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.myInfo.domain.MyInformation;
-import com.gongzone.central.member.myInfo.mapper.PasswordMapper;
+import com.gongzone.central.member.myInfo.mapper.MyInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,17 +16,24 @@ import org.springframework.util.StringUtils;
 @Service
 public class MyInfoServiceImpl implements MyInfoService {
 
-    private final PasswordMapper passwordMapper;
+    private final MyInfoMapper myInfoMapper;
 
     @Autowired
-    public MyInfoServiceImpl(PasswordMapper passwordMapper) {
-        this.passwordMapper = passwordMapper;
+    public MyInfoServiceImpl(MyInfoMapper myInfoMapper) {
+        this.myInfoMapper = myInfoMapper;
     }
 
+    /**
+     * @제목: 비밀번호 수정 유효성 검증
+     * @생성일: 2024-06-18
+     * @수정일: 2024-06-19
+     * @내용: 비밀번호 수정시 유저의 존재 유무, 소셜로그인 유저확인, 현재 사용중인 비밀번호
+     *       인지 확인 검증
+     */
     @Override
     public void updatePassword(Member member, MyInformation myInformation) {
         String newPassword = myInformation.getNewPassword();
-        Member existMember = passwordMapper.findByNo(member.getMemberNo());
+        Member existMember = myInfoMapper.findByNo(member.getMemberNo());
 
         if (existMember == null) {
             throw new RuntimeException("해당 유저가 존재하지 않습니다.");
@@ -41,12 +48,31 @@ public class MyInfoServiceImpl implements MyInfoService {
         if (newPassword.equals(member.getMemberPw())) {
             throw new RuntimeException("현재 사용중인 비밀번호와 같습니다.");
         }
-        passwordMapper.updatePassword(existMember.getMemberNo(), newPassword);
+        myInfoMapper.updatePassword(existMember.getMemberNo(), newPassword);
     }
+
+    /**
+     * @제목: 닉네임 수정 유효성 검증
+     * @생성일: 2024-06-20
+     * @수정일: 2024-06-20
+     * @내용: 닉네임 수정시 유저의 존재 유무, 현재 사용중인 닉네임인지 확인 검증
+     */
+    @Override
+    public void updateMemberNick (Member member, MyInformation myInformation) {
+        String newMemberNick = myInformation.getNewMemberNick();
+        Member existMember = myInfoMapper.findByNo(member.getMemberNo());
+
+        if (existMember == null) {
+            throw new RuntimeException("해당 유저가 존재하지 않습니다.");
+        }
+
+
+    }
+
 
     // mapper에서 String 타입으로 받기로 해서 String 선언
     @Override
     public Member findByNo(String memberNo) {
-        return passwordMapper.findByNo(memberNo);
+        return myInfoMapper.findByNo(memberNo);
     }
 }
