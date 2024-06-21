@@ -809,3 +809,44 @@ VALUES ('M000001', 2, 'admin', 'admin', '관리자', 'admin@example.com', '010-9
        ('M000008', 1, 'user8', 'password8', '연개소문', 'yeon@example.com', '010-9999-0000', 'M', '대전시 서구', '1984-04-04', '개소문', 'S010103'),
        ('M000009', 1, 'user9', 'password9', '계백', 'gye@example.com', '010-1212-3434', 'M', '울산시 북구', '1980-05-05', '백', 'S010104'),
        ('M000010', 1, 'user10', 'password10', '최영', 'choi@example.com', '010-5656-7878', 'M', '충주시 충주읍', '1981-06-06', '영', 'S010101');
+
+-- member_point 테이블에 데이터 삽입
+INSERT IGNORE INTO member_point (m_point_no, m_no)
+VALUES ('MP000001', 'M000001'),
+       ('MP000002', 'M000002'),
+       ('MP000003', 'M000003'),
+       ('MP000004', 'M000004'),
+       ('MP000005', 'M000005'),
+       ('MP000006', 'M000006'),
+       ('MP000007', 'M000007'),
+       ('MP000008', 'M000008'),
+       ('MP000009', 'M000009'),
+       ('MP000010', 'M000010');
+
+-- point_history 테이블에 데이터 삽입
+INSERT IGNORE INTO point_history (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after, status_code)
+VALUES ('PH000001', 'MP000002', 'T030101', 0, 4000, 4000, 'S030101'),
+       ('PH000002', 'MP000002', 'T030303', 4000, -4000, 0, 'S030101'),
+       ('PH000003', 'MP000003', 'T030101', 0, 3000, 3000, 'S030101'),
+       ('PH000004', 'MP000003', 'T030303', 3000, -3000, 0, 'S030101'),
+       ('PH000005', 'MP000004', 'T030101', 0, 1000, 1000, 'S030101'),
+       ('PH000006', 'MP000004', 'T030303', 1000, 0, 1000, 'S030102'),
+       ('PH000007', 'MP000004', 'T030303', 1000, -1000, 0, 'S030101'),
+       ('PH000008', 'MP000001', 'T030104', 0, 8000, 8000, 'S030101'),
+       ('PH000009', 'MP000001', 'T030301', 8000, -8000, 0, 'S030101');
+
+-- point_payment 테이블에 데이터 삽입
+INSERT IGNORE INTO point_payment (pay_no, point_history_no, pay_type, status_code)
+VALUES (1, 'PH000001', '토스페이', 'S030201'),
+       (2, 'PH000003', '토스페이', 'S030201'),
+       (3, 'PH000005', '토스페이', 'S030201');
+
+-- ponit_payment_info 테이블에 데이터 삽입
+INSERT IGNORE INTO point_payment_info (pay_no, pay_method, pay_amount, pay_unique_id, pay_order_name, pay_customer_name, pay_success_yn, pay_success_url, pay_fail_url)
+VALUES (1, '카드', 4000, '?', '상품명1', '홍길동', 1, '?', '?'),
+       (2, '카드', 3000, '?', '상품명1', '이순신', 1, '?', '?'),
+       (3, '카드', 1000, '?', '상품명1', '김유신', 1, '?', '?');
+
+-- point_withdraw 테이블에 데이터 삽입
+INSERT IGNORE INTO point_withdraw (point_history_no, withdraw_bank, withdraw_account, withdraw_name, withdraw_amount, status_code)
+VALUES ('PH000009', '국민', '6516854846471', '홍길동', 8000, 'S030301');

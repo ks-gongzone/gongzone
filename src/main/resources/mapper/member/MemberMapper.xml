@@ -22,10 +22,14 @@
     </resultMap>
 
     <!-- Create -->
-    <insert id="insert" parameterType="Member">
-        INSERT INTO member(m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
-        VALUES( CONCAT('M', (SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) + 1 FROM member)),
-               1, #{memberId}, #{memberPw}, #{memberName}, #{memberEmail}, #{memberPhone}, #{memberGender}, #{memberAddress}, #{memberBirthday}, #{memberNick}, 'S010101')
+    <insert id="insert" parameterType="com.gongzone.central.member.domain.Member">
+        <selectKey keyProperty="memberNo" resultType="String" order="BEFORE">
+            SELECT CONCAT('M', LPAD(COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS memberNo
+            FROM member
+        </selectKey>
+        INSERT INTO member (m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
+        VALUES (#{memberNo}, 1, #{memberId}, #{memberPw}, #{memberName}, #{memberEmail}, #{memberPhone}, #{memberGender}, #{memberAddress},
+        CASE WHEN #{memberBirthday} = '' THEN NULL ELSE #{memberBirthday} END, #{memberNick}, 'S010101')
     </insert>
 
     <!-- Read -->
@@ -35,6 +39,10 @@
 
     <select id="findByNo" parameterType="String" resultMap="MemberResultMap">
         SELECT * FROM member WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="findById" parameterType="String" resultType="Member">
+        SELECT m_id, m_pw FROM member WHERE m_id = #{memberId}
     </select>
 
    <!-- <select id="findMemberNo" resultType="int">

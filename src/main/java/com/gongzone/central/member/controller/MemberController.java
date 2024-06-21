@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MemberController {
 
     private final MemberService memberService;
@@ -23,10 +24,6 @@ public class MemberController {
         return ResponseEntity.ok(registeredMember);
     }
 
-    @PostMapping
-    public ResponseEntity<Member> login(@RequestBody Member member) {
-        return null;
-    }
 
     public ResponseEntity<Member> findMemberById(@RequestBody Member member) {
         return null;

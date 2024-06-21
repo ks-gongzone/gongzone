@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.point.mapper.PointMapper">
+
+  <!-- Result Mapping -->
+  <resultMap id="PointResultMap" type="Point">
+    <id property="memberPointNo" column="m_point_no" />
+    <result property="memberId" column="m_id" />
+    <result property="memberPoint" column="memberPoint" />
+  </resultMap>
+
+  <resultMap id="PointHistoryResultMap" type="PointHistory">
+    <id property="pointHistoryNo" column="point_history_no" />
+    <result property="memberPointNo" column="m_point_no" />
+    <result property="type" column="type_code" />
+    <result property="pointHistoryBefore" column="point_history_before" />
+    <result property="pointHistoryChange" column="point_history_change" />
+    <result property="pointHistoryAfter" column="point_history_after" />
+    <result property="pointHistoryDate" column="point_history_date" />
+    <result property="status" column="status_code" />
+  </resultMap>
+
+
+  <!-- Query -->
+  <select id="getAllHistory" parameterType="String" resultMap="PointHistoryResultMap">
+    SELECT
+      point_history_no,
+      m_point_no,
+      type_code,
+      point_history_before,
+      point_history_change,
+      point_history_after,
+      point_history_date,
+      status_code
+    FROM
+      point_history
+    WHERE
+      m_point_no = #{memberPointNo};
+  </select>
+
+  <select id="getCurrentPoint" parameterType="String" resultType="int">
+    SELECT
+      m_point
+    FROM
+      member_point
+    WHERE
+      m_point_no = #{memberPointNo};
+  </select>
+
+  <select id="getLastHistoryPk" resultType="String">
+    SELECT
+      point_history_no
+    FROM
+      point_history
+    ORDER BY
+      point_history_no DESC
+    LIMIT 1;
+  </select>
+
+  <update id="updateMemberPoint">
+    UPDATE member_point
+    SET m_point = m_point + #{change}
+    WHERE
+      m_point_no = #{memberPointNo};
+  </update>
+
+  <insert id="insertPointHistory">
+    INSERT INTO point_history
+      (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after, status_code)
+    VALUES
+      (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter}, #{status});
+  </insert>
+
+</mapper>
