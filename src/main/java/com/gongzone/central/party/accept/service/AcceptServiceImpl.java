@@ -3,7 +3,6 @@ package com.gongzone.central.party.accept.service;
 import com.gongzone.central.party.accept.domain.AcceptDetail;
 import com.gongzone.central.party.accept.domain.AcceptMember;
 import com.gongzone.central.party.accept.mapper.AcceptMapper;
-import com.gongzone.central.party.accept.service.AcceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
