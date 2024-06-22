@@ -2,6 +2,7 @@ package com.gongzone.central.member.login.service;
 
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.MemberLevel;
+import com.gongzone.central.point.domain.Point;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,14 +11,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+
 @Data
 @Builder
 public class MemberDetails implements UserDetails {
 
     private final Member member;
+    private final Point point;
 
-    public MemberDetails(Member member) {
+    public MemberDetails(Member member, Point point) {
         this.member = member;
+        this.point = point;
     }
 
     @Override
@@ -54,5 +58,13 @@ public class MemberDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true; // 계정의 활성화 여부 설정
+    }
+
+    public String getMemberNo() {
+        return this.member.getMemberNo();
+    }
+
+    public String getPointNo() {
+        return this.point.getMemberPointNo();
     }
 }

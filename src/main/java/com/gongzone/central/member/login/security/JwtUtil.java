@@ -1,12 +1,16 @@
 package com.gongzone.central.member.login.security;
 
-import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.service.MemberDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,53 +19,80 @@ import java.util.Map;
 public class JwtUtil {
 
     @Value("${jwt.secret}")     // 속성 값 주입
-    private String SECRET_KEY;
+    private String secretKey;
 
+    @Value("${jwt.expirationMs}")     // 유효 시간
+    private int jwtExpirationMs;
+
+    private SecretKey key;
+
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    // 토큰 생성
     public String generateToken(MemberDetails memberDetails) {
         // 토큰에 값 넣는 곳
-        Member member = memberDetails.getMember();
-        String memberNo = member.getMemberNo();
         Map<String, String> claims = new HashMap<>();
-        claims.put("memberNo", memberNo);
+        claims.put("memberNo", memberDetails.getMemberNo());
+        claims.put("pointNo", memberDetails.getPointNo());
+
         return Jwts.builder()
                 .setSubject(memberDetails.getUsername())
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 토큰 유효 시간
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 토큰 유효 시간
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // 토큰에서 사용자 이름 추출
     public String extractUsername(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    // 여기서 토큰값 담지말고 주스탠드를 써서 담아서 써라
-    // 원하는 토큰값 Claims를 조회하는곳
     public Claims getJwtClaimsNo(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
+    // 토큰 유효성 검사
     public boolean validateToken(String token, MemberDetails memberDetails) {
         final String username = extractUsername(token);
         return (username.equals(memberDetails.getUsername()) && !isTokenExpired(token));
     }
 
+    // 리프레시 토큰
+    public String generateRefreshToken(MemberDetails memberDetails) {
+        return Jwts.builder()
+                .setSubject(memberDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // 토큰의 만료날짜
     public Date getExpirationDateFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getExpiration();
     }
 
+    // 토큰 만료확인
     private boolean isTokenExpired(String token) {
         return getExpirationDateFromToken(token).before(new Date());
     }

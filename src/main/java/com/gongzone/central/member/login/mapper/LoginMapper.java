@@ -10,4 +10,7 @@ import java.util.List;
 @Mapper
 public interface LoginMapper {
     Member getMemberFromId(String loginId);
+
+    //String getPointNoByMemberNo(String memberNo);
+
 }

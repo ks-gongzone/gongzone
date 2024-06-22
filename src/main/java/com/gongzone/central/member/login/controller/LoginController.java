@@ -1,5 +1,6 @@
 package com.gongzone.central.member.login.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.domain.LoginRequest;
 import com.gongzone.central.member.login.domain.LoginResponse;
@@ -28,28 +29,28 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
 
     private final JwtUtil jwtUtil;
-
     private final MemberDetailsService memberDetailsService;
-
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
         try {
-            // 사용자 정보 로드
-            final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
-
             // 사용자 인증
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getLoginPw())
             );
 
+            // 사용자 정보 로드
+            final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
+
             // JWT 토큰 생성
             final String jwt = jwtUtil.generateToken(memberDetails);
             final long expiresIn = jwtUtil.getExpirationDateFromToken(jwt).getTime();
+            final String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
+
 
             // 토큰을 포함한 응답 반환
-            return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, null));
+            return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, refreshToken, memberDetails.getMemberNo(), memberDetails.getPointNo(),null));
 
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("존재하지 않는 사용자 입니다."));

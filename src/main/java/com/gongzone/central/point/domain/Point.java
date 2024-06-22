@@ -7,5 +7,4 @@ public class Point {
 	private final String memberPointNo;
 	private final String memberNo;
 	private final String memberPoint;
-
 }

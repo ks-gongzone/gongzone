@@ -38,7 +38,6 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable) // 비활성화
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(BASIC_LIST).permitAll()
-                        .requestMatchers("/api/protected-endpoint").authenticated()// 로그인 경로 접근 허용
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

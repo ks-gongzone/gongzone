@@ -8,9 +8,13 @@
   <!-- Result Mapping -->
   <resultMap id="PointResultMap" type="Point">
     <id property="memberPointNo" column="m_point_no" />
-    <result property="memberId" column="m_id" />
-    <result property="memberPoint" column="memberPoint" />
+    <result property="memberNo" column="m_no" />
+    <result property="memberPoint" column="m_point" />
   </resultMap>
+
+  <!-- 위에부분 아래처럼 되어있어서 수정함 -->
+  <!-- <result property="memberId" column="m_id" />
+    <result property="memberPoint" column="memberPoint" />-->
 
   <resultMap id="PointHistoryResultMap" type="PointHistory">
     <id property="pointHistoryNo" column="point_history_no" />
@@ -73,5 +77,16 @@
     VALUES
       (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter}, #{status});
   </insert>
+
+  <select id="getPointNoByMemberNo" parameterType="String" resultType="Point">
+    SELECT
+      m_point_no as memberPointNo,
+      m_no as memberNo,
+      m_point AS memberPoint
+    FROM
+      member_point
+    WHERE
+      m_no = #{memberNo}
+  </select>
 
 </mapper>

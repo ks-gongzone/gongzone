@@ -1,5 +1,6 @@
 package com.gongzone.central.point.mapper;
 
+import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.domain.PointHistory;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,5 +18,7 @@ public interface PointMapper {
 	void insertPointHistory(PointHistory pointHistory);
 
 	String getLastHistoryPk();
+
+	Point getPointNoByMemberNo(String memberNo);
 
 }

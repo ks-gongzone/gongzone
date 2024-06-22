@@ -4,14 +4,12 @@ import com.gongzone.central.member.login.service.MemberDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -42,6 +40,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwt = requestTokenHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwt);
+                Claims claims = jwtUtil.getJwtClaimsNo(jwt);
+
+                String memberNo = claims.get("memberNo", String.class);
+                String pointNo = claims.get("pointNo", String.class);
+
+                System.out.println("Extracted memberNo: " + memberNo);
+                System.out.println("Extracted pointNo: " + pointNo);
+
             } catch (IllegalArgumentException e) {
                 System.out.println("토큰이 없습니다");
             } catch (ExpiredJwtException e) {
