@@ -45,6 +45,35 @@
         SELECT m_id, m_pw FROM member WHERE m_id = #{memberId}
     </select>
 
+    <select id="getMemberByNo" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_address AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            m_status AS memberStatus
+        FROM member
+        WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="info" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_id AS memberId,
+            m_name AS memberName
+        FROM
+            member
+        WHERE
+            m_no = #{memberNo}
+    </select>
+
    <!-- <select id="findMemberNo" resultType="int">
         SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) FROM member
     </select>-->

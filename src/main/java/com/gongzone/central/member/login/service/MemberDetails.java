@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,10 +19,17 @@ public class MemberDetails implements UserDetails {
 
     private final Member member;
     private final Point point;
+    private String token;
 
     public MemberDetails(Member member, Point point) {
         this.member = member;
         this.point = point;
+    }
+
+    public MemberDetails(Member member, Point point, String token) {
+        this.member = member;
+        this.point = point;
+        this.token = token;
     }
 
     @Override
@@ -32,12 +40,12 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return member.getMemberPw(); // Member 클래스의 비밀번호 필드
+        return member.getMemberPw();
     }
 
     @Override
     public String getUsername() {
-        return member.getMemberId(); // Member 클래스의 사용자 이름(ID) 필드
+        return member.getMemberId();
     }
 
     @Override
@@ -61,10 +69,22 @@ public class MemberDetails implements UserDetails {
     }
 
     public String getMemberNo() {
-        return this.member.getMemberNo();
+        return member.getMemberNo();
     }
 
     public String getPointNo() {
-        return this.point.getMemberPointNo();
+        return point.getMemberPointNo();
+    }
+
+    public String getEmail() {
+        return member.getMemberEmail();
+    }
+
+    public String getMemberId() {
+        return member.getMemberId();
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

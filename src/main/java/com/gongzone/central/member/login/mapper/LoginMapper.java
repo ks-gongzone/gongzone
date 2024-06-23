@@ -9,8 +9,9 @@ import java.util.List;
 
 @Mapper
 public interface LoginMapper {
-    Member getMemberFromId(String loginId);
-
+    Member getMemberById(String loginId);
+    Member getMemberByEmail(String email);
+    Member getMemberByNo(String memberNo);
     //String getPointNoByMemberNo(String memberNo);
 
 }

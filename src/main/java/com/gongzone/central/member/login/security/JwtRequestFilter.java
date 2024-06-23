@@ -1,6 +1,8 @@
 package com.gongzone.central.member.login.security;
 
+import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.service.MemberDetails;
+import com.gongzone.central.member.login.service.MemberDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;
+    private final MemberDetailsService memberDetailsService;
 
     private final JwtUtil jwtUtil;
 
@@ -39,37 +41,35 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwt = requestTokenHeader.substring(7);
             try {
-                username = jwtUtil.extractUsername(jwt);
-                Claims claims = jwtUtil.getJwtClaimsNo(jwt);
+                username = jwtUtil.extractMemberNo(jwt);
 
-                String memberNo = claims.get("memberNo", String.class);
-                String pointNo = claims.get("pointNo", String.class);
+                // 받은 후 유효성 검사
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    System.out.println("유효성 검사 시작" + username);
+                    MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
+                    System.out.println("유효성 끝: " + memberDetails.getUsername());
+                    System.out.println("jwt: " + jwt);
+                    System.out.println("userDetails: " + memberDetails);
+                    // 토큰이 유효한지 검사
+                    if (jwtUtil.validateToken(jwt, memberDetails)) {
+                        System.out.println("진행 if문" + memberDetails);
+                        memberDetails.setToken(jwt);
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
 
-                System.out.println("Extracted memberNo: " + memberNo);
-                System.out.println("Extracted pointNo: " + pointNo);
+                        usernamePasswordAuthenticationToken
+                                .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            } catch (IllegalArgumentException e) {
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                        System.out.println("Au 인증 " + usernamePasswordAuthenticationToken);
+                        System.out.println("if문 완료: " + memberDetails);
+                    }
+                }
+           } catch (IllegalArgumentException e) {
                 System.out.println("토큰이 없습니다");
-            } catch (ExpiredJwtException e) {
-                System.out.println("토큰 만료");
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
-        }
-
-        // 받은 후 유효성 검사
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            // 토큰이 유효한지 검사
-            if (jwtUtil.validateToken(jwt, (MemberDetails) userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
         }
         chain.doFilter(request, response);
     }

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.domain.LoginRequest;
 import com.gongzone.central.member.login.domain.LoginResponse;
+import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
+import com.gongzone.central.point.domain.Point;
+import com.gongzone.central.point.mapper.PointMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,22 +37,26 @@ public class LoginController {
     private final MemberDetailsService memberDetailsService;
     private final AuthenticationManager authenticationManager;
 
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
         try {
+            System.out.println("사용자 인증1: " + loginRequest.getLoginId());
             // 사용자 인증
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getLoginPw())
             );
 
             // 사용자 정보 로드
+            System.out.println("loadUserByUsername 들어감");
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
-
+            System.out.println("loadUserByUsername 들어감" + memberDetails.getUsername());
             // JWT 토큰 생성
             final String jwt = jwtUtil.generateToken(memberDetails);
-            final long expiresIn = jwtUtil.getExpirationDateFromToken(jwt).getTime();
+            final long expiresIn = jwtUtil.extractExpiration(jwt).getTime();
             final String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
 
+            System.out.println("사용자 인증2: " + loginRequest.getLoginId());
 
             // 토큰을 포함한 응답 반환
             return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, refreshToken, memberDetails.getMemberNo(), memberDetails.getPointNo(),null));
