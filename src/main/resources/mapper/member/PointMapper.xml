@@ -8,8 +8,8 @@
   <!-- Result Mapping -->
   <resultMap id="PointResultMap" type="Point">
     <id property="memberPointNo" column="m_point_no" />
-    <result property="memberId" column="m_id" />
-    <result property="memberPoint" column="memberPoint" />
+    <result property="memberNo" column="m_no" />
+    <result property="memberPoint" column="m_point" />
   </resultMap>
 
   <resultMap id="PointHistoryResultMap" type="PointHistory">
@@ -41,9 +41,10 @@
       m_point_no = #{memberPointNo};
   </select>
 
+  <!-- 여기 as 붙임-->
   <select id="getCurrentPoint" parameterType="String" resultType="int">
     SELECT
-      m_point
+      m_point AS memberPoint
     FROM
       member_point
     WHERE
@@ -73,5 +74,27 @@
     VALUES
       (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter}, #{status});
   </insert>
+
+  <select id="getPointNoByMemberNo" parameterType="String" resultType="Point">
+    SELECT
+      m_point_no as memberPointNo,
+      m_no as memberNo,
+      m_point AS memberPoint
+    FROM
+      member_point
+    WHERE
+      m_no = #{memberNo}
+  </select>
+
+  <!-- 예시 -->
+  <select id="getPointByPointNo" parameterType="String" resultType="Point">
+    SELECT
+      m_point AS memberPoint
+    FROM
+      member_point
+    WHERE
+      m_point_no = #{memberPointNo};
+  </select>
+
 
 </mapper>

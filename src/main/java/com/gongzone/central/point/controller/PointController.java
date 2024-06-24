@@ -1,5 +1,9 @@
 package com.gongzone.central.point.controller;
 
+import com.gongzone.central.member.domain.Member;
+import com.gongzone.central.member.login.security.JwtUtil;
+import com.gongzone.central.member.login.service.MemberDetails;
+import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.service.PointService;
@@ -7,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class PointController {
 	private final PointService pointService;
-
+	private final JwtUtil jwtUtil;
 
 	/**
 	 * 회원의 포인트 사용 내역을 응답으로 반환한다.
@@ -41,6 +47,20 @@ public class PointController {
 	@GetMapping("/{memberPointNo}/point")
 	public Map<String, Integer> getMemberPoint(@PathVariable String memberPointNo) {
 		return pointService.getCurrentPoint(memberPointNo);
+	}
+
+	// 포인트 예시
+	@GetMapping("/point/test")
+	public ResponseEntity<Point> getMemberPointTest(Authentication authentication) {
+		MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
+
+		String token = memberDetails.getToken();
+
+		String pointNo = jwtUtil.extractPointNo(token);
+
+		Point point = pointService.getPoint(pointNo);
+
+		return ResponseEntity.ok(point);
 	}
 
 	/**

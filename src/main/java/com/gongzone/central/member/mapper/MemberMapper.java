@@ -11,8 +11,11 @@ public interface MemberMapper {
     void insert(Member member);
     List<Member> findAll();
     Member findByNo(String memberNo);
+    Boolean findById();
     void update(Member member);
     void delete(String member);
+    Member info(String memberNo);
+
 //    int findMemberNo();
 
 

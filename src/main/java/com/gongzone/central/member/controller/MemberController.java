@@ -1,8 +1,12 @@
 package com.gongzone.central.member.controller;
 
 import com.gongzone.central.member.domain.Member;
+import com.gongzone.central.member.login.security.JwtUtil;
+import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,13 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
+@RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<Member> register(@RequestBody Member member) {
@@ -24,10 +26,25 @@ public class MemberController {
         return ResponseEntity.ok(registeredMember);
     }
 
-
-    public ResponseEntity<Member> findMemberById(@RequestBody Member member) {
-        return null;
+    @PostMapping("/check")
+    public ResponseEntity<Boolean> findMemberById(@RequestBody String memberId) {
+        Boolean checkId = memberService.getMemberById();
+        return ResponseEntity.ok(checkId);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<Member> getInfo(Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
+
+        String token = memberDetails.getToken();
+
+        String memberNo = jwtUtil.extractMemberNo(token);
+
+        Member member = memberService.getMemberByNo(memberNo);
+
+        return ResponseEntity.ok(member);
+    }
+
 
     public ResponseEntity<List<Member>> findAllMembers() {
         return null;

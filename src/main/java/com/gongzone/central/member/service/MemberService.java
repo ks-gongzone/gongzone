@@ -10,6 +10,7 @@ public interface MemberService {
     Member registerMember(Member member);
     List<Member> getAllMembers();
     Member getMemberByNo(String memberNo);
+    Boolean getMemberById();
     void updateMember(Member member);
     void deleteMember(String memberNo);
 
