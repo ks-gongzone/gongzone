@@ -41,8 +41,37 @@
         SELECT * FROM member WHERE m_no = #{memberNo}
     </select>
 
-    <select id="findById" parameterType="String" resultType="Member">
+    <select id="findById" parameterType="String" resultType="Boolean">
         SELECT m_id, m_pw FROM member WHERE m_id = #{memberId}
+    </select>
+
+    <select id="getMemberByNo" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM member
+        WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="info" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_id AS memberId,
+            m_name AS memberName
+        FROM
+            member
+        WHERE
+            m_no = #{memberNo}
     </select>
 
    <!-- <select id="findMemberNo" resultType="int">

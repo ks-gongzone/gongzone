@@ -37,13 +37,25 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.findAll();
     }
 
-    @Override
+   /* @Override
     public Member getMemberByNo(String memberNo) {
         return memberMapper.findByNo(memberNo);
+    }*/
+
+    @Override
+    public Member getMemberByNo(String memberNo) {
+        return memberMapper.info(memberNo);
     }
 
     @Override
-    public void updateMember(Member member) { memberMapper.update(member); }
+    public Boolean getMemberById() {
+        return memberMapper.findById();
+    }
+
+    @Override
+    public void updateMember(Member member) {
+        memberMapper.update(member);
+    }
 
     @Override
     public void deleteMember(String memberNo) {
