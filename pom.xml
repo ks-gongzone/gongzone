@@ -66,6 +66,13 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- Http Request -->
+    <!-- WebFlux -->
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
 
     <!-- Test -->
     <!-- Spring Boot Test -->
