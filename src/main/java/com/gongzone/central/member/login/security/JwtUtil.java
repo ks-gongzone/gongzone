@@ -90,8 +90,6 @@ public class JwtUtil {
     // 토큰 유효성 검사
     public boolean validateToken(String token, MemberDetails memberDetails) {
         final String memberNo = extractMemberNo(token);
-        System.out.println(memberNo + "        " + token);
-        System.out.println(memberNo.equals(memberDetails.getMemberNo()) + "        " + !isTokenExpired(token));
         return (memberNo.equals(memberDetails.getMemberNo()) && !isTokenExpired(token));
     }
 

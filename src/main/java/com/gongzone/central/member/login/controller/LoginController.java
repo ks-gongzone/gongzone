@@ -41,22 +41,17 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
         try {
-            System.out.println("사용자 인증1: " + loginRequest.getLoginId());
             // 사용자 인증
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getLoginPw())
             );
 
             // 사용자 정보 로드
-            System.out.println("loadUserByUsername 들어감");
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
-            System.out.println("loadUserByUsername 들어감" + memberDetails.getUsername());
             // JWT 토큰 생성
             final String jwt = jwtUtil.generateToken(memberDetails);
             final long expiresIn = jwtUtil.extractExpiration(jwt).getTime();
             final String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
-
-            System.out.println("사용자 인증2: " + loginRequest.getLoginId());
 
             // 토큰을 포함한 응답 반환
             return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, refreshToken, memberDetails.getMemberNo(), memberDetails.getPointNo(),null));

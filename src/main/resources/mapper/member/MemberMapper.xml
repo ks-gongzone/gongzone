@@ -55,10 +55,10 @@
             m_email AS memberEmail,
             m_phone AS memberPhone,
             m_gender AS memberGender,
-            m_address AS memberAddress,
+            m_addr AS memberAddress,
             m_birthday AS memberBirthday,
             m_nick AS memberNick,
-            m_status AS memberStatus
+            status_code AS memberStatus
         FROM member
         WHERE m_no = #{memberNo}
     </select>

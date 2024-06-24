@@ -45,14 +45,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 // 받은 후 유효성 검사
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    System.out.println("유효성 검사 시작" + username);
                     MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
-                    System.out.println("유효성 끝: " + memberDetails.getUsername());
-                    System.out.println("jwt: " + jwt);
-                    System.out.println("userDetails: " + memberDetails);
                     // 토큰이 유효한지 검사
                     if (jwtUtil.validateToken(jwt, memberDetails)) {
-                        System.out.println("진행 if문" + memberDetails);
                         memberDetails.setToken(jwt);
                         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                                 new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
@@ -61,8 +56,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                 .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                        System.out.println("Au 인증 " + usernamePasswordAuthenticationToken);
-                        System.out.println("if문 완료: " + memberDetails);
                     }
                 }
            } catch (IllegalArgumentException e) {

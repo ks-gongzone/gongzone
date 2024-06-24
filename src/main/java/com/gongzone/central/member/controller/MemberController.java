@@ -35,15 +35,12 @@ public class MemberController {
     @GetMapping("/test")
     public ResponseEntity<Member> getInfo(Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
-        System.out.println("memberDetails : " + memberDetails);
+
         String token = memberDetails.getToken();
-        System.out.println("token: " + token);
 
         String memberNo = jwtUtil.extractMemberNo(token);
-        System.out.println("memberNo: " + memberNo);
 
         Member member = memberService.getMemberByNo(memberNo);
-        System.out.println("member : " + member);
 
         return ResponseEntity.ok(member);
     }

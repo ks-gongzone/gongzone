@@ -21,4 +21,6 @@ public interface PointMapper {
 
 	Point getPointNoByMemberNo(String memberNo);
 
+	Point getPointByPointNo(String memberPointNo); //예시
+
 }
