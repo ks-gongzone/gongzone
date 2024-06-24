@@ -1,5 +1,6 @@
 package com.gongzone.central.point.service;
 
+import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.mapper.PointMapper;
@@ -46,5 +47,12 @@ public class PointServiceImpl implements PointService {
 
 		return response;
 	}
+
+	// 예시
+	@Override
+	public Point getPoint(String memberPointNo) {
+		return pointMapper.getPointByPointNo(memberPointNo);
+	}
+
 
 }

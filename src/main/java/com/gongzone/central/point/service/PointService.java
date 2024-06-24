@@ -1,5 +1,6 @@
 package com.gongzone.central.point.service;
 
+import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.domain.PointChange;
 import com.gongzone.central.point.domain.PointHistory;
 import java.util.List;
@@ -12,4 +13,5 @@ public interface PointService {
 
 	Map<String, String> updateMemberPoint(String memberPointNo, PointChange request);
 
+	Point getPoint(String memberPointNo);	// 예시
 }
