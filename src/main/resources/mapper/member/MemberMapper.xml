@@ -43,7 +43,7 @@
 
     <select id="findById" parameterType="String" resultType="Boolean">
         SELECT
-            COUNT(*)
+            COUNT(*) > 0
         FROM
             member
         WHERE

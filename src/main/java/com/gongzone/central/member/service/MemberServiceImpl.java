@@ -6,6 +6,7 @@ import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.utils.MySqlUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,28 +23,32 @@ public class MemberServiceImpl implements MemberService {
     private final TokenMapper tokenMapper;
     private final PointMapper pointMapper;
 
-   /* @Override
-    public Member registerMember(Member member) {
-        memberMapper.insert(member);
+    @Override
+    public Boolean registerMember(Member member) {
+        try {
+            memberMapper.insert(member);
 
-        Point point = Point.builder()
-                .memberPointNo()
-                .memberNo(member.getMemberId())
-                .memberPoint("0")
-                .build();
+            String lastPointNo = pointMapper.getLastMemberPointNo();
+            String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
 
-        pointMapper.insertPoint(point);
-        return member;
-    }*/
+            Point point = Point.builder()
+                    .memberPointNo(newPointNo)
+                    .memberNo(member.getMemberNo())
+                    .memberPoint("0")
+                    .build();
+
+            pointMapper.insertPoint(point);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /*private String giveMemberNo() {
         int number = memberMapper.findMemberNo();
         return "M" + (number + 1);
     }*/
-
-    @Override
-    public void registerMember(Member member, String memberPointNo, String memberPoint) {
-    }
 
     @Override
     public List<Member> getAllMembers() {

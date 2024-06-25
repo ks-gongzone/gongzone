@@ -4,12 +4,16 @@ import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.service.MemberService;
+import com.gongzone.central.point.domain.Point;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -20,18 +24,37 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
-    /*@PostMapping("/register")
-    public ResponseEntity<Member> register(@RequestBody Member member) {
-        Member registeredMember = memberService.registerMember(member);
-        return ResponseEntity.ok(registeredMember);
-    }*/
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Member member) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            boolean registeredMember  = memberService.registerMember(member);
+            if (registeredMember ) {
+                result.put("success", true);
+                result.put("message", "Registration successful");
+            } else {
+                result.put("success", false);
+                result.put("message", "Registration failed: Duplicate or invalid data");
+            }
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("message", "Registration failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
+    }
 
     @PostMapping("/check")
     public ResponseEntity<Boolean> findMemberById(@RequestBody String memberId) {
         System.out.println("시작 " + memberId);
         Boolean checkId = memberService.getMemberById(memberId);
         System.out.println("checkId = " + checkId);
-        return ResponseEntity.ok(checkId);
+        if(!checkId) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
     }
 
     @GetMapping("/test")

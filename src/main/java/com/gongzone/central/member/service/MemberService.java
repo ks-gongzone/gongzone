@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MemberService {
 
-    void registerMember(Member member, String memberPointNo, String memberPoint);
+    Boolean registerMember(Member member);
     List<Member> getAllMembers();
     Member getMemberByNo(String memberNo);
     Boolean getMemberById(String memberId);
