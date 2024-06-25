@@ -4,33 +4,46 @@ import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gongzone.central.point.domain.Point;
+import com.gongzone.central.point.mapper.PointMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
     private final TokenMapper tokenMapper;
+    private final PointMapper pointMapper;
 
-    public MemberServiceImpl(MemberMapper memberMapper, TokenMapper tokenMapper) {
-        this.memberMapper = memberMapper;
-        this.tokenMapper = tokenMapper;
-    }
-
-    @Override
+   /* @Override
     public Member registerMember(Member member) {
         memberMapper.insert(member);
+
+        Point point = Point.builder()
+                .memberPointNo()
+                .memberNo(member.getMemberId())
+                .memberPoint("0")
+                .build();
+
+        pointMapper.insertPoint(point);
         return member;
-    }
+    }*/
 
     /*private String giveMemberNo() {
         int number = memberMapper.findMemberNo();
         return "M" + (number + 1);
     }*/
+
+    @Override
+    public void registerMember(Member member, String memberPointNo, String memberPoint) {
+    }
 
     @Override
     public List<Member> getAllMembers() {
@@ -48,8 +61,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Boolean getMemberById() {
-        return memberMapper.findById();
+    public Boolean getMemberById(String memberId) {
+        return memberMapper.findById(memberId);
     }
 
     @Override

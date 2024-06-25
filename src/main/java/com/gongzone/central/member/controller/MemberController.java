@@ -20,15 +20,17 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/register")
+    /*@PostMapping("/register")
     public ResponseEntity<Member> register(@RequestBody Member member) {
         Member registeredMember = memberService.registerMember(member);
         return ResponseEntity.ok(registeredMember);
-    }
+    }*/
 
     @PostMapping("/check")
     public ResponseEntity<Boolean> findMemberById(@RequestBody String memberId) {
-        Boolean checkId = memberService.getMemberById();
+        System.out.println("시작 " + memberId);
+        Boolean checkId = memberService.getMemberById(memberId);
+        System.out.println("checkId = " + checkId);
         return ResponseEntity.ok(checkId);
     }
 
