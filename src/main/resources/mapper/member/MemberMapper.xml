@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.mapper.MemberMapper">
+
+    <!-- Result Mapping -->
+    <resultMap id="MemberResultMap" type="Member">
+        <id property="memberNo" column="m_no" />
+        <result property="memberLevel" column="m_level" />
+        <result property="memberId" column="m_id" />
+        <result property="memberPw" column="m_pw" />
+        <result property="memberName" column="m_name" />
+        <result property="memberEmail" column="m_email" />
+        <result property="memberPhone" column="m_phone" />
+        <result property="memberGender" column="m_gender" />
+        <result property="memberAddress" column="m_addr" />
+        <result property="memberBirthday" column="m_birthday" />
+        <result property="memberNick" column="m_nick" />
+        <result property="memberStatus" column="status_code" />
+    </resultMap>
+
+    <!-- Create -->
+    <insert id="insert" parameterType="com.gongzone.central.member.domain.Member">
+        <selectKey keyProperty="memberNo" resultType="String" order="BEFORE">
+            SELECT CONCAT('M', LPAD(COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS memberNo
+            FROM member
+        </selectKey>
+        INSERT INTO member (m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
+        VALUES (#{memberNo}, 1, #{memberId}, #{memberPw}, #{memberName}, #{memberEmail}, #{memberPhone}, #{memberGender}, #{memberAddress},
+        CASE WHEN #{memberBirthday} = '' THEN NULL ELSE #{memberBirthday} END, #{memberNick}, 'S010101')
+    </insert>
+
+    <!-- Read -->
+    <select id="findAll" resultMap="MemberResultMap">
+        SELECT * FROM member
+    </select>
+
+    <select id="findByNo" parameterType="String" resultMap="MemberResultMap">
+        SELECT * FROM member WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="findById" parameterType="String" resultType="Boolean">
+        SELECT m_id, m_pw FROM member WHERE m_id = #{memberId}
+    </select>
+
+    <select id="getMemberByNo" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM member
+        WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="info" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_id AS memberId,
+            m_name AS memberName
+        FROM
+            member
+        WHERE
+            m_no = #{memberNo}
+    </select>
+
+   <!-- <select id="findMemberNo" resultType="int">
+        SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) FROM member
+    </select>-->
+
+    <!-- Update -->
+    <update id="update" parameterType="Member">
+        UPDATE member SET
+            m_level = #{memberLevel},
+            m_id = #{memberId},
+            m_pw = #{memberPw},
+            m_name = #{memberName},
+            m_email = #{memberEmail},
+            m_phone = #{memberPhone},
+            m_gender = #{memberGender},
+            m_addr = #{memberAddress},
+            m_birthday = #{memberBirthday},
+            m_nick = #{memberNick},
+            status_code = #{memberStatus}
+        WHERE m_no = #{memberNo}
+    </update>
+
+    <!-- Delete -->
+    <delete id="delete" parameterType="String">
+        DELETE FROM member WHERE m_no = #{memberNo}
+    </delete>
+</mapper>
