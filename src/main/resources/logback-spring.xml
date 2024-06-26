@@ -16,7 +16,6 @@
       <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %n %msg%n</pattern>
     </encoder>
   </appender>
-
   <!-- Rolling File Appender -->
   <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <!-- 파일 경로-->
@@ -36,7 +35,6 @@
       <maxHistory>30</maxHistory>
     </rollingPolicy>
   </appender>
-
   <!-- 프로젝트 패키지 안 클래스에 설정된 로그 출력 -->
   <logger name="com.gongzone.central" level="INFO" additivity="false">
     <appender-ref ref="STDOUT" />
@@ -67,5 +65,6 @@
   <!-- 필수 사항 -->
   <root level="ERROR">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="ROLLING_FILE" />
   </root>
 </configuration>
