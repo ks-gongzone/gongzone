@@ -59,20 +59,71 @@ public class MyInfoServiceImpl implements MyInfoService {
      */
     @Override
     public void updateMemberNick (Member member, MyInformation myInformation) {
+        System.out.println("updateMemberNick 호출");
         String newMemberNick = myInformation.getNewMemberNick();
+        System.out.println("새로운닉네임: " + newMemberNick);
+
         Member existMember = myInfoMapper.findByNo(member.getMemberNo());
 
         if (existMember == null) {
+            System.out.println("회원 정보 없음");
             throw new RuntimeException("해당 유저가 존재하지 않습니다.");
         }
+        if (newMemberNick.equals(existMember.getMemberNick())) {
+            System.out.println("현재 닉네임과 같음");
+            throw new RuntimeException("현재 닉네임과 동일한 닉네임");
+        }
 
-
+        Member nicknameOwner = myInfoMapper.findByNickname(newMemberNick);
+        if (nicknameOwner != null) {
+            System.out.println("사용중인 닉네임");
+            throw new RuntimeException("사용중인 닉네임");
+        }
+        myInfoMapper.updateMemberNick(member.getMemberNo(), newMemberNick);
+        System.out.println("닉네임 수정 완료");
     }
 
+    @Override
+    public void updateMemberAddress(Member member, MyInformation myInformation) {
+        System.out.println("updateMemberAddress 호출");
+        String newMemberAddress = myInformation.getNewMemberAddress();
+        Member existMember = myInfoMapper.findByNo(member.getMemberNo());
+
+        if (existMember == null) {
+            System.out.println("유저가 존재하지 않습니다.");
+            throw new RuntimeException("해당 유저가 존재하지 않습니다.");
+        }
+        myInfoMapper.updateMemberAddress(member.getMemberNo(), newMemberAddress);
+        System.out.println("선호 주소 수정완료" + newMemberAddress);
+    }
 
     // mapper에서 String 타입으로 받기로 해서 String 선언
     @Override
     public Member findByNo(String memberNo) {
-        return myInfoMapper.findByNo(memberNo);
+        System.out.println("findByNo 호출");
+        System.out.println("memberNo" + memberNo);
+        Member member = myInfoMapper.findByNo(memberNo);
+
+        System.out.println("회원 정보: " + (member != null ? member.toString() : "없음"));
+        return member;
+    }
+
+    @Override
+    public Member findByNickname(String memberNick) {
+        System.out.println("findByNick 호출");
+        System.out.println("memberNo" + memberNick);
+        Member member = myInfoMapper.findByNo(memberNick);
+        System.out.println("회원 정보: " + (member != null ? member.toString() : "없음"));
+        return member;
+    }
+
+    @Override
+    public Member findByAddress(String memberAddress) {
+        System.out.println("findByAddress 호출");
+        System.out.println("memberAddress" + memberAddress);
+        Member member = myInfoMapper.findByAddress(memberAddress);
+
+        System.out.println("회원 정보: " + (member != null ? member.toString() : "없음"));
+        return member;
     }
 }

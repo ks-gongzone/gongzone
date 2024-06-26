@@ -4,26 +4,35 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!--   /**
-        * @제목: 비밀번호 맵퍼 xml
+        * @제목: 유저 정보 맵퍼 xml
         * @생성일: 2024-06-18
-        * @수정일: 2024-06-19
-        * @내용: member의 기본키 memberNo를 이용해 password 조회 및 업데이트
+        * @수정일: 2024-06-26
+        * @내용: member의 기본키 memberNo를 유저 정보 조회 및 업데이트
         */-->
 <mapper namespace="com.gongzone.central.member.myInfo.mapper.MyInfoMapper">
 
     <!-- Result Mapping -->
-    <resultMap id="PasswordResultMap" type="com.gongzone.central.member.domain.Member">
+    <resultMap id="MyInfoResultMap" type="com.gongzone.central.member.domain.Member">
         <id     property="memberNo" column="m_no" />
         <result property="memberId" column="m_id" />
         <result property="memberPw" column="m_pw" />
         <result property="memberNick" column="m_nick" />
+        <result property="memberAddress" column="m_addr" />
     </resultMap>
 
     <!-- Read -->
-    <select id="findByNo" parameterType="String" resultMap="PasswordResultMap">
-        SELECT m_no,m_id, m_pw, m_nick
+    <select id="findByNo" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_no,m_id, m_pw, m_nick, m_addr
         FROM member
         WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="findByNickname" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_nick, m_no FROM member WHERE m_nick = #{nickname}
+    </select>
+
+    <select id="findByAddress" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_no, m_addr FROM member WHERE m_addr = #{memberAddress}
     </select>
 
     <!-- Update -->
@@ -34,6 +43,11 @@
 
     <update id="updateMemberNick" parameterType="map">
         UPDATE member SET m_nick = #{newMemberNick}
+        WHERE m_no = #{memberNo}
+    </update>
+
+    <update id="updateMemberAddress" parameterType="map">
+        UPDATE member SET m_addr = #{newMemberAddress}
         WHERE m_no = #{memberNo}
     </update>
     
