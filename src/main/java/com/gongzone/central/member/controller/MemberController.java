@@ -31,22 +31,20 @@ public class MemberController {
             boolean registeredMember  = memberService.registerMember(member);
             if (registeredMember ) {
                 result.put("success", true);
-                result.put("message", "Registration successful");
             } else {
                 result.put("success", false);
-                result.put("message", "Registration failed: Duplicate or invalid data");
             }
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
-            result.put("message", "Registration failed: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
 
     @PostMapping("/check")
-    public ResponseEntity<Boolean> findMemberById(@RequestBody String memberId) {
+    public ResponseEntity<Boolean> findMemberById(@RequestBody Map<String, String> request) {
+        String memberId = request.get("memberId");
         System.out.println("시작 " + memberId);
         Boolean checkId = memberService.getMemberById(memberId);
         System.out.println("checkId = " + checkId);
