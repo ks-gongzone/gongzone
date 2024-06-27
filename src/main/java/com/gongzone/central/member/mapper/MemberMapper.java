@@ -11,7 +11,7 @@ public interface MemberMapper {
     void insert(Member member);
     List<Member> findAll();
     Member findByNo(String memberNo);
-    Boolean findById();
+    Boolean findById(String memberId);
     void update(Member member);
     void delete(String member);
     Member info(String memberNo);
