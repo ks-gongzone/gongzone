@@ -50,6 +50,15 @@
             m_id = #{memberId}
     </select>
 
+    <select id="findByIdFromToken" parameterType="String" resultType="Member">
+        SELECT
+            *
+        FROM
+            member
+        WHERE
+            m_id = #{memberId}
+    </select>
+
     <select id="getMemberByNo" parameterType="String" resultType="Member">
         SELECT
             m_no AS memberNo,
