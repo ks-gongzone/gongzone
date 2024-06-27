@@ -33,7 +33,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/register",
             "/api/check",
             "/api/check",
-            "/api/party/**"
+            "/api/party/**",
+            "/api/naver/token"
     };
 
     @Override

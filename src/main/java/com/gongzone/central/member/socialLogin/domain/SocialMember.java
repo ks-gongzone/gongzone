@@ -1,12 +1,10 @@
 package com.gongzone.central.member.socialLogin.domain;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-@Builder
 public class SocialMember {
     private String socialId;            // 아이디
     private String provider;            // 소셜 타입

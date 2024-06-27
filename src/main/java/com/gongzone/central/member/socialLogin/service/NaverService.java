@@ -1,6 +1,6 @@
-/*
 package com.gongzone.central.member.socialLogin.service;
 
+import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.mapper.MemberMapper;
@@ -9,6 +9,7 @@ import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,11 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +28,21 @@ public class NaverService {
     private final MemberMapper memberMapper;
     private final TokenMapper tokenMapper;
     private final JwtUtil jwtUtil;
+
+    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+    private String NAVER_CLIENT_ID;
+
+    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+    private String NAVER_CLIENT_SECRET;
+
+    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+    private String NAVER_REDIRECT_URI;
+
+    @Value("${spring.security.oauth2.client.provider.naver.token-uri}")
+    private String NAVER_TOKEN_URI;
+
+    @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
+    private String NAVER_USER_INFO_URI;
 
     public SocialMember naverToken(String code) throws Exception {
         RestTemplate rt = new RestTemplate();
@@ -84,17 +96,18 @@ public class NaverService {
     }
 
     private void saveMember(SocialMember socialMember) {
-        Member member = memberMapper.findByMemberId(socialMember.getSocialId());
+        Member member = memberMapper.findByIdFromToken(socialMember.getSocialId());
         if (member == null) {
             member = new Member();
-            member.setMemberNo(socialMember.getSocialId());
-            member.setMemberId(socialMember.getSocialId());
-            member.setMemberName(socialMember.getName());
-            member.setMemberEmail(socialMember.getEmail());
-            member.setMemberPhone(socialMember.getPhoneNumber());
-            member.setMemberGender(socialMember.getGender());
-            // 필요한 다른 필드들을 설정합니다.
-            memberMapper.insertMember(member);
+            member.builder()
+                            .memberNo("")  // 마지막값에 추가예정
+                            .memberId(socialMember.getSocialId())
+                            .memberName(socialMember.getName())
+                            .memberEmail(socialMember.getEmail())
+                            .memberPhone(socialMember.getPhoneNumber())
+                            .memberGender(socialMember.getGender());
+
+            memberMapper.insert(member);
         }
 
         Token token = tokenMapper.findByMemberNo(member.getMemberNo());
@@ -107,14 +120,16 @@ public class NaverService {
             token.setTokenExpiresAcc(socialMember.getAccessTokenExpiry());
             token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry());
             token.setTokenLastUpdate(new Date());
-            tokenMapper.insertToken(token);
+
+            tokenMapper.insert(token);
         } else {
             token.setTokenValueAcc(socialMember.getAccessToken());
             token.setTokenValueRef(socialMember.getRefreshToken());
             token.setTokenExpiresAcc(socialMember.getAccessTokenExpiry());
             token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry());
             token.setTokenLastUpdate(new Date());
-            tokenMapper.updateToken(token);
+
+            tokenMapper.update(token);
         }
     }
 
@@ -130,4 +145,3 @@ public class NaverService {
 }
 
 
-*/
