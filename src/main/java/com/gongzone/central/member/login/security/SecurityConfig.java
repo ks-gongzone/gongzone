@@ -24,43 +24,46 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtRequestFilter jwtRequestFilter;
+	private final JwtRequestFilter jwtRequestFilter;
 
-    private static final String[] BASIC_LIST = {
-            "/api/login",
-            "/api/register",
-            "/api/check"
-    };
+	private static final String[] BASIC_LIST = {
+			"/api/login",
+			"/api/register",
+			"/api/check",
+			"/swagger-ui/**",
+			"/v3/api-docs/**",
+			"/swagger-ui.html",
+			"/api/location"
+	};
 
-    // 보안 필터 체인을 정의
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable) // 비활성화
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(BASIC_LIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new Http403ForbiddenEntryPoint()) // 403 Forbidden 처리
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+	// 보안 필터 체인을 정의
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf(AbstractHttpConfigurer::disable) // 비활성화
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers(BASIC_LIST).permitAll()
+						.anyRequest().authenticated()
+				)
+				.exceptionHandling(exception -> exception
+						.authenticationEntryPoint(new Http403ForbiddenEntryPoint()) // 403 Forbidden 처리
+				)
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				)
+				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    // 인증 관리에 사용
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+	// 인증 관리에 사용
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
+	}
 
 }
-

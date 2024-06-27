@@ -4,26 +4,45 @@ import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
+import com.gongzone.central.point.domain.Point;
+import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.utils.MySqlUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
     private final TokenMapper tokenMapper;
-
-    public MemberServiceImpl(MemberMapper memberMapper, TokenMapper tokenMapper) {
-        this.memberMapper = memberMapper;
-        this.tokenMapper = tokenMapper;
-    }
+    private final PointMapper pointMapper;
 
     @Override
-    public Member registerMember(Member member) {
-        memberMapper.insert(member);
-        return member;
+    public Boolean registerMember(Member member) {
+        try {
+            memberMapper.insert(member);
+
+            String lastPointNo = pointMapper.getLastMemberPointNo();
+            String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
+
+            Point point = Point.builder()
+                    .memberPointNo(newPointNo)
+                    .memberNo(member.getMemberNo())
+                    .memberPoint("0")
+                    .build();
+
+            pointMapper.insertPoint(point);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /*private String giveMemberNo() {
@@ -47,8 +66,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Boolean getMemberById() {
-        return memberMapper.findById();
+    public Boolean getMemberById(String memberId) {
+        return memberMapper.findById(memberId);
     }
 
     @Override
