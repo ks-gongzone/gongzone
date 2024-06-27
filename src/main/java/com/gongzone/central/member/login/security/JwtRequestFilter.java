@@ -28,9 +28,27 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    private static final String[] EXCLUDED_PATHS = {
+            "/api/login",
+            "/api/register",
+            "/api/check",
+            "/api/check",
+            "/api/party/**"
+    };
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
+        String requestURI = request.getRequestURI();
+
+        // 특정 경로는 필터링하지 않음
+        for (String path : EXCLUDED_PATHS) {
+            if (requestURI.startsWith(path)) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
 
         final String requestTokenHeader = request.getHeader("Authorization");
 

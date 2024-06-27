@@ -3,7 +3,7 @@ package com.gongzone.central.board.domain;
 import lombok.Data;
 
 @Data
-public class BoardSearch {
+public class BoardSearchList {
     private String boardNo;
     private String boardTitle;
     private String boardCate;
