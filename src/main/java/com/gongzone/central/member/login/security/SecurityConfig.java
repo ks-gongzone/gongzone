@@ -33,6 +33,7 @@ public class SecurityConfig {
 			"/swagger-ui/**",
 			"/v3/api-docs/**",
 			"/swagger-ui.html",
+			"/api/location"
 	};
 
 	// 보안 필터 체인을 정의
