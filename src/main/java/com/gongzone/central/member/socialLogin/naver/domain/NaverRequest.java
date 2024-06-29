@@ -1,4 +1,4 @@
-package com.gongzone.central.member.socialLogin.domain;
+package com.gongzone.central.member.socialLogin.naver.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.gongzone.central.member.socialLogin.service;
+package com.gongzone.central.member.socialLogin.naver.service;
 
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
@@ -6,7 +6,7 @@ import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
-import com.gongzone.central.member.socialLogin.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;

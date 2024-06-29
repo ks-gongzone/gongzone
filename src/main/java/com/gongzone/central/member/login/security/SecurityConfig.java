@@ -35,6 +35,8 @@ public class SecurityConfig {
 			"/swagger-ui.html",
 			"/api/naver/token",
 			"/api/naver/**",
+			"/api/google/token",
+			"/api/google/**",
 			"*"
 	};
 

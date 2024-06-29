@@ -1,20 +1,14 @@
-package com.gongzone.central.member.socialLogin.controller;
+package com.gongzone.central.member.socialLogin.naver.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gongzone.central.member.socialLogin.domain.NaverRequest;
-import com.gongzone.central.member.socialLogin.domain.SocialMember;
-import com.gongzone.central.member.socialLogin.service.NaverService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import com.gongzone.central.member.socialLogin.naver.domain.NaverRequest;
+import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.naver.service.NaverService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/naver")

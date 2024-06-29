@@ -39,6 +39,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/party/**",
             "/api/naver/token",
             "/api/naver/**",
+            "/api/google/token",
+            "/api/google/**",
             "*"
     };
 
@@ -56,7 +58,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (requestURI.startsWith(path)) {
                 //String requestBody = new String(request.getInputStream().readAllBytes());
                 //request.setAttribute("requestBody", requestBody);
-                if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token")) {
+                if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token") || requestURI.startsWith("/api/google/token")) {
+                    System.out.println("필터 들어옴" + requestURI);
                     String requestBody = new String(request.getInputStream().readAllBytes());
                     httpRequest.setAttribute("requestBody", requestBody);
                 }
