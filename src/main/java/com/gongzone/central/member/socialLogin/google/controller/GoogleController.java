@@ -47,24 +47,4 @@ public class GoogleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-   /* @PostMapping("/token")
-    public ResponseEntity<SocialMember> googleToken(@RequestBody GoogleRequest googleRequest) {
-        try {
-            System.out.println("1");
-            System.out.println("Received GoogleRequest: " + googleRequest);
-            System.out.println("code = " + googleRequest.getCode());
-            System.out.println("state = " + googleRequest.getState());
-
-            if (googleRequest.getCode() == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            SocialMember socialMember = googleService.googleToken(googleRequest.getCode());
-            return new ResponseEntity<>(socialMember, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
 }
