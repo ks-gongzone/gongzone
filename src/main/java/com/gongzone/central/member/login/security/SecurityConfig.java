@@ -33,7 +33,9 @@ public class SecurityConfig {
 			"/swagger-ui/**",
 			"/v3/api-docs/**",
 			"/swagger-ui.html",
-			"/api/naver/token"
+			"/api/naver/token",
+			"/api/naver/**",
+			"*"
 	};
 
 	// 보안 필터 체인을 정의
