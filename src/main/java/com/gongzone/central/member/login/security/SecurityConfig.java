@@ -37,6 +37,8 @@ public class SecurityConfig {
 			"/api/naver/**",
 			"/api/google/token",
 			"/api/google/**",
+			"/api/kakao/token",
+			"/api/kakao/**",
 			"*"
 	};
 

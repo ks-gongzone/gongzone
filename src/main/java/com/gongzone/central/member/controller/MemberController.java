@@ -26,18 +26,22 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody Member member) {
+        System.out.println("1111111111111111122222222222222222");
         Map<String, Object> result = new HashMap<>();
         try {
             boolean registeredMember  = memberService.registerMember(member);
             if (registeredMember ) {
                 result.put("success", true);
+                System.out.println("result111" + result);
             } else {
                 result.put("success", false);
+                System.out.println("result222" + result);
             }
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
+            System.out.println("result333" + result);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }

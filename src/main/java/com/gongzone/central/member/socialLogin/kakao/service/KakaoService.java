@@ -1,5 +1,4 @@
-package com.gongzone.central.member.socialLogin.google.service;
-
+package com.gongzone.central.member.socialLogin.kakao.service;
 
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
@@ -37,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor
 @EnableScheduling
 @Transactional
-public class GoogleService {
+public class KakaoService {
 
     private final MemberMapper memberMapper;
     private final TokenMapper tokenMapper;
@@ -45,22 +44,22 @@ public class GoogleService {
     private final JwtUtil jwtUtil;
     private final Lock lock = new ReentrantLock();
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String KAKAO_CLIENT_ID;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String GOOGLE_CLIENT_SECRET;
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+    private String KAKAO_CLIENT_SECRET;
 
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String GOOGLE_REDIRECT_URI;
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String KAKAO_REDIRECT_URI;
 
-    @Value("${spring.security.oauth2.client.provider.google.token-uri}")
-    private String GOOGLE_TOKEN_URI;
+    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
+    private String KAKAO_TOKEN_URI;
 
-    @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
-    private String GOOGLE_USER_INFO_URI;
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String KAKAO_USER_INFO_URI;
 
-    public Map<String, Object> googleToken(String code) throws Exception {
+    public Map<String, Object> kakaoToken(String code) throws Exception {
         lock.lock();
         Map<String, Object> result = new HashMap<>();
         try {
@@ -71,15 +70,15 @@ public class GoogleService {
 
             MultiValueMap<String, String> accessTokenParams = new LinkedMultiValueMap<>();
             accessTokenParams.add("grant_type", "authorization_code");
-            accessTokenParams.add("client_id", GOOGLE_CLIENT_ID);
-            accessTokenParams.add("client_secret", GOOGLE_CLIENT_SECRET);
+            accessTokenParams.add("client_id", KAKAO_CLIENT_ID);
+            accessTokenParams.add("client_secret", KAKAO_CLIENT_SECRET);
             accessTokenParams.add("code", code);
-            accessTokenParams.add("redirect_uri", GOOGLE_REDIRECT_URI);
+            accessTokenParams.add("redirect_uri", KAKAO_REDIRECT_URI);
 
             HttpEntity<MultiValueMap<String, String>> accessTokenRequest = new HttpEntity<>(accessTokenParams, headers);
             System.out.println("accessTokenParams: " + accessTokenParams);
             ResponseEntity<String> accessTokenResponse = rt.exchange(
-                    GOOGLE_TOKEN_URI,
+                    KAKAO_TOKEN_URI,
                     HttpMethod.POST,
                     accessTokenRequest,
                     String.class);
@@ -87,30 +86,41 @@ public class GoogleService {
 
             JSONParser jsonParser = new JSONParser();
             String responseBody = accessTokenResponse.getBody();
-            System.out.println("구글 응답 : "+ responseBody);
+            System.out.println("카카오 응답" + responseBody);
             JSONObject parse = (JSONObject) jsonParser.parse(responseBody);
-            System.out.println("parse : " + parse);
+            System.out.println("parse " + parse.toString());
+            System.out.println("5");
 
             String accessToken = (String) parse.get("access_token");
             String refreshToken = (String) parse.get("refresh_token");
-            Long expiresIn = (Long) parse.get("expires_in");
+            String expiresInStr = String.valueOf(parse.get("expires_in"));
+            long expiresIn = Long.parseLong(expiresInStr);
+            System.out.println("6");
 
             headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + accessToken);
             HttpEntity<?> userRequest = new HttpEntity<>(headers);
-            ResponseEntity<String> userResponse = rt.exchange(GOOGLE_USER_INFO_URI, HttpMethod.GET, userRequest, String.class);
+            ResponseEntity<String> userResponse = rt.exchange(KAKAO_USER_INFO_URI, HttpMethod.GET, userRequest, String.class);
             responseBody = userResponse.getBody();
             System.out.println("userResponseBody: " + responseBody);
             parse = (JSONObject) jsonParser.parse(responseBody);
             System.out.println("7" + parse);
 
-            String name = (String) parse.get("name");
-            String email = (String) parse.get("email");
+            JSONObject kakaoAccount = (JSONObject) parse.get("kakao_account");
+            JSONObject profile = (JSONObject) kakaoAccount.get("profile");
+
+            String name = (String) profile.get("nickname");
+            String email = (String) kakaoAccount.get("email");
+            String phoneNumber = "";
+            String gender = (String) kakaoAccount.get("gender");
+            System.out.println("8  ");
 
             SocialMember socialMember = new SocialMember();
-            socialMember.setProvider("google");
+            socialMember.setProvider("kakao");
             socialMember.setName(name);
             socialMember.setEmail(email);
+            socialMember.setPhoneNumber(phoneNumber);
+            socialMember.setGender(gender);
             socialMember.setAccessToken(accessToken);
             socialMember.setRefreshToken(refreshToken);
             socialMember.setAccessTokenExpiry(new Date(System.currentTimeMillis() + expiresIn * 1000));
@@ -140,7 +150,7 @@ public class GoogleService {
             }
             return result;
         } catch (Exception e) {
-            throw new Exception("구글 로그인 중 오류 발생 : " + e.getMessage(), e);
+            throw new Exception("카카오 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
             lock.unlock();
         }
@@ -154,18 +164,18 @@ public class GoogleService {
             token.setMemberNo(memberNo);
             token.setTokenType(socialMember.getProvider());
             token.setTokenValueAcc(socialMember.getAccessToken());
-            token.setTokenValueRef(socialMember.getRefreshToken() != null ? socialMember.getRefreshToken() : "null");
+            token.setTokenValueRef(socialMember.getRefreshToken());
             token.setTokenExpiresAcc(socialMember.getAccessTokenExpiry());
-            token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry() != null ? socialMember.getRefreshTokenExpiry() : new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L));
+            token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry());
             token.setTokenLastUpdate(new Date());
 
             tokenMapper.insert(token);
             System.out.println("토큰 인서트 실행완 " + token);
         } else {
             token.setTokenValueAcc(socialMember.getAccessToken());
-            token.setTokenValueRef(socialMember.getRefreshToken() != null ? socialMember.getRefreshToken() : token.getTokenValueRef());
+            token.setTokenValueRef(socialMember.getRefreshToken());
             token.setTokenExpiresAcc(socialMember.getAccessTokenExpiry());
-            token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry() != null ? socialMember.getRefreshTokenExpiry() : token.getTokenExpiresRef());
+            token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry());
             token.setTokenLastUpdate(new Date());
 
             tokenMapper.update(token);
@@ -173,4 +183,3 @@ public class GoogleService {
         }
     }
 }
-
