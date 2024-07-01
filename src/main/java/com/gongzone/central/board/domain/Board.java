@@ -18,11 +18,37 @@ public class Board {
     private String memberNo;
     private String boardTitle;
     private String boardBody;
+    private Date startDate;
     private Date endDate;
-    private String productName;
+    private int viewCount;
+    private int wishCount;
+    private int reportCount;
+    private String boardStatus;
+
+    private int locationNo;
+    private String locationDo;
+    private String locationSi;
+    private String locationGu;
+    private String locationDong;
+    private String locationDetail;
+    private Double locationX;
+    private Double locationY;
+
+    private int imageNo;
+    private String productImg;
+
+    private String partyNo;
     private String category;
     private String productUrl;
     private int total;
+    private int remain;
+    private int totalPrice;
+    private int remainPrice;
+    private Date partyEnd;
+    private String partyStatus;
+
+    private String partyMemberNo;
     private int amount;
-    private String productImg;
+    private int amountPrice;
+    private String leader;
 }

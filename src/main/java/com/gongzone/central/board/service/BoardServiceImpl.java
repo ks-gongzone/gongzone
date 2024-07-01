@@ -30,8 +30,10 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     public Board createAll(Board board) {
         boardMapper.insertBoard(board);
-        boardMapper.insertImage(board);
         boardMapper.insertLocation(board);
+        boardMapper.insertImage(board);
+        boardMapper.insertParty(board);
+        boardMapper.insertPartyMember(board);
 
         return board;
     }

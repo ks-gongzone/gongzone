@@ -10,7 +10,9 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
     void insertBoard(Board board);
-    void insertImage(Board board);
     void insertLocation(Board board);
+    void insertImage(Board board);
+    void insertParty(Board board);
+    void insertPartyMember(Board board);
     List<BoardSearchList> getBoardList(BoardSearchRequest request);
 }
