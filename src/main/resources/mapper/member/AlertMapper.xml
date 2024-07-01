@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.myInfo.alert.mapper.AlertMapper">
+
+    <!-- Result Mapping -->
+    <resultMap id="AlertResultMap" type="com.gongzone.central.member.myInfo.alert.domain.MyAlert">
+        <id     property="alertAllowNo" column="alert_allow_no" />
+        <result property="memberNo" column="m_no" />
+        <result property="smsAlert" column="allow_sms" />
+        <result property="emailAlert" column="allow_email" />
+        <result property="marketingAlert" column="allow_marketing" />
+        <result property="memberAlert" column="allow_member" />
+        <result property="noteAlert" column="allow_note" />
+        <result property="bulletinAlert" column="allow_bulletin" />
+        <result property="partyAlert" column="allow_party" />
+    </resultMap>
+
+    <!-- select -->
+    <select id="findAlertByMemberNo" parameterType="String" resultMap="AlertResultMap">
+        SELECT
+        alert_allow_no,
+        m_no,
+        allow_sms,
+        allow_email,
+        allow_marketing,
+        allow_member,
+        allow_note,
+        allow_bulletin,
+        allow_party
+        FROM
+        alert_allow
+        WHERE
+        m_no = #{memberNo}
+    </select>
+
+    <!-- update -->
+    <update id="updateAlertSettings" parameterType="com.gongzone.central.member.myInfo.alert.domain.MyAlert">
+        UPDATE alert_allow
+        SET
+        allow_sms = #{smsAlert},
+        allow_email = #{emailAlert},
+        allow_marketing = #{marketingAlert},
+        allow_member = #{memberAlert},
+        allow_note = #{noteAlert},
+        allow_bulletin = #{bulletinAlert},
+        allow_party = #{partyAlert}
+        WHERE
+        alert_allow_no = #{alertAllowNo} AND m_no = #{memberNo}
+    </update>
+</mapper>

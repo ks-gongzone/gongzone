@@ -16,4 +16,6 @@ public interface TokenMapper {
     void update(Token token);
 
     void delete(int tokenNo);
+
+    String getLastTokenNo();
 }

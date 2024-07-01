@@ -70,6 +70,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Boolean getMemberByEmail(String memberEmail) {
+        return memberMapper.findByEmail(memberEmail);
+    }
+
+    @Override
     public void updateMember(Member member) {
         memberMapper.update(member);
     }

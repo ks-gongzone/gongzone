@@ -31,11 +31,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private static final String[] EXCLUDED_PATHS = {
             "/api/login",
             "/api/register",
-            "/api/check",
+            "/api/check/**",
             "/api/party/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/api/location",      
+            "/api/location",
+            "/api/naver/token",
+            "/api/naver/**",
+            "/api/google/token",
+            "/api/google/**",
+            "/api/kakao/token",
+            "/api/kakao/**",
+            "/api/location",
             "/api/check",
             "/api/party/**",
             "/api/boards",
@@ -44,13 +51,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-
+        System.out.println("가로채");
+        System.out.println("Filtering request: " + request.getRequestURI());
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = request.getRequestURI();
 
         // 특정 경로는 필터링하지 않음
         for (String path : EXCLUDED_PATHS) {
             if (requestURI.startsWith(path)) {
-                chain.doFilter(request, response);
+                //String requestBody = new String(request.getInputStream().readAllBytes());
+                //request.setAttribute("requestBody", requestBody);
+                if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token") || requestURI.startsWith("/api/google/token")) {
+                    System.out.println("필터 들어옴" + requestURI);
+                    String requestBody = new String(request.getInputStream().readAllBytes());
+                    httpRequest.setAttribute("requestBody", requestBody);
+                }
+                System.out.println("Skipping filter for path: " + path);
+                chain.doFilter(httpRequest, httpResponse);
                 return;
             }
         }
@@ -87,7 +105,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
         }
-        chain.doFilter(request, response);
+        chain.doFilter(request, httpResponse);
     }
 
     /*@Override

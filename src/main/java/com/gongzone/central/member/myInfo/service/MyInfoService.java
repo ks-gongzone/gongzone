@@ -13,6 +13,7 @@ public interface MyInfoService {
 	Member findByNo(String memberNo); // memberNo로 회원 정보를 가져오는 메서드
 	Member findByNickname(String memberNick);
 	Member findByAddress(String memberAddress);
+	Member findByPhone(String memberNo);
 
 	void updatePassword (Member member, MyInformation myInformation);
 	void updateMemberNick (Member member, MyInformation myInformation);

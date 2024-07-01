@@ -16,8 +16,10 @@ public interface MyInfoMapper {
     Member findByNo(@Param("memberNo") String memberNo);
     Member findByNickname(@Param("memberNick") String memberNick);
     Member findByAddress(@Param("memberAddress") String memberAddress);
+    Member findByPhone(@Param("memberNo") String memberNo);
 
     void updatePassword(@Param("memberNo") String memberNo, @Param("newPassword") String newPassword);
     void updateMemberNick(@Param("memberNo") String memberNo, @Param("newMemberNick") String newMemberNick);
     void updateMemberAddress(@Param("memberNo") String memberNo, @Param("newMemberAddress") String newMemberAddress);
+
 }
