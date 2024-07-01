@@ -38,7 +38,8 @@ public class SecurityConfig {
 			"/api/google/token",
 			"/api/google/**",
 			"/api/kakao/token",
-			"/api/kakao/**"
+			"/api/kakao/**",
+			"/api/location"
 	};
 
 	// 보안 필터 체인을 정의
