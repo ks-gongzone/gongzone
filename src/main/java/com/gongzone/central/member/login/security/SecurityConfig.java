@@ -27,7 +27,6 @@ public class SecurityConfig {
 	private final JwtRequestFilter jwtRequestFilter;
 
 	private static final String[] BASIC_LIST = {
-			"*",
 			"/api/login",
 			"/api/register",
 			"/api/check",
