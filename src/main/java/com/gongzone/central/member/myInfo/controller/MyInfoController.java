@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -192,6 +191,33 @@ public class MyInfoController {
         }
         myInfoService.updateMemberAddress(member,myInformation);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * @제목: 핸드폰 번호 조회
+     * @작성일: 2024-06-28
+     * @수정일: 2024-06-28
+     */
+    @GetMapping("/{memberNo}/phone")
+    public ResponseEntity<Map<String, String>> getMemberPhone(@PathVariable String memberNo, Authentication authentication) {
+        System.out.println("핸드폰번호 조회");
+        MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
+        String token = memberDetails.getToken();
+        String extractedMemberNo = jwtUtil.extractMemberNo(token);
+
+        if (!extractedMemberNo.equals(memberNo)) {
+            System.out.println("핸드폰 번호 조회 실패");
+            return ResponseEntity.status(403).build();
+        }
+        Member member = myInfoService.findByPhone(memberNo);
+        if (member != null) {
+            Map<String,String> response = new HashMap<>();
+            response.put("phone", member.getMemberPhone());
+            return ResponseEntity.ok(response);
+        } else {
+            System.out.println("해당 회원이 없습니다.");
+            return ResponseEntity.status(404).build();
+        }
     }
 }
 

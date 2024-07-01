@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.swing.text.Style;
+
 /**
  * @제목: 내정보 서비스 구현
  * @생성일: 2024-06-18
@@ -124,6 +126,16 @@ public class MyInfoServiceImpl implements MyInfoService {
         Member member = myInfoMapper.findByAddress(memberAddress);
 
         System.out.println("회원 정보: " + (member != null ? member.toString() : "없음"));
+        return member;
+    }
+
+    @Override
+    public Member findByPhone(String memberNo) {
+        System.out.println("핸드폰번호 메서드 호출");
+        System.out.println("memberNo" + memberNo);
+        Member member = myInfoMapper.findByPhone(memberNo);
+
+        System.out.println("회원정보" + member);
         return member;
     }
 }
