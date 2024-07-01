@@ -4,6 +4,9 @@ out/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+src/main/resources/application.properties
+src/main/resources/application-db.properties
+src/main/resources/application-oauth.properties
 
 ### STS ###
 .apt_generated
@@ -32,3 +35,4 @@ build/
 
 ### VS Code ###
 .vscode/
+
