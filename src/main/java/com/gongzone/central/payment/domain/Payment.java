@@ -4,10 +4,14 @@ import lombok.Data;
 
 @Data
 public class Payment {
-	private String transactionType;
-	private String txId;
-	private String paymentId;
-	private String code;
-	private String message;
+	private String paymentNo;
+	private String pointHistoryNo;
+	private String type;
+	private String transactionType;  // PortOne
+	private String txId;  // PortOne
+	private String paymentId;  // PortOne
+	private String code;  // PortOne
+	private String message;  // PortOne
+	private String status;
 
 }

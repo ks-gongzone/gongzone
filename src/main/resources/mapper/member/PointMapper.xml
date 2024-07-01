@@ -61,7 +61,7 @@
     LIMIT 1;
   </select>
 
-  <update id="updateMemberPoint">
+  <update id="updatePoint">
     UPDATE member_point
     SET m_point = m_point + #{change}
     WHERE
@@ -70,16 +70,24 @@
 
   <insert id="insertPointHistory">
     INSERT INTO point_history
-      (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after, status_code)
+      (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after)
     VALUES
-      (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter}, #{status});
+      (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter});
   </insert>
+
+  <update id="updateHistorySuccess">
+    UPDATE point_history
+    SET point_history_after = #{pointHistoryAfter},
+      status_code           = 'S030101' -- 포인트 충전 성공
+    WHERE
+      point_history_no = #{historyNo};
+  </update>
 
   <select id="getPointNoByMemberNo" parameterType="String" resultType="Point">
     SELECT
-      m_point_no as memberPointNo,
-      m_no as memberNo,
-      m_point AS memberPoint
+      m_point_no AS memberPointNo,
+      m_no       AS memberNo,
+      m_point    AS memberPoint
     FROM
       member_point
     WHERE
@@ -98,15 +106,15 @@
 
   <!-- merber_point insert -->
   <insert id="insertPoint" parameterType="Point">
-    Insert Into member_point
-        (m_point_no, m_no, m_point)
-    values
-        (#{memberPointNo}, #{memberNo}, #{memberPoint})
+    INSERT INTO member_point
+      (m_point_no, m_no, m_point)
+    VALUES
+      (#{memberPointNo}, #{memberNo}, #{memberPoint})
   </insert>
 
   <select id="getLastMemberPointNo" resultType="String">
     SELECT
-      MAX(m_point_no)
+      max(m_point_no)
     FROM
       member_point
   </select>
