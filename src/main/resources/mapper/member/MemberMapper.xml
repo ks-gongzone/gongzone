@@ -50,6 +50,15 @@
             m_id = #{memberId}
     </select>
 
+    <select id="findByEmail" parameterType="String" resultType="Boolean">
+        SELECT
+            COUNT(*) > 0
+        FROM
+            member
+        WHERE
+            m_email = #{memberEmail}
+    </select>
+
     <select id="findByEmailFromToken" parameterType="String" resultType="Member">
         SELECT
             m_no AS memberNo,

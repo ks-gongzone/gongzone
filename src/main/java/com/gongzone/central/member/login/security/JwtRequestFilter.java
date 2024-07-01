@@ -34,7 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private static final String[] EXCLUDED_PATHS = {
             "/api/login",
             "/api/register",
-            "/api/check",
+            "/api/check/**",
             "/api/party/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",

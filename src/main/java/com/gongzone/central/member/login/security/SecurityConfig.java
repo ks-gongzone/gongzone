@@ -29,7 +29,7 @@ public class SecurityConfig {
 	private static final String[] BASIC_LIST = {
 			"/api/login",
 			"/api/register",
-			"/api/check",
+			"/api/check/**",
 			"/swagger-ui/**",
 			"/v3/api-docs/**",
 			"/swagger-ui.html",

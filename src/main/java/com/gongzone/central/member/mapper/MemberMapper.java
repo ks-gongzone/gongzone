@@ -13,6 +13,7 @@ public interface MemberMapper {
     List<Member> findAll();
     Member findByNo(String memberNo);
     Boolean findById(String memberId);
+    Boolean findByEmail(String memberEmail);
     Member findByEmailFromToken(String memberEmail);
     void update(Member member);
     void delete(String member);
