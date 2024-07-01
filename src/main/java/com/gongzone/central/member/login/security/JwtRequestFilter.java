@@ -42,8 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/google/token",
             "/api/google/**",
             "/api/kakao/token",
-            "/api/kakao/**",
-            "*"
+            "/api/kakao/**"
     };
 
     @Override
