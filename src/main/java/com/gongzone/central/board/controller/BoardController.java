@@ -6,7 +6,9 @@ import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.service.BoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,12 @@ public class BoardController {
     }
 
     @PostMapping("/write/{memberNo}")
-    public ResponseEntity<String> writeBoard(@RequestBody Board board, @PathVariable String memberNo) {
+    public ResponseEntity<String> writeBoard(
+            @PathVariable String memberNo,
+            @RequestPart("board") Board board,
+            @RequestPart("image") List<MultipartFile> image) throws IOException {
+        System.out.println("Member No: " + board.getMemberNo());
+        System.out.println("Board Title: " + board.getBoardTitle());
         try{
             boardService.createAll(board);
 
