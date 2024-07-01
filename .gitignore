@@ -4,6 +4,8 @@ out/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### properties 파일 ###
 src/main/resources/application.properties
 src/main/resources/application-db.properties
 src/main/resources/application-oauth.properties
