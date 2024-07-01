@@ -26,29 +26,46 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody Member member) {
+        System.out.println("1111111111111111122222222222222222");
         Map<String, Object> result = new HashMap<>();
         try {
             boolean registeredMember  = memberService.registerMember(member);
             if (registeredMember ) {
                 result.put("success", true);
+                System.out.println("result111" + result);
             } else {
                 result.put("success", false);
+                System.out.println("result222" + result);
             }
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("success", false);
+            System.out.println("result333" + result);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
 
-    @PostMapping("/check")
+    @PostMapping("/check/Id")
     public ResponseEntity<Boolean> findMemberById(@RequestBody Map<String, String> request) {
         String memberId = request.get("memberId");
         System.out.println("시작 " + memberId);
         Boolean checkId = memberService.getMemberById(memberId);
         System.out.println("checkId = " + checkId);
         if(!checkId) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    @PostMapping("/check/Email")
+    public ResponseEntity<Boolean> findMemberByEmail(@RequestBody Map<String, String> request) {
+        String memberEmail = request.get("memberEmail");
+        System.out.println ("시작 " + memberEmail);
+        Boolean checkEmail = memberService.getMemberByEmail(memberEmail);
+        System.out.println("checkId = " + checkEmail);
+        if(!checkEmail) {
             return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.ok(false);

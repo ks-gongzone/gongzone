@@ -43,6 +43,7 @@ public class JwtUtil {
         claims.put("email", memberDetails.getEmail());
         claims.put("memberId", memberDetails.getMemberId());
 
+        System.out.println("토큰생성");
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(memberDetails.getMemberNo())

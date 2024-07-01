@@ -32,6 +32,13 @@
         SELECT * FROM token WHERE m_no = #{memberNo}
     </select>
 
+    <select id="getLastTokenNo" resultType="String">
+        SELECT
+            MAX(token_no)
+        FROM
+            token
+    </select>
+
     <!-- Update -->
     <update id="update" parameterType="Token">
         UPDATE token SET

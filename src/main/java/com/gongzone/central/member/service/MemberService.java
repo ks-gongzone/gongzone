@@ -11,6 +11,7 @@ public interface MemberService {
     List<Member> getAllMembers();
     Member getMemberByNo(String memberNo);
     Boolean getMemberById(String memberId);
+    Boolean getMemberByEmail(String memberEmail);
     void updateMember(Member member);
     void deleteMember(String memberNo);
 

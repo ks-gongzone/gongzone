@@ -6,7 +6,6 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@Builder
 public class Token {
     private int tokenNo;
     private String memberNo;
