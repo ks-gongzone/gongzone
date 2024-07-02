@@ -17,7 +17,6 @@
             b.b_period AS endDate,
             p.status_code AS status,
             CONCAT(l.location_do, " ", l.location_si, " ", l.location_gu, " ", l.location_dong, " ", l.location_detail) AS address,
-            bi.b_image_source AS thumbnail,
             p.p_no AS partyId
         FROM
             party AS p
@@ -29,10 +28,6 @@
             location AS l
             ON
             b.b_no = l.b_no
-            INNER JOIN
-            board_image AS bi
-            ON
-            b.b_no = bi.b_no
             INNER JOIN
             category AS c
             ON
