@@ -27,13 +27,18 @@ public class SecurityConfig {
 	private final JwtRequestFilter jwtRequestFilter;
 
 	private static final String[] BASIC_LIST = {
-			"*",
 			"/api/login",
 			"/api/register",
-			"/api/check",
+			"/api/check/**",
 			"/swagger-ui/**",
 			"/v3/api-docs/**",
 			"/swagger-ui.html",
+			"/api/naver/token",
+			"/api/naver/**",
+			"/api/google/token",
+			"/api/google/**",
+			"/api/kakao/token",
+			"/api/kakao/**",
 			"/api/location"
 	};
 
