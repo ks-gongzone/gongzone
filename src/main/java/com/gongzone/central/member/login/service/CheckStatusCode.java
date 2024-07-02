@@ -18,8 +18,9 @@ public class CheckStatusCode {
     public void checkStatus(String memberNo, HttpServletResponse response) throws IOException {
         System.out.println("55555555555555555555");
          Member member = memberService.getMemberByStatus(memberNo);
+         StatusCode statusCode = StatusCode.fromCode(member.getMemberStatus());
         System.out.println("666666666666666666666666");
-            switch (member.getMemberStatus()) {
+            switch (statusCode) {
             case S010102:
                 System.out.println("휴면");
                 response.sendError(HttpServletResponse.SC_GONE, "휴면");

@@ -102,6 +102,15 @@ public enum StatusCode {
         throw new IllegalArgumentException("Invalid status code: " + code);
     }
 
+    public static StatusCode fromCode(String code) {
+        for (StatusCode statusCode : values()) {
+            if (statusCode.code.equals(code)) {
+                return statusCode;
+            }
+        }
+        throw new IllegalArgumentException("Invalid status code: " + code);
+    }
+
     @Override
     public String toString() {
         return codeDescription;

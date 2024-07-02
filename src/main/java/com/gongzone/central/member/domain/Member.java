@@ -26,5 +26,5 @@ public class Member {
     private final String memberAddress;
     private final LocalDate memberBirthday;
     private final String memberNick;
-    private final StatusCode memberStatus;
+    private final String memberStatus;
 }
