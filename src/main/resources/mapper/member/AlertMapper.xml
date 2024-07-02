@@ -50,4 +50,27 @@
         WHERE
         alert_allow_no = #{alertAllowNo} AND m_no = #{memberNo}
     </update>
+
+    <!-- update -->
+    <insert id="insertAlertSettings" parameterType="com.gongzone.central.member.myInfo.alert.domain.MyAlert">
+        INSERT INTO alert_allow (
+        m_no,
+        allow_sms,
+        allow_email,
+        allow_marketing,
+        allow_member,
+        allow_note,
+        allow_bulletin,
+        allow_party
+        ) VALUES (
+        #{memberNo},
+        #{smsAlert},
+        #{emailAlert},
+        #{marketingAlert},
+        #{memberAlert},
+        #{noteAlert},
+        #{bulletinAlert},
+        #{partyAlert}
+        )
+    </insert>
 </mapper>

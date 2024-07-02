@@ -29,7 +29,7 @@
     </select>
 
     <select id="findByNickname" parameterType="String" resultMap="MyInfoResultMap">
-        SELECT m_nick, m_no FROM member WHERE m_nick = #{nickname}
+        SELECT m_nick, m_no FROM member WHERE m_nick = #{memberNick}
     </select>
 
     <select id="findByAddress" parameterType="String" resultMap="MyInfoResultMap">
