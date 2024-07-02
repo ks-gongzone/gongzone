@@ -2,12 +2,12 @@ package com.gongzone.central.point.service;
 
 import static com.gongzone.central.utils.StatusCode.STATUS_POINT_WITHDRAW_1;
 
-import com.gongzone.central.point.payment.domain.Payment;
-import com.gongzone.central.point.payment.service.PaymentService;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.point.payment.domain.Payment;
+import com.gongzone.central.point.payment.service.PaymentService;
 import com.gongzone.central.point.withdrawal.domain.Withdraw;
 import com.gongzone.central.point.withdrawal.service.WithdrawalService;
 import java.util.HashMap;
@@ -77,7 +77,6 @@ public class PointServiceImpl implements PointService {
 		Map<String, String> response = new HashMap<>();
 		pointTransactionService.calculatePointUpdate(memberPointNo, request);
 
-		request.setPointChange(-request.getPointChange());
 		String historyNo = pointHistoryService.insertPointHistory(memberPointNo, request);
 
 		// TODO: 실제 운영 계좌에서 포인트 출금 처리
