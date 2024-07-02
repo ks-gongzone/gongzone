@@ -1,8 +1,10 @@
 package com.gongzone.central.point.controller;
 
-import com.gongzone.central.point.domain.PointChangeRequest;
 import com.gongzone.central.point.domain.PointHistory;
+import com.gongzone.central.point.domain.request.PointChargeRequest;
+import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.service.PointService;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ public class PointController {
 	 */
 	@PostMapping("/{memberPointNo}/point/charge")
 	public Map<String, String> postPointCharge(@PathVariable String memberPointNo,
-											   @RequestBody PointChangeRequest request) {
+											   @RequestBody PointChargeRequest request) {
 		Map<String, String> response = new HashMap<>();
 
 		// 잘못된 요청
@@ -62,7 +64,7 @@ public class PointController {
 
 		// 정상 요청
 		try {
-			pointService.updateMemberPoint(memberPointNo, request);
+			pointService.chargeMemberPoint(memberPointNo, request);
 			response.put("result", "SUCCESS");
 		} catch (RuntimeException e) {
 			System.out.println(e);
@@ -81,7 +83,7 @@ public class PointController {
 	 */
 	@PostMapping("/{memberPointNo}/point/withdraw")
 	public Map<String, String> postPointWithdraw(@PathVariable String memberPointNo,
-												 @RequestBody PointChangeRequest request) {
+												 @RequestBody PointWithdrawRequest request) {
 		Map<String, String> response = new HashMap<>();
 		if (request.getChangeType() == null) {
 			response.put("result", "FAILED_BAD_REQUEST");
@@ -89,9 +91,10 @@ public class PointController {
 		}
 
 		try {
-			pointService.updateMemberPoint(memberPointNo, request);
+			pointService.withdrawMemberPoint(memberPointNo, request);
 			response.put("result", "SUCCESS");
-		} catch (RuntimeException ignored) {
+		} catch (RuntimeException e) {
+			System.out.println(Arrays.toString(e.getStackTrace()));
 			response.put("result", "FAILED_INTERNAL_ERROR");
 		}
 
