@@ -19,6 +19,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 
 @Component
 @RequiredArgsConstructor
@@ -61,8 +62,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 특정 경로는 필터링하지 않음
         for (String path : EXCLUDED_PATHS) {
             if (requestURI.startsWith(path)) {
-                //String requestBody = new String(request.getInputStream().readAllBytes());
-                //request.setAttribute("requestBody", requestBody);
                 if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token") || requestURI.startsWith("/api/google/token")) {
                     System.out.println("필터 들어옴" + requestURI);
                     String requestBody = new String(request.getInputStream().readAllBytes());
