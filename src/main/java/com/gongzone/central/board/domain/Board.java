@@ -34,8 +34,9 @@ public class Board {
     private Double locationX;
     private Double locationY;
 
-    private int imageNo;
-    private String productImg;
+    private int fileRelationNo;
+    private int fileNo;
+    private String fileUsage;
 
     private String partyNo;
     private String category;
