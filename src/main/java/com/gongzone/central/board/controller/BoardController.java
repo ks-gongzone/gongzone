@@ -1,6 +1,7 @@
 package com.gongzone.central.board.controller;
 
 import com.gongzone.central.board.domain.Board;
+import com.gongzone.central.board.domain.BoardResponse;
 import com.gongzone.central.board.domain.BoardSearchList;
 import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.service.BoardService;
@@ -34,11 +35,12 @@ public class BoardController {
     @PostMapping(value = "/write/{memberNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> writeBoard(
             @PathVariable String memberNo,
-            @RequestPart Board board,
-            @RequestPart("image") MultipartFile[] image) throws IOException {
+            BoardResponse br,
+            @RequestPart(value="image") MultipartFile[] image) throws IOException {
         try{
-            log.info("image: {}", image.length);
-            //boardService.createAll(board);
+            log.info("boardResponse: {}", br);
+            log.info("image: {}", image[0].getOriginalFilename());
+            boardService.setValue(br);
 
             return ResponseEntity.ok("Insert Success");
         } catch (Exception e) {

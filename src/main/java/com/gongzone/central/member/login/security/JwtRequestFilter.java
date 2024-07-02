@@ -46,6 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/check",
             "/api/party/**",
             "/api/boards",
+            "/api/boards/**"
     };
 
     @Override

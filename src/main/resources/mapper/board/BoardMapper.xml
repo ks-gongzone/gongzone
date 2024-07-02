@@ -6,9 +6,12 @@
 <mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
    <insert id="insertBoard" parameterType="com.gongzone.central.board.domain.Board">
        <selectKey keyProperty="boardNo" resultType="String" order="BEFORE">
-           SELECT CONCAT('B', LPAD(COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS boardNo
+           SELECT CONCAT('B', LPAD(COALESCE(MAX(CAST(SUBSTRING(b_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS boardNo
            FROM board
        </selectKey>
+       INSERT INTO board
+       (b_no, m_no, b_title, b_body, b_date, b_period, b_view_count, b_wish_count, b_report_count, status_code)
+       VALUES (#{boardNo}, #{memberNo}, #{boardTitle}, #{boardBody}, NOW(), #{endDate}, 0, 0, 0, 'S040101')
    </insert>
    
     <resultMap id="BoardListResultMap" type="BoardSearchList">
