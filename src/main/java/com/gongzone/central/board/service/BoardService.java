@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
-    void setValue(BoardResponse br, MultipartFile[] files);
+    void setValue(BoardResponse br, MultipartFile file);
     Map<String, List<BoardSearchList>> getBoardList(BoardSearchRequest request);
 }

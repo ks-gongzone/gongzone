@@ -5,6 +5,9 @@ import com.gongzone.central.board.domain.BoardResponse;
 import com.gongzone.central.board.domain.BoardSearchList;
 import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.mapper.BoardMapper;
+import com.gongzone.central.file.mapper.FileMapper;
+import com.gongzone.central.file.util.FileUtil;
+import com.gongzone.central.file.domain.FileUpload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +22,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
     private final BoardMapper boardMapper;
-//    private final FileMapper fileMapper;
-//    private final FileUtil fileUtil;
-
+    private final FileMapper fileMapper;
+    private final FileUtil fileUtil;
 
     @Override
     public Map<String, List<BoardSearchList>> getBoardList(BoardSearchRequest request) {
@@ -33,7 +35,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void setValue(BoardResponse br, MultipartFile[] files) {
+    public void setValue(BoardResponse br, MultipartFile file) {
         Board board = Board.builder()
                             .memberNo(br.getMemberNo())
                             .boardTitle(br.getTitle())
@@ -54,13 +56,8 @@ public class BoardServiceImpl implements BoardService {
                             .build();
 
         boardMapper.insertBoard(board);
-//        for (MultipartFile file : files) {
-//            FileUpload fileUpload = fileUtil.parseFileInfo(file);
-//            if (fileUpload != null) {
-//                fileMapper.addFile(fileUpload);
-//                // 추가로 board와 file 관계 저장 로직이 필요하면 작성
-//            }
-//        }
+        FileUpload fileUpload = fileUtil.parseFileInfo(file);
+        if(fileUpload != null) fileMapper.addFile(fileUpload);
         boardMapper.insertFileRelation(board);
         boardMapper.insertLocation(board);
         boardMapper.insertParty(board);

@@ -34,11 +34,11 @@ public class BoardController {
     public ResponseEntity<String> writeBoard(
             @PathVariable String memberNo,
             BoardResponse br,
-            @RequestPart(value = "image") MultipartFile[] files) throws IOException {
+            @RequestParam(value = "image") MultipartFile file) throws IOException {
         try {
             log.info("boardResponse: {}", br);
-            log.info("file: {}", files[0].getOriginalFilename());
-            boardService.setValue(br, files);
+            log.info("file: {}", file);
+            boardService.setValue(br, file);
             return ResponseEntity.ok("Insert Success");
         } catch (Exception e) {
             e.printStackTrace();
