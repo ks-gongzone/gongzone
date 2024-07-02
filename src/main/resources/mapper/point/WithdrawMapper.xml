@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gongzone.central.withdrawal.mapper.WithdrawMapper">
+<mapper namespace="com.gongzone.central.point.withdrawal.mapper.WithdrawMapper">
 
   <!-- Result Mapping -->
   <resultMap id="PointResultMap" type="Point">
@@ -20,9 +20,9 @@
   <!-- Query -->
   <insert id="insertPointWithdraw">
     INSERT INTO point_withdraw
-      (point_history_no, withdraw_bank, withdraw_account, withdraw_name, withdraw_amount, status_code)
+    (point_history_no, withdraw_bank, withdraw_account, withdraw_name, withdraw_amount, status_code)
     VALUES
-      (#{pointHistoryNo}, #{withdrawBank}, #{withdrawAccount}, #{withdrawName}, #{withdrawAmount}, #{status});
+    (#{pointHistoryNo}, #{withdrawBank}, #{withdrawAccount}, #{withdrawName}, #{withdrawAmount}, #{status});
   </insert>
 
 </mapper>

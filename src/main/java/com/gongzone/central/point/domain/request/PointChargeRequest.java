@@ -1,6 +1,6 @@
 package com.gongzone.central.point.domain.request;
 
-import com.gongzone.central.payment.domain.Payment;
+import com.gongzone.central.point.payment.domain.Payment;
 import lombok.Data;
 
 @Data

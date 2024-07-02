@@ -2,14 +2,14 @@ package com.gongzone.central.point.service;
 
 import static com.gongzone.central.utils.StatusCode.STATUS_POINT_WITHDRAW_1;
 
-import com.gongzone.central.payment.domain.Payment;
-import com.gongzone.central.payment.service.PaymentService;
+import com.gongzone.central.point.payment.domain.Payment;
+import com.gongzone.central.point.payment.service.PaymentService;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
-import com.gongzone.central.withdrawal.domain.Withdraw;
-import com.gongzone.central.withdrawal.service.WithdrawalService;
+import com.gongzone.central.point.withdrawal.domain.Withdraw;
+import com.gongzone.central.point.withdrawal.service.WithdrawalService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
