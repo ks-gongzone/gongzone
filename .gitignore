@@ -5,10 +5,8 @@ out/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### properties 파일 ###
-src/main/resources/application.properties
-src/main/resources/application-db.properties
-src/main/resources/application-oauth.properties
+### properties ###
+src/main/resources/application*.properties
 
 ### STS ###
 .apt_generated
