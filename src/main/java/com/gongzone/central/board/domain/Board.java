@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -19,7 +20,7 @@ public class Board {
     private String boardTitle;
     private String boardBody;
     private Date startDate;
-    private Date endDate;
+    private String endDate; // 나중에 타입 LocalDateTime으로 변환해서 디비에 넣어주든 하셈
     private int viewCount;
     private int wishCount;
     private int reportCount;
