@@ -1,6 +1,7 @@
 package com.gongzone.central.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gongzone.central.utils.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +26,5 @@ public class Member {
     private final String memberAddress;
     private final LocalDate memberBirthday;
     private final String memberNick;
-    private final String memberStatus;
+    private final StatusCode memberStatus;
 }
