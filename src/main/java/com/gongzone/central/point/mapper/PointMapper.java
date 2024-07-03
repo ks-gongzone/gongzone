@@ -10,6 +10,9 @@ import org.apache.ibatis.annotations.Param;
 public interface PointMapper {
 	List<PointHistory> getAllHistory(String memberPointNo);
 
+	PointHistory getHistory(@Param("memberPointNo") String memberPointNo,
+							@Param("pointHistoryNo") String pointHistoryNo);
+
 	Integer getCurrentPoint(String memberPointNo);
 
 	void updatePoint(@Param("memberPointNo") String memberPointNo,
@@ -27,7 +30,5 @@ public interface PointMapper {
 	void insertPoint(Point point);
 
 	String getLastMemberPointNo();
-
-	Point getPointByPointNo(String memberPointNo); //예시
 
 }

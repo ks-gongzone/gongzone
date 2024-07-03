@@ -22,20 +22,43 @@ public class PointController {
 	private final PointService pointService;
 
 	/**
-	 * GET - 포인트 사용내역
+	 * GET - 포인트 사용내역 list
 	 *
 	 * @param memberPointNo 회원 포인트 번호
 	 * @return 포인트 사용내역
 	 */
 	@GetMapping("/{memberPointNo}/point/history")
-	public ResponseEntity<Result> getMemberPointHistory(@PathVariable String memberPointNo) {
+	public ResponseEntity<Result> getAllMemberPointHistory(@PathVariable String memberPointNo) {
 		ResponseEntity<Result> response;
 
 		try {
 			List<PointHistory> pointHistories = pointService.getAllHistory(memberPointNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
-			System.err.println("Exception during getMemberPointHistory: " + e.getMessage());
+			System.err.println("Exception during getAllMemberPointHistory: " + e.getMessage());
+			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
+		}
+
+		return response;
+	}
+
+	/**
+	 * GET - 포인트 사용내역
+	 *
+	 * @param pointHistoryNo 포인트 내역 번호
+	 * @return
+	 */
+	@GetMapping("/{memberPointNo}/point/history/{pointHistoryNo}")
+	public ResponseEntity<Result> getMemberPointHistory(@PathVariable String memberPointNo,
+														@PathVariable String pointHistoryNo) {
+		ResponseEntity<Result> response;
+
+		try {
+			PointHistory pointHistory = pointService.getHistory(memberPointNo, pointHistoryNo);
+			response = ResponseEntity.ok(new Result(pointHistory));
+		} catch (Exception e) {
+			System.err.println("Exception during getMemberPointHistory: " + e.getClass().getName());
+			System.err.println(e.getCause().toString());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 

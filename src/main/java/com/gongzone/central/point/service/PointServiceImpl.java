@@ -30,11 +30,23 @@ public class PointServiceImpl implements PointService {
 	 * 회원의 (모든) 포인트 사용 내역을 반환한다.
 	 *
 	 * @param memberPointNo 회원 포인트 번호
-	 * @return 포인트 사용내역
+	 * @return 포인트 사용내역 List
 	 */
 	@Override
 	public List<PointHistory> getAllHistory(String memberPointNo) {
 		return pointMapper.getAllHistory(memberPointNo);
+	}
+
+	/**
+	 * 회원의 포인트 사용 내역을 반환한다.
+	 *
+	 * @param memberPointNo  회원 포인트 번호
+	 * @param pointHistoryNo 포인트 내역 번호
+	 * @return 포인트 사용내역
+	 */
+	@Override
+	public PointHistory getHistory(String memberPointNo, String pointHistoryNo) {
+		return pointMapper.getHistory(memberPointNo, pointHistoryNo);
 	}
 
 	/**

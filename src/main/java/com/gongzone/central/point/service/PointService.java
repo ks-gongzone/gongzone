@@ -8,6 +8,8 @@ import java.util.List;
 public interface PointService {
 	List<PointHistory> getAllHistory(String memberPointNo);
 
+	PointHistory getHistory(String memberPointNo, String pointHistoryNo);
+
 	Integer getCurrentPoint(String memberPointNo);
 
 	void charge(String memberPointNo, PointChargeRequest request);
