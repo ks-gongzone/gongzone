@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.swing.text.Style;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @제목: 내정보 서비스 구현
@@ -56,8 +58,8 @@ public class MyInfoServiceImpl implements MyInfoService {
     /**
      * @제목: 닉네임 수정 유효성 검증
      * @생성일: 2024-06-20
-     * @수정일: 2024-06-20
-     * @내용: 닉네임 수정시 유저의 존재 유무, 현재 사용중인 닉네임인지 확인 검증
+     * @수정일: 2024-07-02
+     * @수정내용: 받는 데이터 타입 Map형태로 변경
      */
     @Override
     public void updateMemberNick (Member member, MyInformation myInformation) {
@@ -81,7 +83,12 @@ public class MyInfoServiceImpl implements MyInfoService {
             System.out.println("사용중인 닉네임");
             throw new RuntimeException("사용중인 닉네임");
         }
-        myInfoMapper.updateMemberNick(member.getMemberNo(), newMemberNick);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberNo", member.getMemberNo());
+        params.put("newMemberNick", newMemberNick);
+
+        myInfoMapper.updateMemberNick(params);
         System.out.println("닉네임 수정 완료");
     }
 
