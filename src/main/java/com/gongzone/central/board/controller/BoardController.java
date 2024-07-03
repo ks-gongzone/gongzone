@@ -32,7 +32,6 @@ public class BoardController {
 
     @PostMapping(value = "/write/{memberNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> writeBoard(
-            @PathVariable String memberNo,
             BoardResponse br,
             @RequestParam(value = "image") MultipartFile file) throws IOException {
         try {

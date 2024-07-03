@@ -7,6 +7,7 @@ import com.gongzone.central.member.mapper.TokenMapper;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
+import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +73,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Boolean getMemberByEmail(String memberEmail) {
         return memberMapper.findByEmail(memberEmail);
+    }
+
+    public Member getMemberByStatus(String memberNo) {
+        return memberMapper.findByStatus(memberNo);
     }
 
     @Override

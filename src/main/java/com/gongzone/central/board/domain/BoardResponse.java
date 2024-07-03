@@ -25,5 +25,5 @@ public class BoardResponse {
     private String detailAddress;
     private Double latitude;
     private Double longitude;
-    private Date endDate;
+    private String endDate;
 }

@@ -3,6 +3,7 @@ package com.gongzone.central.member.socialLogin.kakao.service;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.login.security.JwtUtil;
+import com.gongzone.central.member.login.service.CheckStatusCode;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
@@ -10,6 +11,7 @@ import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -43,6 +45,9 @@ public class KakaoService {
     private final PointMapper pointMapper;
     private final JwtUtil jwtUtil;
     private final Lock lock = new ReentrantLock();
+
+    private final CheckStatusCode checkStatusCode;
+    private final HttpServletResponse response;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String KAKAO_CLIENT_ID;
@@ -134,6 +139,10 @@ public class KakaoService {
             } else {
                 System.out.println("기존 회원 로그인");
                 updateTokens(member.getMemberNo(), socialMember);
+
+                System.out.println("상태 코드 : " + member.getMemberStatus());
+                System.out.println("checkStatusCode : " + checkStatusCode);
+                checkStatusCode.checkStatus(member.getMemberNo(), response);
 
                 Point point = pointMapper.getPointNoByMemberNo(member.getMemberNo());
                 MemberDetails memberDetails = new MemberDetails(member, point);

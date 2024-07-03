@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -19,11 +20,15 @@ public class Board {
     private String boardTitle;
     private String boardBody;
     private Date startDate;
-    private Date endDate;
+    private LocalDateTime endDate;
     private int viewCount;
     private int wishCount;
     private int reportCount;
     private String boardStatus;
+
+    private int fileRelationNo;
+    private int fileNo;
+    private String fileUsage;
 
     private int locationNo;
     private String locationDo;
@@ -33,10 +38,6 @@ public class Board {
     private String locationDetail;
     private Double locationX;
     private Double locationY;
-
-    private int fileRelationNo;
-    private int fileNo;
-    private String fileUsage;
 
     private String partyNo;
     private String category;

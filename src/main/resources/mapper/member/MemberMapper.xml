@@ -109,6 +109,10 @@
             m_no = #{memberNo}
     </select>
 
+    <select id="findByStatus" parameterType="String" resultType="Member">
+        SELECT status_code AS memberStatus FROM member WHERE m_no = #{memberNo}
+    </select>
+
    <!-- <select id="findMemberNo" resultType="int">
         SELECT COALESCE(MAX(CAST(SUBSTRING(m_no, 2) AS UNSIGNED)), 0) FROM member
     </select>-->

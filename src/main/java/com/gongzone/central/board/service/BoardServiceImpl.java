@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,8 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void setValue(BoardResponse br, MultipartFile file) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime endDateTime = LocalDateTime.parse(br.getEndDate(), formatter);
         Board board = Board.builder()
                             .memberNo(br.getMemberNo())
                             .boardTitle(br.getTitle())
@@ -52,15 +57,26 @@ public class BoardServiceImpl implements BoardService {
                             .locationDetail(br.getDetailAddress())
                             .locationX(br.getLatitude())
                             .locationY(br.getLongitude())
-                            .endDate(br.getEndDate())
+                            .endDate(endDateTime)
                             .build();
 
         boardMapper.insertBoard(board);
+
         FileUpload fileUpload = fileUtil.parseFileInfo(file);
-        if(fileUpload != null) fileMapper.addFile(fileUpload);
+
+        fileMapper.addFile(fileUpload);
+        board.setFileNo(fileUpload.getFileIdx());
+        board.setFileUsage(board.getBoardNo());
         boardMapper.insertFileRelation(board);
+
         boardMapper.insertLocation(board);
+
+        board.setRemain(board.getTotal() - board.getAmount());
+        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
         boardMapper.insertParty(board);
+
+        board.setAmountPrice(unitPrice*board.getAmount());
         boardMapper.insertPartyMember(board);
 
     }
