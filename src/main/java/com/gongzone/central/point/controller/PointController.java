@@ -35,7 +35,8 @@ public class PointController {
 			List<PointHistory> pointHistories = pointService.getAllHistory(memberPointNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
-			System.err.println("Exception during getAllMemberPointHistory: " + e.getMessage());
+			System.err.println("Exception during getAllMemberPointHistory: " + e.getClass().getName());
+			System.err.println(e.getCause().toString());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -79,7 +80,8 @@ public class PointController {
 			Integer point = pointService.getCurrentPoint(memberPointNo);
 			response = ResponseEntity.ok(new Result(point));
 		} catch (Exception e) {
-			System.err.println("Exception during getMemberPoint: " + e.getMessage());
+			System.err.println("Exception during getMemberPoint: " + e.getClass().getName());
+			System.err.println(e.getCause().toString());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -102,7 +104,8 @@ public class PointController {
 			pointService.charge(memberPointNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
-			System.err.println("Error during postMemberPointCharge: " + e.getMessage());
+			System.err.println("Error during postMemberPointCharge: " + e.getClass().getName());
+			System.err.println(e.getCause().toString());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -125,7 +128,8 @@ public class PointController {
 			pointService.withdraw(memberPointNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
-			System.err.println("Error during point postMemberPointWithdraw: " + e.getMessage());
+			System.err.println("Error during point postMemberPointWithdraw: " + e.getClass().getName());
+			System.err.println(e.getCause().toString());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
