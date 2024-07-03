@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+   <insert id="insertBoard" parameterType="com.gongzone.central.board.domain.Board">
+       <selectKey keyProperty="boardNo" resultType="String" order="BEFORE">
+           SELECT CONCAT('B', LPAD(COALESCE(MAX(CAST(SUBSTRING(b_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS boardNo
+           FROM board
+       </selectKey>
+       INSERT INTO board
+       (b_no, m_no, b_title, b_body, b_date, b_period, b_view_count, b_wish_count, b_report_count, status_code)
+       VALUES (#{boardNo}, #{memberNo}, #{boardTitle}, #{boardBody}, NOW(), #{endDate}, 0, 0, 0, 'S040101')
+   </insert>
+
+    <insert id="insertFileRelation" parameterType="com.gongzone.central.board.domain.Board" useGeneratedKeys="true" keyProperty="fileRelationNo" keyColumn="file_relation_no">
+        INSERT INTO file_relation (file_no, file_usage)
+        VALUES (#{fileNo}, #{fileUsage})
+    </insert>
+
+    <insert id="insertLocation" parameterType="com.gongzone.central.board.domain.Board" useGeneratedKeys="true" keyProperty="locationNo" keyColumn="location_no">
+        INSERT INTO location
+        (b_no, location_do, location_si, location_gu, location_dong, location_detail, location_x, location_y)
+        VALUES (#{boardNo}, #{locationDo}, #{locationSi}, #{locationGu}, #{locationDong}, #{locationDetail}, #{locationX}, #{locationY})
+    </insert>
+
+    <insert id="insertParty" parameterType="com.gongzone.central.board.domain.Board">
+        <selectKey keyProperty="partyNo" resultType="String" order="BEFORE">
+            SELECT CONCAT('P', LPAD(COALESCE(MAX(CAST(SUBSTRING(p_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS partyNo
+            FROM party
+        </selectKey>
+        INSERT INTO party
+        (p_no, b_no, c_code, p_url, p_amount, p_amount_remain, p_price, p_price_remain, p_start_date, p_end_date, status_code)
+        VALUES (#{partyNo}, #{boardNo}, #{category}, #{productUrl}, #{total}, #{remain}, #{totalPrice}, #{remainPrice}, NOW(), NULL, 'S060101')
+    </insert>
+
+    <insert id="insertPartyMember" parameterType="com.gongzone.central.board.domain.Board">
+        <selectKey keyProperty="partyMemberNo" resultType="String" order="BEFORE">
+            SELECT CONCAT('PM', LPAD(COALESCE(MAX(CAST(SUBSTRING(p_member_no, 3) AS UNSIGNED)), 0) + 1, 6, '0')) AS partyMemberNo
+            FROM party_member
+        </selectKey>
+        INSERT INTO party_member
+        (p_member_no, p_no, m_no, pm_amount, pm_price, member_join_date, member_is_leader)
+        VALUES (#{partyMemberNo}, #{partyNo}, #{memberNo}, #{amount}, #{amountPrice}, NOW(), '파티장')
+    </insert>
+
+    <resultMap id="BoardListResultMap" type="BoardSearchList">
+        <id property="boardNo" column="b_no"/>
+        <result property="boardTitle" column="b_title"/>
+        <result property="boardCate" column="c_code"/>
+        <result property="boardImage" column="b_image_source"/>
+    </resultMap>
+
+    <select id="getBoardList" parameterType="String" resultMap="BoardListResultMap">
+        SELECT
+            b.b_no,
+            b.b_title,
+            p.c_code,
+            i.b_image_source
+        FROM
+            board AS b
+                Join
+            board_image AS i
+            ON
+                b.b_no = i.b_no
+                Join
+            party AS p
+            ON
+                b.b_no = p.b_no
+        WHERE
+            b.b_no = 'B000002';
+    </select>
+</mapper>

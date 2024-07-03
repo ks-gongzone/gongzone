@@ -29,6 +29,9 @@ public class SecurityConfig {
 			"/swagger-ui/**",
 			"/v3/api-docs/**",
 			"/swagger-ui.html",
+			"/api/location",
+			"/api/boards/",
+			"/api/boards/**",
 			"/api/naver/token",
 			"/api/naver/**",
 			"/api/google/token",
@@ -55,7 +58,7 @@ public class SecurityConfig {
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
-	}
+    }
 
 	// 인증 관리에 사용
 	@Bean

@@ -20,9 +20,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -47,7 +44,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/google/token",
             "/api/google/**",
             "/api/kakao/token",
-            "/api/kakao/**"
+            "/api/kakao/**",
+            "/api/location",
+            "/api/check",
+            "/api/party/**",
+            "/api/boards",
+            "/api/boards/**"
     };
     private final MemberServiceImpl memberServiceImpl;
 
@@ -63,8 +65,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 특정 경로는 필터링하지 않음
         for (String path : EXCLUDED_PATHS) {
             if (requestURI.startsWith(path)) {
-                //String requestBody = new String(request.getInputStream().readAllBytes());
-                //request.setAttribute("requestBody", requestBody);
                 if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token") || requestURI.startsWith("/api/google/token")) {
                     System.out.println("필터 들어옴" + requestURI);
                     String requestBody = new String(request.getInputStream().readAllBytes());
