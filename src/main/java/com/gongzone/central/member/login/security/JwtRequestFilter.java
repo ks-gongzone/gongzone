@@ -3,6 +3,8 @@ package com.gongzone.central.member.login.security;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
+import com.gongzone.central.member.service.MemberServiceImpl;
+import com.gongzone.central.utils.StatusCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Enumeration;
 
 @Component
 @RequiredArgsConstructor
@@ -46,6 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/kakao/token",
             "/api/kakao/**"
     };
+    private final MemberServiceImpl memberServiceImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -106,9 +110,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         chain.doFilter(request, httpResponse);
     }
-
-    /*@Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "/api/login".equals(request.getRequestURI());
-    }*/
 }
