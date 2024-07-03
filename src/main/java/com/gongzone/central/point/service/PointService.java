@@ -10,8 +10,8 @@ public interface PointService {
 
 	Integer getCurrentPoint(String memberPointNo);
 
-	void chargeMemberPoint(String memberPointNo, PointChargeRequest request);
+	void charge(String memberPointNo, PointChargeRequest request);
 
-	void withdrawMemberPoint(String memberPointNo, PointWithdrawRequest request);
+	void withdraw(String memberPointNo, PointWithdrawRequest request);
 
 }

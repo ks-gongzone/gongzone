@@ -30,12 +30,12 @@ public class PointController {
 	@GetMapping("/{memberPointNo}/point/history")
 	public ResponseEntity<Result> getMemberPointHistory(@PathVariable String memberPointNo) {
 		ResponseEntity<Result> response;
-		
+
 		try {
 			List<PointHistory> pointHistories = pointService.getAllHistory(memberPointNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
-			System.err.println("Exception during ...: " + e.getMessage());
+			System.err.println("Exception during getMemberPointHistory: " + e.getMessage());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -56,7 +56,7 @@ public class PointController {
 			Integer point = pointService.getCurrentPoint(memberPointNo);
 			response = ResponseEntity.ok(new Result(point));
 		} catch (Exception e) {
-			System.err.println("Exception during ...: " + e.getMessage());
+			System.err.println("Exception during getMemberPoint: " + e.getMessage());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -71,21 +71,15 @@ public class PointController {
 	 * @return 포인트 충전 결과
 	 */
 	@PostMapping("/{memberPointNo}/point/charge")
-	public ResponseEntity<Result> postPointCharge(@PathVariable String memberPointNo,
-												  @RequestBody PointChargeRequest request) {
+	public ResponseEntity<Result> postMemberPointCharge(@PathVariable String memberPointNo,
+														@RequestBody PointChargeRequest request) {
 		ResponseEntity<Result> response;
 
-		// 잘못된 요청
-		if (request.getChangeType() == null) {
-			return ResponseEntity.badRequest().body(new Result("FAILED_BAD_REQUEST"));
-		}
-
-		// 정상 요청
 		try {
-			pointService.chargeMemberPoint(memberPointNo, request);
+			pointService.charge(memberPointNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
-			System.err.println("Error during point charge: " + e.getMessage());
+			System.err.println("Error during postMemberPointCharge: " + e.getMessage());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -100,21 +94,15 @@ public class PointController {
 	 * @return 포인트 인출 결과
 	 */
 	@PostMapping("/{memberPointNo}/point/withdraw")
-	public ResponseEntity<Result> postPointWithdraw(@PathVariable String memberPointNo,
-													@RequestBody PointWithdrawRequest request) {
+	public ResponseEntity<Result> postMemberPointWithdraw(@PathVariable String memberPointNo,
+														  @RequestBody PointWithdrawRequest request) {
 		ResponseEntity<Result> response;
 
-		// 잘못된 요청
-		if (request.getChangeType() == null) {
-			return ResponseEntity.badRequest().body(new Result("FAILED_BAD_REQUEST"));
-		}
-
-		// 정상 요청
 		try {
-			pointService.withdrawMemberPoint(memberPointNo, request);
+			pointService.withdraw(memberPointNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
-			System.err.println("Error during point withdrawal: " + e.getMessage());
+			System.err.println("Error during point postMemberPointWithdraw: " + e.getMessage());
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
