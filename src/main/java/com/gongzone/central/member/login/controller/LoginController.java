@@ -52,21 +52,14 @@ public class LoginController {
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
             // JWT 토큰 생성
 
+            System.out.println("memberDetails : " + memberDetails);
+
             final String jwt = jwtUtil.generateToken(memberDetails);
             final long expiresIn = jwtUtil.extractExpiration(jwt).getTime();
             final String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
 
-            /*if (jwt.chars().filter(ch -> ch == '.').count() != 2) {
-                System.out.println("JWT 문자열이 올바르게 형식화되지 않았습니다. 정확히 2개의 마침표가 포함되어야 합니다. 발견된 마침표 수: " + jwt.chars().filter(ch -> ch == '.').count());
-            } else {
-                // JWT가 올바르게 형식화된 경우 checkStatus 메서드 실행
-                checkStatusCode.checkStatus(memberDetails.getMemberNo(), response);
-                System.out.println("checkStatusCode 실행");
-            }*/
-
-            System.out.println("1123123123123123");
-            System.out.println("memberNo  : " + jwtUtil.extractMemberNo(memberDetails.getMemberNo()));
-            checkStatusCode.checkStatus(jwtUtil.extractMemberNo(memberDetails.getMemberNo()), response);
+            System.out.println("checkStatusCode : " + checkStatusCode);
+            checkStatusCode.checkStatus(memberDetails.getMemberNo(), response);
             System.out.println("checkStatusCode 실행");
 
             // 토큰을 포함한 응답 반환

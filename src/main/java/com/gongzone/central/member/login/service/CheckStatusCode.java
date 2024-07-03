@@ -23,7 +23,7 @@ public class CheckStatusCode {
             switch (statusCode) {
             case S010102:
                 System.out.println("휴면");
-                response.sendError(HttpServletResponse.SC_GONE, "휴면");
+                response.sendError(HttpServletResponse.SC_GONE, "휴면");      //휴먼 아직작동안함 (410 에러인데 403으로 덮어씌어짐)
                 return;
             case S010103:
                 System.out.println("제재");

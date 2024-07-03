@@ -3,6 +3,7 @@ package com.gongzone.central.member.socialLogin.naver.service;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.login.security.JwtUtil;
+import com.gongzone.central.member.login.service.CheckStatusCode;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
@@ -10,6 +11,7 @@ import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -41,6 +43,8 @@ public class NaverService {
     private final PointMapper pointMapper;
     private final JwtUtil jwtUtil;
     private final Lock lock = new ReentrantLock();
+    private final CheckStatusCode checkStatusCode;
+    private final HttpServletResponse response;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String NAVER_CLIENT_ID;
@@ -134,6 +138,11 @@ public class NaverService {
                 member = saveMember(socialMember);
             } else {
                 System.out.println("updateTokens 실행" + member);
+                System.out.println("상태 코드 : " + member.getMemberStatus());
+                System.out.println("checkStatusCode : " + checkStatusCode);
+                System.out.println("response : " + response);
+                checkStatusCode.checkStatus(member.getMemberNo(), response);
+                System.out.println("checkStatusCode 실행");
                 updateTokens(member.getMemberNo(), socialMember);
             }
 
