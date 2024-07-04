@@ -5,8 +5,8 @@
 
 <mapper namespace="com.gongzone.central.file.mapper.FileMapper">
 
-    <insert id="addFile" parameterType="com.gongzone.central.file.domain.FileUpload" useGeneratedKeys="true" keyProperty="fileIdx" keyColumn="file_idx">
-        INSERT INTO file (file_original_name, file_new_name, file_path, file_size, reg_date)
+    <insert id="addFile" parameterType="com.gongzone.central.file.domain.FileUpload" useGeneratedKeys="true" keyProperty="fileIdx" keyColumn="file_no">
+        INSERT INTO file (file_original_name, file_new_name, file_path, file_size, file_date)
         VALUES (#{fileOriginalName}, #{fileNewName}, #{filePath}, #{fileSize}, NOW())
     </insert>
 

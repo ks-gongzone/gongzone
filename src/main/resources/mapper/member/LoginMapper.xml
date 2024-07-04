@@ -9,7 +9,8 @@
         SELECT m_no AS 'memberNo',
                m_level AS 'memberLevel',
                m_id AS 'memberId',
-               m_pw AS 'memberPw'
+               m_pw AS 'memberPw',
+               status_code AS memberStatus
         FROM member
         WHERE m_id = #{loginId};
     </select>
@@ -18,7 +19,8 @@
         SELECT m_no AS 'memberNo',
                 m_level AS 'memberLevel',
                 m_id AS 'memberId',
-                m_email AS 'memberEmail'
+                m_email AS 'memberEmail',
+               status_code AS memberStatus
         FROM member
         WHERE m_no = #{memberNo};
     </select>

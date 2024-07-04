@@ -20,11 +20,15 @@ public class Board {
     private String boardTitle;
     private String boardBody;
     private Date startDate;
-    private String endDate; // 나중에 타입 LocalDateTime으로 변환해서 디비에 넣어주든 하셈
+    private LocalDateTime endDate;
     private int viewCount;
     private int wishCount;
     private int reportCount;
     private String boardStatus;
+
+    private int fileRelationNo;
+    private int fileNo;
+    private String fileUsage;
 
     private int locationNo;
     private String locationDo;
@@ -34,10 +38,6 @@ public class Board {
     private String locationDetail;
     private Double locationX;
     private Double locationY;
-
-    private int fileRelationNo;
-    private int fileNo;
-    private String fileUsage;
 
     private String partyNo;
     private String category;

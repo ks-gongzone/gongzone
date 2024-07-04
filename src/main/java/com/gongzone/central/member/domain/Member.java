@@ -1,6 +1,7 @@
 package com.gongzone.central.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gongzone.central.utils.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

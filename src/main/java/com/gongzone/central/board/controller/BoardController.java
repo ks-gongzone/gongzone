@@ -32,14 +32,12 @@ public class BoardController {
 
     @PostMapping(value = "/write/{memberNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> writeBoard(
-            @PathVariable(value = "memberNo") String memberNo,
             BoardResponse br,
-            @RequestParam(value="image") MultipartFile file) throws IOException {
-        System.out.println("111111111111111111");
+            @RequestParam(value = "image") MultipartFile file) throws IOException {
         try {
             log.info("boardResponse: {}", br);
             log.info("file: {}", file);
-            //boardService.setValue(br, file);
+            boardService.setValue(br, file);
             return ResponseEntity.ok("Insert Success");
         } catch (Exception e) {
             e.printStackTrace();

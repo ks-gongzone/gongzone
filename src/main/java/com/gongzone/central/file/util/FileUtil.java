@@ -76,9 +76,8 @@ public class FileUtil {
             return null;
         }
 
-        String fileIdx = "file_"+current.format(format)+Long.toString(System.nanoTime());
+
         FileUpload fileUpload = new FileUpload();
-        fileUpload.setFileIdx(fileIdx);
         fileUpload.setFileSize(multipartFile.getSize());
         fileUpload.setFileOriginalName(multipartFile.getOriginalFilename());
         fileUpload.setFileNewName(resultFileName);

@@ -7,8 +7,6 @@ import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Transient;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,7 +37,7 @@ public class MemberDetailsService implements UserDetailsService {
             System.out.println("유저 못찾음 : " + identifier);
             throw new UsernameNotFoundException("User not found");
         }
-
+        System.out.println("member : " + member);
         int memberLevelValue = member.getMemberLevel();
         if (memberLevelValue == 0) {
             System.out.println("레벨 : " + identifier);

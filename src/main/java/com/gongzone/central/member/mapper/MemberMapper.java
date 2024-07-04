@@ -15,6 +15,7 @@ public interface MemberMapper {
     Boolean findById(String memberId);
     Boolean findByEmail(String memberEmail);
     Member findByEmailFromToken(String memberEmail);
+    Member findByStatus(String memberNo);
     void update(Member member);
     void delete(String member);
     Member info(String memberNo);

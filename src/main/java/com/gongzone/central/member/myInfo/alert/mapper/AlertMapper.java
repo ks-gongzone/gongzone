@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Param;
 public interface AlertMapper {
     MyAlert findAlertByMemberNo(@Param("memberNo") String memberNo);
     void updateAlertSettings(MyAlert myAlert);
+    void insertAlertSettings(MyAlert myAlert);
 }

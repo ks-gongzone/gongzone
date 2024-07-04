@@ -6,10 +6,12 @@ import com.gongzone.central.member.login.domain.LoginRequest;
 import com.gongzone.central.member.login.domain.LoginResponse;
 import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.member.login.security.JwtUtil;
+import com.gongzone.central.member.login.service.CheckStatusCode;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,10 +38,10 @@ public class LoginController {
     private final JwtUtil jwtUtil;
     private final MemberDetailsService memberDetailsService;
     private final AuthenticationManager authenticationManager;
-
+    private final CheckStatusCode checkStatusCode;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws AuthenticationException {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) throws AuthenticationException {
         try {
             // 사용자 인증
             authenticationManager.authenticate(
@@ -49,9 +51,16 @@ public class LoginController {
             // 사용자 정보 로드
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
             // JWT 토큰 생성
+
+            System.out.println("memberDetails : " + memberDetails);
+
             final String jwt = jwtUtil.generateToken(memberDetails);
             final long expiresIn = jwtUtil.extractExpiration(jwt).getTime();
             final String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
+
+            System.out.println("checkStatusCode : " + checkStatusCode);
+            checkStatusCode.checkStatus(memberDetails.getMemberNo(), response);
+            System.out.println("checkStatusCode 실행");
 
             // 토큰을 포함한 응답 반환
             return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, refreshToken, memberDetails.getMemberNo(), memberDetails.getPointNo(),null));
