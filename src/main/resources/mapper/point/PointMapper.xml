@@ -41,6 +41,23 @@
       m_point_no = #{memberPointNo};
   </select>
 
+  <select id="getHistory" resultMap="PointHistoryResultMap">
+    SELECT
+      point_history_no,
+      m_point_no,
+      type_code,
+      point_history_before,
+      point_history_change,
+      point_history_after,
+      point_history_date,
+      status_code
+    FROM
+      point_history
+    WHERE
+      m_point_no = #{memberPointNo}
+      AND point_history_no = #{pointHistoryNo};
+  </select>
+
   <!-- 여기 as 붙임-->
   <select id="getCurrentPoint" parameterType="String" resultType="int">
     SELECT

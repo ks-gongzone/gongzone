@@ -4,15 +4,16 @@ import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import java.util.List;
-import java.util.Map;
 
 public interface PointService {
-	Map<String, List<PointHistory>> getAllHistory(String memberPointNo);
+	List<PointHistory> getAllHistory(String memberPointNo);
 
-	Map<String, Integer> getCurrentPoint(String memberPointNo);
+	PointHistory getHistory(String memberPointNo, String pointHistoryNo);
 
-	Map<String, String> chargeMemberPoint(String memberPointNo, PointChargeRequest request);
+	Integer getCurrentPoint(String memberPointNo);
 
-	Map<String, String> withdrawMemberPoint(String memberPointNo, PointWithdrawRequest request);
+	void charge(String memberPointNo, PointChargeRequest request);
+
+	void withdraw(String memberPointNo, PointWithdrawRequest request);
 
 }
