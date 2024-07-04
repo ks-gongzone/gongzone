@@ -48,8 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/location",
             "/api/check",
             "/api/party/**",
-            "/api/boards",
-            "/api/boards/**"
+            "*"
     };
     private final MemberServiceImpl memberServiceImpl;
 
@@ -61,6 +60,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = request.getRequestURI();
+
+        System.out.println("request.getParameterNames() " + request.getParameterNames());
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            System.out.println("Parameter: " + paramName + " = " + request.getParameter(paramName));
+        }
 
         // 특정 경로는 필터링하지 않음
         for (String path : EXCLUDED_PATHS) {
@@ -98,7 +104,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                         usernamePasswordAuthenticationToken
                                 .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
+                        logger.info("필터인증 완료");
                         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     }
                 }

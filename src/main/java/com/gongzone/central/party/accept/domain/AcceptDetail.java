@@ -26,7 +26,8 @@ public class AcceptDetail {
     private Date endDate;
     private String status;
     private String address;
-    private String thumbnail;
-    private String partyId;
-    private List<AcceptMember> participants;
+    private String thumbnail;       // 이미지 파일
+    private String partyId;         // memberNo 들어오는곳
+    private List<AcceptMember> participants;    // 이게 null 값
+    private String partyNo;         // 진짜 partyNo
 }
