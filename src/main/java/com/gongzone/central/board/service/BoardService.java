@@ -10,5 +10,5 @@ import java.util.Map;
 
 public interface BoardService {
     void setValue(BoardResponse br, MultipartFile file);
-    Map<String, List<Board>> getBoardList(BoardSearchRequest request);
+    List<Board> getBoardList(BoardSearchRequest request);
 }

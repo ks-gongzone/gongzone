@@ -1,6 +1,7 @@
 package com.gongzone.central.board.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gongzone.central.file.domain.FileUpload;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -53,4 +55,6 @@ public class Board {
     private int amount;
     private int amountPrice;
     private String leader;
+
+    private List<FileUpload> files;
 }

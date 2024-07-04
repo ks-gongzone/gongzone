@@ -27,11 +27,9 @@ public class BoardServiceImpl implements BoardService {
     private final FileUtil fileUtil;
 
     @Override
-    public Map<String, List<Board>> getBoardList(BoardSearchRequest request) {
+    public List<Board> getBoardList(BoardSearchRequest request) {
         List<Board> lists = boardMapper.getBoardList(request);
-        Map<String, List<Board>> result = new HashMap<>();
-        result.put("result", lists);
-        return result;
+        return lists;
     }
 
     @Override

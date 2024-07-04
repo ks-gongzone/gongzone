@@ -1,8 +1,8 @@
 package com.gongzone.central.board.controller;
 
-import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.domain.BoardResponse;
 import com.gongzone.central.board.domain.BoardSearchRequest;
+import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -25,8 +24,10 @@ public class BoardController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<Map<String, List<Board>>> getBoardList(@RequestBody BoardSearchRequest request) {
-        Map<String, List<Board>> response = boardService.getBoardList(request);
+    public ResponseEntity<List<Board>> getBoardList(@RequestBody BoardSearchRequest request) {
+        List<Board> response = boardService.getBoardList(request);
+
+
         return ResponseEntity.ok(response);
     }
 

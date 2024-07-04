@@ -45,7 +45,7 @@
         VALUES (#{partyMemberNo}, #{partyNo}, #{memberNo}, #{amount}, #{amountPrice}, NOW(), '파티장')
     </insert>
 
-    <resultMap id="BoardListResultMap" type="BoardSearchList">
+    <resultMap id="BoardListResultMap" type="Board">
         <id property="boardNo" column="b_no"/>
         <result property="boardTitle" column="b_title"/>
         <result property="boardCate" column="c_code"/>
