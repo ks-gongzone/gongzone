@@ -1,7 +1,7 @@
 package com.gongzone.central.board.controller;
 
+import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.domain.BoardResponse;
-import com.gongzone.central.board.domain.BoardSearchList;
 import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +25,8 @@ public class BoardController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<Map<String, List<BoardSearchList>>> getBoardList(@RequestBody BoardSearchRequest request) {
-        Map<String, List<BoardSearchList>> response = boardService.getBoardList(request);
+    public ResponseEntity<Map<String, List<Board>>> getBoardList(@RequestBody BoardSearchRequest request) {
+        Map<String, List<Board>> response = boardService.getBoardList(request);
         return ResponseEntity.ok(response);
     }
 
@@ -37,6 +37,7 @@ public class BoardController {
         try {
             log.info("boardResponse: {}", br);
             log.info("file: {}", file);
+
             boardService.setValue(br, file);
             return ResponseEntity.ok("Insert Success");
         } catch (Exception e) {

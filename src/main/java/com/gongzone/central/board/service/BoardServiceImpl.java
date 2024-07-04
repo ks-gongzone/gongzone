@@ -2,7 +2,6 @@ package com.gongzone.central.board.service;
 
 import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.domain.BoardResponse;
-import com.gongzone.central.board.domain.BoardSearchList;
 import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.mapper.BoardMapper;
 import com.gongzone.central.file.mapper.FileMapper;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -29,9 +27,9 @@ public class BoardServiceImpl implements BoardService {
     private final FileUtil fileUtil;
 
     @Override
-    public Map<String, List<BoardSearchList>> getBoardList(BoardSearchRequest request) {
-        List<BoardSearchList> lists = boardMapper.getBoardList(request);
-        Map<String, List<BoardSearchList>> result = new HashMap<>();
+    public Map<String, List<Board>> getBoardList(BoardSearchRequest request) {
+        List<Board> lists = boardMapper.getBoardList(request);
+        Map<String, List<Board>> result = new HashMap<>();
         result.put("result", lists);
         return result;
     }
