@@ -17,8 +17,7 @@
             b.b_period AS endDate,
             p.status_code AS status,
             CONCAT(l.location_do, " ", l.location_si, " ", l.location_gu, " ", l.location_dong, " ", l.location_detail) AS address,
-            bi.b_image_source AS thumbnail,
-            p.p_no AS partyId
+            p.p_no AS partyNo
         FROM
             party AS p
             INNER JOIN
@@ -30,15 +29,11 @@
             ON
             b.b_no = l.b_no
             INNER JOIN
-            board_image AS bi
-            ON
-            b.b_no = bi.b_no
-            INNER JOIN
             category AS c
             ON
             c.c_code = p.c_code
         WHERE
-            p_no = #{partyId};
+            p_no = #{partyNo};
     </select>
     <select id="getParticipants" resultType="com.gongzone.central.party.accept.domain.AcceptMember">
         SELECT
@@ -52,6 +47,46 @@
             ON
                 pm.m_no = m.m_no
         WHERE
-            pm.p_no = #{partyId};
+            pm.p_no = #{partyNo};
     </select>
+
+    <!-- 포인트 번호 찾기 -->
+    <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
+        SELECT
+            p.p_no AS partyNo
+        FROM
+            party AS p
+        JOIN
+            board AS b
+        ON
+            p.b_no = b.b_no
+        WHERE
+            b.m_no = #{partyId}
+    </select>
+
+    <update id="updatePartyStatus">
+        UPDATE
+            party_request
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{partyId};
+    </update>
+
+    <delete id="deletePartyStatus">
+        UPDATE
+            party_request
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{partyId};
+    </delete>
+
+    <select id="partyList" resultMap="AcceptDetail">
+        SELECT
+            *
+        FROM
+            party
+    </select>
+
 </mapper>
