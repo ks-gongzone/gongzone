@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WithdrawalServiceImpl implements WithdrawalService {
+public class WithdrawalHistoryServiceImpl implements WithdrawHistoryService {
 	private final WithdrawMapper withdrawMapper;
 
 	@Override
-	public void insertPointWithdraw(Withdraw withdraw) {
+	public void insert(Withdraw withdraw) {
 		try {
 			withdrawMapper.insertPointWithdraw(withdraw);
 		} catch (Exception e) {

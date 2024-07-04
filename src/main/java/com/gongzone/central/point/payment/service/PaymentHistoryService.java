@@ -2,8 +2,8 @@ package com.gongzone.central.point.payment.service;
 
 import com.gongzone.central.point.payment.domain.Payment;
 
-public interface PaymentService {
+public interface PaymentHistoryService {
 
-	void insertPaymentHistory(Payment payment);
+	void insert(Payment payment);
 
 }
