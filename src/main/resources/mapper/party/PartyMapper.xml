@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.party.accept.mapper.AcceptMapper">
+    <select id="getPartyDetail" resultType="AcceptDetail">
+        SELECT
+            b.b_title AS boardTitle,
+            CONCAT("[", c.c_group1, "]", c.c_group2, " - ", c.c_group3) AS partyCateCode,
+            p.p_url AS productUrl,
+            b.b_body AS boardBody,
+            p.p_amount AS partyAmount,
+            p.p_amount_remain AS remainAmount,
+            p.p_price AS partyPrice,
+            p.p_price_remain AS remainPrice,
+            b.b_period AS endDate,
+            p.status_code AS status,
+            CONCAT(l.location_do, " ", l.location_si, " ", l.location_gu, " ", l.location_dong, " ", l.location_detail) AS address,
+            p.p_no AS partyNo
+        FROM
+            party AS p
+            INNER JOIN
+            board AS b
+            ON
+            p.b_no = b.b_no
+            INNER JOIN
+            location AS l
+            ON
+            b.b_no = l.b_no
+            INNER JOIN
+            category AS c
+            ON
+            c.c_code = p.c_code
+        WHERE
+            p_no = #{partyNo};
+    </select>
+    <select id="getParticipants" resultType="com.gongzone.central.party.accept.domain.AcceptMember">
+        SELECT
+            m.m_nick AS memberNick,
+            pm.pm_amount AS memberAmount,
+            m.m_email AS memberEmail
+        FROM
+            party_member AS pm
+                INNER JOIN
+            member AS m
+            ON
+                pm.m_no = m.m_no
+        WHERE
+            pm.p_no = #{partyNo};
+    </select>
+
+    <!-- 포인트 번호 찾기 -->
+    <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
+        SELECT
+            p.p_no AS partyNo
+        FROM
+            party AS p
+        JOIN
+            board AS b
+        ON
+            p.b_no = b.b_no
+        WHERE
+            b.m_no = #{partyId}
+    </select>
+
+    <update id="updatePartyStatus">
+        UPDATE
+            party_request
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{partyId};
+    </update>
+
+    <delete id="deletePartyStatus">
+        UPDATE
+            party_request
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{partyId};
+    </delete>
+
+    <select id="partyList" resultMap="AcceptDetail">
+        SELECT
+            *
+        FROM
+            party
+    </select>
+
+</mapper>

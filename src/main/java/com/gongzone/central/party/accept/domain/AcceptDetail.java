@@ -1,11 +1,19 @@
 package com.gongzone.central.party.accept.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AcceptDetail {
     private String boardTitle;
     private String partyCateCode;
@@ -18,7 +26,8 @@ public class AcceptDetail {
     private Date endDate;
     private String status;
     private String address;
-    private String thumbnail;
-    private String partyId;
-    private List<AcceptMember> participants;
+    private String thumbnail;       // 이미지 파일
+    private String partyId;         // memberNo 들어오는곳
+    private List<AcceptMember> participants;    // 이게 null 값
+    private String partyNo;         // 진짜 partyNo
 }

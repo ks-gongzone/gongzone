@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--   /**
+        * @제목: 유저 정보 맵퍼 xml
+        * @생성일: 2024-06-18
+        * @수정일: 2024-06-28
+        * @내용: member의 기본키 memberNo를 유저 정보 조회 및 업데이트
+        */-->
+<mapper namespace="com.gongzone.central.member.myInfo.mapper.MyInfoMapper">
+
+    <!-- Result Mapping -->
+    <resultMap id="MyInfoResultMap" type="com.gongzone.central.member.domain.Member">
+        <id     property="memberNo" column="m_no" />
+        <result property="memberId" column="m_id" />
+        <result property="memberPw" column="m_pw" />
+        <result property="memberPhone" column="m_phone" />
+        <result property="memberAddress" column="m_addr" />
+        <result property="memberNick" column="m_nick" />
+    </resultMap>
+
+    <!-- Read -->
+    <select id="findByNo" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_no,m_id, m_pw, m_phone, m_addr, m_nick
+        FROM member
+        WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="findByNickname" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_nick, m_no FROM member WHERE m_nick = #{nickname}
+    </select>
+
+    <select id="findByAddress" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_no, m_addr FROM member WHERE m_addr = #{memberAddress}
+    </select>
+
+    <select id="findByPhone" parameterType="String" resultMap="MyInfoResultMap">
+        SELECT m_no, m_phone FROM member WHERE m_no = #{memberNo}
+    </select>
+
+    <!-- Update -->
+    <update id="updatePassword" parameterType="map">
+        UPDATE member SET m_pw = #{newPassword}
+        WHERE m_no = #{memberNo}
+    </update>
+
+    <update id="updateMemberNick" parameterType="map">
+        UPDATE member SET m_nick = #{newMemberNick}
+        WHERE m_no = #{memberNo}
+    </update>
+
+    <update id="updateMemberAddress" parameterType="map">
+        UPDATE member SET m_addr = #{newMemberAddress}
+        WHERE m_no = #{memberNo}
+    </update>
+    
+</mapper>

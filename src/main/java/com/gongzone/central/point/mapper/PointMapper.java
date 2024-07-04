@@ -12,14 +12,21 @@ public interface PointMapper {
 
 	Integer getCurrentPoint(String memberPointNo);
 
-	void updateMemberPoint(@Param("memberPointNo") String memberPointNo,
-						   @Param("change") int change);
+	void updatePoint(@Param("memberPointNo") String memberPointNo,
+					 @Param("change") int change);
 
 	void insertPointHistory(PointHistory pointHistory);
+
+	void updateHistorySuccess(@Param("historyNo") String historyNo,
+							  @Param("pointHistoryAfter") int pointHistoryAfter);
 
 	String getLastHistoryPk();
 
 	Point getPointNoByMemberNo(String memberNo);
+
+	void insertPoint(Point point);
+
+	String getLastMemberPointNo();
 
 	Point getPointByPointNo(String memberPointNo); //예시
 

@@ -60,10 +60,10 @@ public enum StatusCode {
     STATUS_56("S060109", "파티", "비정상", "파티 해제"),
     STATUS_57("S060110", "파티", "비정상", "기간 만료"),
     STATUS_58("S060201", "파티", "신청 현황", "수락 대기중"),
-    STATUS_59("S060202", "파티", "신청 현황", "가입완료"),
-    STATUS_60("S060203", "파티", "신청 현황", "거절"),
-    STATUS_61("S060204", "파티", "신청 현황", "본인 취소"),
-    STATUS_62("S060205", "파티", "신청 현황", "강퇴"),
+    ACCEPT("S060202", "파티", "신청 현황", "가입완료"),
+    REFUSE("S060203", "파티", "신청 현황", "거절"),
+    CANCEL("S060204", "파티", "신청 현황", "본인 취소"),
+    KICK("S060205", "파티", "신청 현황", "강퇴"),
     STATUS_63("S060301", "파티", "결제", "대기"),
     STATUS_64("S060302", "파티", "결제", "완료"),
     STATUS_65("S060303", "파티", "결제", "취소"),
@@ -97,6 +97,14 @@ public enum StatusCode {
         for (StatusCode statusCode : values()) {
             if (statusCode.code.equals(code)) {
                 return statusCode.toString();
+            }
+        }
+        throw new IllegalArgumentException("Invalid status code: " + code);
+    }
+    public static StatusCode fromCode(String code) {
+        for (StatusCode statusCode : values()) {
+            if (statusCode.code.equals(code)) {
+                return statusCode;
             }
         }
         throw new IllegalArgumentException("Invalid status code: " + code);

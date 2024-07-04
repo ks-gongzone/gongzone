@@ -42,7 +42,42 @@
     </select>
 
     <select id="findById" parameterType="String" resultType="Boolean">
-        SELECT m_id, m_pw FROM member WHERE m_id = #{memberId}
+        SELECT
+            COUNT(*) > 0
+        FROM
+            member
+        WHERE
+            m_id = #{memberId}
+    </select>
+
+    <select id="findByEmail" parameterType="String" resultType="Boolean">
+        SELECT
+            COUNT(*) > 0
+        FROM
+            member
+        WHERE
+            m_email = #{memberEmail}
+    </select>
+
+    <select id="findByEmailFromToken" parameterType="String" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM
+            member
+        WHERE
+            m_email = #{memberEmail}
+            LIMIT 1
     </select>
 
     <select id="getMemberByNo" parameterType="String" resultType="Member">
