@@ -82,11 +82,11 @@
             m_no = #{partyId};
     </delete>
 
-    <select id="partyList" resultMap="AcceptDetail">
-        SELECT
-            *
-        FROM
-            party
-    </select>
+  <select id="partyList">
+    SELECT
+      *
+    FROM
+      party
+  </select>
 
 </mapper>
