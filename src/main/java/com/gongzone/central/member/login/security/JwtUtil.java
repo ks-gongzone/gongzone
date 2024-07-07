@@ -25,6 +25,9 @@ public class JwtUtil {
     @Value("${jwt.expirationMs}")     // 유효 시간
     private int jwtExpirationMs;
 
+    @Value("${jwt.refreshExpirationMs}")     // 리프레시 토큰 유효 시간
+    private int jwtRefreshExpirationMs;
+
     private SecretKey key;
 
     @PostConstruct
@@ -42,12 +45,19 @@ public class JwtUtil {
         claims.put("email", memberDetails.getEmail());
         claims.put("memberId", memberDetails.getMemberId());
 
-        System.out.println("토큰생성");
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs); // jwtExpirationMs = 30000 (30초)
+
+//        System.out.println("토큰생성");
+//        System.out.println("발행 시간: " + now);
+//        System.out.println("만료 시간: " + expiryDate);
+
+//        System.out.println("토큰생성");
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(memberDetails.getMemberNo())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 토큰 유효 시간
+                .setIssuedAt(now)
+                .setExpiration(expiryDate) // 토큰 유효 시간
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -93,12 +103,28 @@ public class JwtUtil {
         return (memberNo.equals(memberDetails.getMemberNo()) && !isTokenExpired(token));
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            //System.out.println("검증 성공");
+            return true;
+        } catch (Exception e) {
+            //System.out.println("검증 실패");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // 리프레시 토큰
     public String generateRefreshToken(MemberDetails memberDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("memberNo", memberDetails.getMemberNo());
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(memberDetails.getMemberNo())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtRefreshExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

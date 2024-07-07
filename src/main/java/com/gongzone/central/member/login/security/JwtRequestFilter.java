@@ -1,17 +1,13 @@
 package com.gongzone.central.member.login.security;
 
-import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
 import com.gongzone.central.member.service.MemberServiceImpl;
-import com.gongzone.central.utils.StatusCode;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -35,20 +31,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/login",
             "/api/register",
             "/api/check/**",
-            "/api/party/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/api/location",
             "/api/naver/token",
-            "/api/naver/**",
             "/api/google/token",
-            "/api/google/**",
-            "/api/kakao/token",
-            "/api/kakao/**",
-            "/api/location",
-            "/api/check",
-            "/api/party/**",
-            "*"
+            "/api/kakao/token"
     };
     private final MemberServiceImpl memberServiceImpl;
 
@@ -92,24 +80,36 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwt = requestTokenHeader.substring(7);
             try {
                 username = jwtUtil.extractMemberNo(jwt);
+            } catch (ExpiredJwtException e) {
+                //System.out.println("액세스토큰 만료");
+                //request.setAttribute("exceptionRefreshToken", e);
+                response.setHeader("token-expired", "true");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
+                return;
+            } catch (Exception e) {
+                System.out.println("JWT Token validation failed: " + e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is invalid or missing");
+                return;
+            }
 
-                // 받은 후 유효성 검사
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
-                    // 토큰이 유효한지 검사
-                    if (jwtUtil.validateToken(jwt, memberDetails)) {
-                        memberDetails.setToken(jwt);
-                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                                new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
+            // 받은 후 유효성 검사
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
+                // 토큰이 유효한지 검사
+                if (jwtUtil.validateToken(jwt, memberDetails)) {
+                    memberDetails.setToken(jwt);
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                            new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
 
-                        usernamePasswordAuthenticationToken
-                                .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        logger.info("필터인증 완료");
-                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    }
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    logger.info("필터인증 완료");
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                } else {
+                    // 추가된 부분: 토큰이 유효하지 않은 경우 처리
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is invalid");
+                    return;
                 }
-           } catch (IllegalArgumentException e) {
-                System.out.println("토큰이 없습니다");
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
