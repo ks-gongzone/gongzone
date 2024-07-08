@@ -2,6 +2,7 @@ package com.gongzone.central.party.accept.controller;
 
 import com.gongzone.central.party.accept.domain.AcceptDetail;
 import com.gongzone.central.party.accept.domain.AcceptMember;
+import com.gongzone.central.party.accept.domain.RequestMember;
 import com.gongzone.central.party.accept.domain.RequestStatus;
 import com.gongzone.central.party.accept.service.AcceptService;
 import com.gongzone.central.utils.StatusCode;
@@ -20,12 +21,10 @@ public class AcceptController {
 
     private final AcceptService acceptService;
 
-    @GetMapping("/party/accept/{partyId}")
-    public AcceptDetail getPartyDetail(@PathVariable String partyId) {
-        System.out.println("Received request for party ID: " + partyId);
-        String partyNo = acceptService.getPartyNo(partyId);
-        System.out.println("pointNo: " + partyNo);
-        AcceptDetail detail = acceptService.getPartyDetail(partyNo);
+    @GetMapping("/party/accept/{memberNo}")
+    public List<AcceptDetail> getPartyDetail(@PathVariable String memberNo) {
+        System.out.println("Received request for party ID: " + memberNo);
+        List<AcceptDetail> detail = acceptService.getListParty(memberNo);
         System.out.println("Returning detail: " + detail);
         return detail;
     }
@@ -33,6 +32,14 @@ public class AcceptController {
     @GetMapping("/party/accept/{partyId}/participants")
     public List<AcceptMember> getParticipants(@PathVariable String partyId) {
         return acceptService.getParticipants(partyId);
+    }
+
+
+    @GetMapping("/party/accept/{partyId}/requestmember")
+    public List<RequestMember> getRequestMember(@PathVariable String partyId) {
+        List<RequestMember> requestMember = acceptService.getRequestMember(partyId);
+        System.out.println("Request members returned to client: " + requestMember);
+        return requestMember;
     }
 
     @PostMapping("/party/accept/{partyId}/Status")

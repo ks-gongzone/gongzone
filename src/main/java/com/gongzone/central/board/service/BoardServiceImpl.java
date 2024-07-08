@@ -60,23 +60,20 @@ public class BoardServiceImpl implements BoardService {
                             .endDate(endDateTime)
                             .build();
 
+        System.out.println("기본 게시글 : " + board);
         boardMapper.insertBoard(board);
 
         FileUpload fileUpload = fileUtil.parseFileInfo(file);
+        if(fileUpload != null) fileMapper.addFile(fileUpload);
+        System.out.println("파일 변환 : " + fileUpload);
 
-        fileMapper.addFile(fileUpload);
-        board.setFileNo(fileUpload.getFileIdx());
-        board.setFileUsage(board.getBoardNo());
+        System.out.println("관계 : ");
         boardMapper.insertFileRelation(board);
-
+        System.out.println("위치 : ");
         boardMapper.insertLocation(board);
-
-        board.setRemain(board.getTotal() - board.getAmount());
-        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
-        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+        System.out.println("파티 : ");
         boardMapper.insertParty(board);
-
-        board.setAmountPrice(unitPrice*board.getAmount());
+        System.out.println("파티맴버 : ");
         boardMapper.insertPartyMember(board);
 
     }
