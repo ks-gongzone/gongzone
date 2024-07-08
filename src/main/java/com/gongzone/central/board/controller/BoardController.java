@@ -1,8 +1,8 @@
 package com.gongzone.central.board.controller;
 
 import com.gongzone.central.board.domain.BoardResponse;
-import com.gongzone.central.board.domain.BoardSearchList;
 import com.gongzone.central.board.domain.BoardSearchRequest;
+import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -25,9 +24,16 @@ public class BoardController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<Map<String, List<BoardSearchList>>> getBoardList(@RequestBody BoardSearchRequest request) {
-        Map<String, List<BoardSearchList>> response = boardService.getBoardList(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<List<Board>> getBoardList(@RequestBody BoardSearchRequest request) {
+        try {
+            log.info("request {}", request);
+            List<Board> response = boardService.getBoardList(request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(null);
+        }
+
     }
 
     @PostMapping(value = "/write/{memberNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -37,6 +43,7 @@ public class BoardController {
         try {
             log.info("boardResponse: {}", br);
             log.info("file: {}", file);
+
             boardService.setValue(br, file);
             return ResponseEntity.ok("Insert Success");
         } catch (Exception e) {
