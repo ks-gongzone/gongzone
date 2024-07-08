@@ -14,6 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
 				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 				.allowedOriginPatterns("*")
 				.allowedHeaders("*")
+				.exposedHeaders("token-expired")
 				.allowCredentials(true);
 	}
 

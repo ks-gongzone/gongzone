@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.domain.LoginRequest;
 import com.gongzone.central.member.login.domain.LoginResponse;
+import com.gongzone.central.member.login.domain.RefreshTokenRequest;
+import com.gongzone.central.member.login.domain.RefreshTokenResponse;
 import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.CheckStatusCode;
@@ -27,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 
 @Controller
@@ -61,7 +65,7 @@ public class LoginController {
             System.out.println("checkStatusCode : " + checkStatusCode);
             checkStatusCode.checkStatus(memberDetails.getMemberNo(), response);
             System.out.println("checkStatusCode 실행");
-
+            System.out.println("시간 : " + new Date(expiresIn));
             // 토큰을 포함한 응답 반환
             return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, refreshToken, memberDetails.getMemberNo(), memberDetails.getPointNo(),null));
 
@@ -75,5 +79,31 @@ public class LoginController {
         }
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        //System.out.println("리프레시 작동");
+        String refreshToken = request.getRefreshToken();
+        //System.out.println("refreshToken : " + refreshToken);
+        try {
+            if (jwtUtil.validateToken(refreshToken)) {
+                //System.out.println("if문 시작");
+                String memberNo = jwtUtil.extractMemberNo(refreshToken);
+                //System.out.println("memberNo : " + memberNo);
+                MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(memberNo);
+                //System.out.println("memberDetails : " + memberDetails);
+                String newAccessToken = jwtUtil.generateToken(memberDetails);
+                //System.out.println("newAccessToken : " + newAccessToken);
+                long expiresIn = jwtUtil.extractExpiration(newAccessToken).getTime();
+                //System.out.println("expiresIn : " + expiresIn);
+                return ResponseEntity.ok(new RefreshTokenResponse(newAccessToken, expiresIn, refreshToken));
+            } else {
+                //System.out.println("111111111111");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰");
+            }
+        } catch (Exception e) {
+            //System.out.println("2222222222222222");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰");
+        }
+    }
 }
 
