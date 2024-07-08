@@ -10,4 +10,27 @@
         VALUES (#{fileOriginalName}, #{fileNewName}, #{filePath}, #{fileSize}, NOW())
     </insert>
 
+    <resultMap id="BoardFileList" type="com.gongzone.central.file.domain.FileUpload">
+        <id property="fileIdx" column="file_no"/>
+        <result property="fileOriginalName" column="file_original_name"/>
+        <result property="fileNewName" column="file_new_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="fileDate" column="file_date"/>
+    </resultMap>
+
+    <select id="getBoardFileList" parameterType="com.gongzone.central.file.domain.FileUpload" resultMap="BoardFileList">
+        SELECT
+            f.file_no,
+            f.file_original_name,
+            f.file_new_name,
+            f.file_path,
+            f.file_size,
+            f.file_date
+        FROM
+            file AS f
+        WHERE
+            f.file_no = #{fileNo}
+    </select>
+
 </mapper>
