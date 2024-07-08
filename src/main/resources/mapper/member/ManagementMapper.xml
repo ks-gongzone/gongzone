@@ -28,6 +28,7 @@
     <select id="findAll" resultType="Member">
         SELECT
             m_no AS memberNo,
+            m_level AS memberLevel,
             m_id AS memberId,
             m_pw AS memberPw,
             m_name AS memberName,
@@ -42,8 +43,64 @@
             member
     </select>
 
-    <select id="findByStatus" parameterType="String" resultType="Member">
-        SELECT status_code AS memberStatus FROM member WHERE m_no = #{memberNo}
+    <select id="findQuitList" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM
+            member
+        WHERE
+            status_code = 'S010104';
+    </select>
+
+    <select id="findSleepList" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM
+            member
+        WHERE
+            status_code = 'S010102';
+    </select>
+
+    <select id="findPunishList" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_level AS memberLevel,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM
+            member
+        WHERE
+            status_code = 'S010103';
     </select>
 
     <!-- Update -->

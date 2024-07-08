@@ -19,15 +19,21 @@ public class ManagementServiceImpl implements ManagementService {
         return managementMapper.findAll();
     }
 
-   /* @Override
-    public Member getMemberByNo(String memberNo) {
-        return managementMapper.findByNo(memberNo);
-    }*/
+    @Override
+    public List<Member> getQuitAllMembers() {
+        return managementMapper.findQuitList();
+    }
 
     @Override
-    public Member getMemberByStatus(String memberNo) {
-        return managementMapper.findByStatus(memberNo);
+    public List<Member> getSleepAllMembers() {
+        return managementMapper.findSleepList();
     }
+
+    @Override
+    public List<Member> getPunishAllMembers() {
+        return managementMapper.findPunishList();
+    }
+
 
     @Override
     public void getStatusUpdate(String memberNo, StatusCode statusCode) {

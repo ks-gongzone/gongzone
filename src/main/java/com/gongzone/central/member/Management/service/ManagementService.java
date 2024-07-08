@@ -8,7 +8,8 @@ import java.util.List;
 public interface ManagementService {
 
     List<Member> getAllMembers();
-    //Member getMemberByNo(String memberNo);
-    Member getMemberByStatus(String memberNo);
+    List<Member> getQuitAllMembers();
+    List<Member> getSleepAllMembers();
+    List<Member> getPunishAllMembers();
     void getStatusUpdate(String memberNo, StatusCode statusCode);
 }

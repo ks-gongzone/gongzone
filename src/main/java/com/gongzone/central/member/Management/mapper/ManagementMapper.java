@@ -10,7 +10,8 @@ import java.util.List;
 public interface ManagementMapper {
 
     List<Member> findAll();
-    //Member findByNo(String memberNo);
-    Member findByStatus(String memberNo);
+    List<Member> findQuitList();
+    List<Member> findSleepList();
+    List<Member> findPunishList();
     void updateStatus(String memberNo, StatusCode statusCode);
 }
