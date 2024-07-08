@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.Management.mapper.ManagementMapper">
+
+    <!-- Result Mapping -->
+    <resultMap id="MemberResultMap" type="Member">
+        <id property="memberNo" column="m_no" />
+        <result property="memberLevel" column="m_level" />
+        <result property="memberId" column="m_id" />
+        <result property="memberPw" column="m_pw" />
+        <result property="memberName" column="m_name" />
+        <result property="memberEmail" column="m_email" />
+        <result property="memberPhone" column="m_phone" />
+        <result property="memberGender" column="m_gender" />
+        <result property="memberAddress" column="m_addr" />
+        <result property="memberBirthday" column="m_birthday" />
+        <result property="memberNick" column="m_nick" />
+        <result property="memberStatus" column="status_code" />
+    </resultMap>
+
+    <select id="findByNo" parameterType="String" resultMap="MemberResultMap">
+        SELECT * FROM member WHERE m_no = #{memberNo}
+    </select>
+
+    <select id="findAll" resultType="Member">
+        SELECT
+            m_no AS memberNo,
+            m_id AS memberId,
+            m_pw AS memberPw,
+            m_name AS memberName,
+            m_email AS memberEmail,
+            m_phone AS memberPhone,
+            m_gender AS memberGender,
+            m_addr AS memberAddress,
+            m_birthday AS memberBirthday,
+            m_nick AS memberNick,
+            status_code AS memberStatus
+        FROM
+            member
+    </select>
+
+    <select id="findByStatus" parameterType="String" resultType="Member">
+        SELECT status_code AS memberStatus FROM member WHERE m_no = #{memberNo}
+    </select>
+
+    <!-- Update -->
+    <update id="updateStatus" parameterType="Member">
+        UPDATE
+            member
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{memberNo};
+    </update>
+
+</mapper>

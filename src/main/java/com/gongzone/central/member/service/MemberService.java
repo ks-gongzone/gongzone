@@ -12,13 +12,5 @@ public interface MemberService {
     Member getMemberByNo(String memberNo);
     Boolean getMemberById(String memberId);
     Boolean getMemberByEmail(String memberEmail);
-    void updateMember(Member member);
-    void deleteMember(String memberNo);
     Member getMemberByStatus(String memberNo);
-
-    Token registerToken(Token token);
-    List<Token> getAllTokens();
-    Token getTokenByMemberNo(String memberNo);
-    void updateToken(Token token);
-    void deleteToken(int tokenNo);
 }
