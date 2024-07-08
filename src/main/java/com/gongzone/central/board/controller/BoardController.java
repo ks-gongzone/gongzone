@@ -25,10 +25,15 @@ public class BoardController {
 
     @PostMapping("/list")
     public ResponseEntity<List<Board>> getBoardList(@RequestBody BoardSearchRequest request) {
-        List<Board> response = boardService.getBoardList(request);
+        try {
+            log.info("request {}", request);
+            List<Board> response = boardService.getBoardList(request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(null);
+        }
 
-
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping(value = "/write/{memberNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

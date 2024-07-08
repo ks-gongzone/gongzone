@@ -16,4 +16,5 @@ public interface BoardMapper {
     void insertPartyMember(Board board);
     List<Board> getBoardList(BoardSearchRequest request);
     List<BoardReply> getBoardReplyList(String boardNo);
+    int getBoardWish(String memberNo, String boardNo);
 }

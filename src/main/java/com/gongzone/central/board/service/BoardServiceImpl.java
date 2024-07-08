@@ -30,7 +30,10 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Board> getBoardList(BoardSearchRequest request) {
+        System.out.println(request);
         List<Board> lists = boardMapper.getBoardList(request);
+
+        String memberNo = request.getMemberNo();
 
         lists.forEach(board -> {
             List<FileUpload> files = fileMapper.getBoardFileList(board.getFileNo());
@@ -40,6 +43,18 @@ public class BoardServiceImpl implements BoardService {
         lists.forEach(board -> {
             List<BoardReply> replies = boardMapper.getBoardReplyList(board.getBoardNo());
             board.setReplies(replies);
+        });
+
+        lists.forEach(board -> {
+            int wishInt = boardMapper.getBoardWish(memberNo, board.getBoardNo());
+            if(wishInt == 1) {
+                boolean wish = true;
+                board.setWish(wish);
+            } else{
+                boolean wish = false;
+                board.setWish(wish);
+            }
+
         });
         return lists;
     }
