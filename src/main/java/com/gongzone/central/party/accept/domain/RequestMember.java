@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestMember {
     private String memberNo;
+    private String partyNo;
     private String memberNick;
     private String memberAmount;
     private String memberEmail;

@@ -50,7 +50,8 @@
             m.m_nick AS memberNick,
             pm.pm_amount AS memberAmount,
             m.m_email AS memberEmail,
-            m.m_no AS memberNo
+            m.m_no AS memberNo,
+            pm.p_no AS partyNo
         FROM
             party_member AS pm
                 INNER JOIN
@@ -67,7 +68,8 @@
             pr.request_amount AS memberAmount,
             m.m_email AS memberEmail,
             pr.status_code AS requestStatus,
-            m.m_no AS memberNo
+            m.m_no AS memberNo,
+            pr.p_no AS partyNo
         FROM
             party_request AS pr
                 INNER JOIN
@@ -101,23 +103,27 @@
     </update>
 
 
-    <insert id="insertPartyMember" parameterType="com.gongzone.central.party.accept.domain.AddedMember">
-        <selectKey keyProperty="partyMemberNo" resultType="String" order="BEFORE">
-            SELECT CONCAT('PM', LPAD(COALESCE(MAX(CAST(SUBSTRING(p_member_no, 3) AS UNSIGNED)), 0) + 1, 6, '0')) AS partyMemberNo
-            FROM party_member
-        </selectKey>
+    <insert id="insertPartyMember" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
         INSERT INTO party_member
         (p_member_no, p_no, m_no, pm_amount, pm_price, member_join_date, member_is_leader)
-        VALUES (#{partyMemberNo}, #{partyNo}, #{memberNo}, #{amount}, #{price}, NOW(), '파티원')
+        VALUES (
+                   #{partyMemberNo},
+                   #{partyNo},
+                   #{memberNo},
+                   #{requestAmount},
+                   #{requestAmount} * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = #{partyNo}),
+                   NOW(),
+                   '파티원'
+               )
     </insert>
 
-    <update id="updateAmountMember" parameterType="com.gongzone.central.party.accept.domain.AcceptDetail">
+    <update id="updateAmountMember" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
         UPDATE party
         SET
-            p_amount_remain = p_amount_remain - #{amount},
-            p_price_remain = p_price_remain - #{price},
+            p_amount_remain = p_amount_remain - #{requestAmount},
+            p_price_remain = p_price_remain - #{requestPrice},
             status_code = CASE
-                              WHEN p_amount_remain - #{amount} = 0 THEN 'S060102'
+                              WHEN p_amount_remain - #{requestAmount} = 0 THEN 'S060102'
                               ELSE status_code
                 END
         WHERE p_no = #{partyNo};
@@ -143,8 +149,42 @@
         FROM
             party_request
         WHERE
-            m_no = #{partyId};
+            m_no = #{partyId} AND p_no = #{partyNo};
     </select>
 
+
+
+    <select id="lastPartyMemberNo" resultType="String">
+        select
+            MAX(p_member_no)
+        FROM
+            party_member
+    </select>
+
+    <delete id="kickPartyMember">
+        DELETE FROM party_member
+        WHERE
+            p_no = #{partyNo} AND m_no = #{memberNo};
+    </delete>
+
+    <delete id="deletePartyRequest">
+        DELETE FROM party_request
+        WHERE
+            p_no = #{partyNo} AND m_no = #{partyId};
+    </delete>
+
+    <select id="getPartyUnitPrice" parameterType="String" resultType="int">
+        SELECT CEIL(ROUND(p.p_price / p.p_amount, -1))
+        FROM party AS p
+        WHERE p.p_no = #{partyNo}
+    </select>
+
+    <update id="updateAmountAfterKick" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        UPDATE party
+        SET
+            p_amount_remain = p_amount_remain + #{requestAmount},
+            p_price_remain = p_price_remain + #{requestPrice}
+        WHERE p_no = #{partyNo};
+    </update>
 
 </mapper>

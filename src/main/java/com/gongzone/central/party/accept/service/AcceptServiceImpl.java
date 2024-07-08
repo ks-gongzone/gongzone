@@ -2,6 +2,7 @@ package com.gongzone.central.party.accept.service;
 
 import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.party.accept.mapper.AcceptMapper;
+import com.gongzone.central.utils.MySqlUtil;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,24 +62,50 @@ public class AcceptServiceImpl implements AcceptService {
     }
 
     @Override
-    public void getPartyStatusByNo(String partyId, StatusCode statusCode) {
-        if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL || statusCode == StatusCode.KICK) {
+    public void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode) {
+        if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL) {
             System.out.println("삭제 실행");
             acceptMapper.updatePartyStatus(partyId, statusCode);
-//            deletePartyStatusByNo(partyId);
-        } else if (statusCode == StatusCode.ACCEPT){
+        } else if (statusCode == StatusCode.ACCEPT) {
             System.out.println("업데이트 실행");
             acceptMapper.updatePartyStatus(partyId, statusCode);
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId);
+
+
+            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
             System.out.println("requestParty : " + requestParty);
+
+            String lastPartyMemberNo = acceptMapper.lastPartyMemberNo();
+            String newLastPartyMemberNo = MySqlUtil.generatePrimaryKey(lastPartyMemberNo);
+            System.out.println(newLastPartyMemberNo);
+            requestParty.setPartyMemberNo(newLastPartyMemberNo);
+
             acceptMapper.insertPartyMember(requestParty);
             System.out.println("requestParty.getPartyNo() : " + requestParty.getPartyNo());
-            acceptMapper.updateAmountMember(requestParty.getPartyNo());
+
+
+            acceptMapper.updateAmountMember(requestParty);
+        } else if (statusCode == StatusCode.KICK) {
+            System.out.println("강퇴 실행");
+            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
+            System.out.println("requestParty : " + requestParty);
+
+            int unitPrice = acceptMapper.getPartyUnitPrice(partyNo);
+            requestParty.setRequestPrice(requestParty.getRequestAmount() * unitPrice);
+
+            acceptMapper.kickPartyMember(requestParty);
+
+
+            acceptMapper.deletePartyRequest(partyId, partyNo);
+
+
+            acceptMapper.updateAmountAfterKick(requestParty);
         }
     }
 
-
-
+    @Override
+    public RequestParty getRequestMemberByPartyId(String partyId, String partyNo) {
+        return acceptMapper.requestMemberByPartyId(partyId, partyNo);
+    }
 //    @Override
 //    public void deletePartyStatusByNo(String partyId) {
 //        acceptMapper.deletePartyStatus(partyId);

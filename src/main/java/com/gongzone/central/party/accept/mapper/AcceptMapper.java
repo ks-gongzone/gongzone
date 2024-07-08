@@ -3,6 +3,7 @@ package com.gongzone.central.party.accept.mapper;
 import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.utils.StatusCode;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,6 +17,11 @@ public interface AcceptMapper {
     void updatePartyStatus(String partyId, StatusCode statusCode);
     // void deletePartyStatus(String partyId);
     void insertPartyMember(RequestParty requestParty);
-    RequestParty requestMemberByPartyId(String partyId);
-    void updateAmountMember(String partyNo);
+    RequestParty requestMemberByPartyId(@Param("partyId") String partyId, @Param("partyNo") String partyNo);
+    void updateAmountMember(RequestParty requestParty);
+    String lastPartyMemberNo();
+    void kickPartyMember(RequestParty requestParty);
+    void updateAmountAfterKick(RequestParty requestParty);
+    void deletePartyRequest(@Param("partyId") String partyId, @Param("partyNo") String partyNo);
+    int getPartyUnitPrice(String partyNo);
 }
