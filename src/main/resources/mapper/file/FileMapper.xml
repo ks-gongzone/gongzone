@@ -10,4 +10,22 @@
         VALUES (#{fileOriginalName}, #{fileNewName}, #{filePath}, #{fileSize}, NOW())
     </insert>
 
+    <resultMap id="BoardFileList" type="com.gongzone.central.file.domain.FileUpload">
+    </resultMap>
+
+    <select id="getBoardFileList" parameterType="String" resultMap="BoardFileList">
+        SELECT
+            f.file_no,
+            f.file_original_name,
+            f.file_new_name,
+            f.file_path,
+            f.file_size,
+            f.file_date
+        FROM
+            file AS f
+                LEFT JOIN file_relation AS r ON f.file_no = r.file_no
+        WHERE
+            f.file_no = #{fileNo}
+    </select>
+
 </mapper>
