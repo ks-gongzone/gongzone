@@ -15,15 +15,4 @@ public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
-
-    /*@Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        if (request.getAttribute("exceptionRefreshToken") instanceof ExpiredJwtException) {
-            System.out.println("exceptionRefreshToken 메서드 실행");
-            response.setHeader("token-expired", "true");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-        }
-    }*/
 }
