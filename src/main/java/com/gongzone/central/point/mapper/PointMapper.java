@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PointMapper {
-	List<PointHistory> getAllHistory(String memberPointNo);
+	List<PointHistory> getHistories(@Param("memberPointNo") String memberPointNo,
+									@Param("size") int size,
+									@Param("page") int page);
 
 	PointHistory getHistory(@Param("memberPointNo") String memberPointNo,
 							@Param("pointHistoryNo") String pointHistoryNo);
