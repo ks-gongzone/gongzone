@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(force = true)
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AcceptMember {
+public class RequestMember {
     private String memberNo;
+    private String partyNo;
     private String memberNick;
     private String memberAmount;
     private String memberEmail;
-    private String partyNo;
+    private String requestStatus;
 }

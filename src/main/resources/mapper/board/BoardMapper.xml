@@ -4,6 +4,39 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+    <select id="getBoardWish" parameterType="String">
+        SELECT
+            COUNT(1)
+        FROM
+            reply AS r
+        WHERE
+            r.b_no = #{boardNo}
+          AND
+            r.m_no = #{memberNo}
+    </select>
+
+    <resultMap id="BoardReplyList" type="com.gongzone.central.board.domain.BoardReply">
+        <id property="replyNo" column="reply_no"/>
+        <result property="boardNo" column="b_no"/>
+        <result property="memberNo" column="m_no"/>
+        <result property="replyBody" column="reply_body"/>
+        <result property="replyDate" column="reply_date"/>
+    </resultMap>
+
+    <select id="getBoardReplyList" parameterType="String" resultMap="BoardReplyList">
+        SELECT
+            r.reply_no,
+            r.b_no,
+            r.m_no,
+            r.reply_body,
+            r.reply_date
+        FROM
+            reply AS r
+        WHERE
+            r.b_no = #{boardNo}
+    </select>
+
+
    <insert id="insertBoard" parameterType="com.gongzone.central.board.domain.Board">
        <selectKey keyProperty="boardNo" resultType="String" order="BEFORE">
            SELECT CONCAT('B', LPAD(COALESCE(MAX(CAST(SUBSTRING(b_no, 2) AS UNSIGNED)), 0) + 1, 6, '0')) AS boardNo
@@ -45,30 +78,110 @@
         VALUES (#{partyMemberNo}, #{partyNo}, #{memberNo}, #{amount}, #{amountPrice}, NOW(), '파티장')
     </insert>
 
-    <resultMap id="BoardListResultMap" type="BoardSearchList">
+    <resultMap id="BoardListResultMap" type="com.gongzone.central.board.domain.Board">
         <id property="boardNo" column="b_no"/>
+        <result property="memberNo" column="m_no"/>
         <result property="boardTitle" column="b_title"/>
-        <result property="boardCate" column="c_code"/>
-        <result property="boardImage" column="b_image_source"/>
+        <result property="boardBody" column="b_body"/>
+        <result property="startDate" column="b_date"/>
+        <result property="endDate" column="b_period"/>
+        <result property="viewCount" column="b_view_count"/>
+        <result property="wishCount" column="b_wish_count"/>
+        <result property="reportCount" column="b_report_count"/>
+        <result property="boardStatus" column="status_code"/>
+
+        <!-- 파일 관계 -->
+        <result property="fileRelationNo" column="file_relation_no"/>
+        <result property="fileNo" column="file_no"/>
+        <result property="fileUsage" column="file_usage"/>
+
+
+        <!-- 위치 정보 -->
+        <result property="locationNo" column="location_no"/>
+        <result property="locationDo" column="location_do"/>
+        <result property="locationSi" column="location_si"/>
+        <result property="locationGu" column="location_gu"/>
+        <result property="locationDong" column="location_dong"/>
+        <result property="locationDetail" column="location_detail"/>
+        <result property="locationX" column="location_x"/>
+        <result property="locationY" column="location_y"/>
+
+        <!-- 파티 정보 -->
+        <result property="partyNo" column="p_no"/>
+        <result property="category" column="c_code"/>
+        <result property="productUrl" column="p_url"/>
+        <result property="total" column="p_amount"/>
+        <result property="remain" column="p_amount_remain"/>
+        <result property="totalPrice" column="p_price"/>
+        <result property="remainPrice" column="p_price_remain"/>
+        <result property="partyStatus" column="status_code"/>
+
+        <!-- 파티원 정보 -->
+        <result property="partyMemberNo" column="p_member_no"/>
+        <result property="amount" column="pm_amount"/>
+        <result property="amountPrice" column="pm_price"/>
+        <result property="leader" column="member_is_leader"/>
     </resultMap>
 
-    <select id="getBoardList" parameterType="String" resultMap="BoardListResultMap">
+    <select id="getBoardList" parameterType="com.gongzone.central.board.domain.BoardSearchRequest" resultMap="BoardListResultMap">
         SELECT
             b.b_no,
+            b.m_no,
             b.b_title,
+            b.b_body,
+            b.b_date,
+            b.b_period,
+            b.b_view_count,
+            b.b_wish_count,
+            b.b_report_count,
+            b.status_code,
+
+            r.file_relation_no,
+            r.file_no,
+            r.file_usage,
+
+            l.location_no,
+            l.location_do,
+            l.location_si,
+            l.location_gu,
+            l.location_dong,
+            l.location_detail,
+            l.location_x,
+            l.location_y,
+
+            p.p_no,
             p.c_code,
-            i.b_image_source
-        FROM
+            p.p_url,
+            p.p_amount,
+            p.p_amount_remain,
+            p.p_price,
+            p.p_price_remain,
+            p.status_code,
+
+            pm.p_member_no,
+            pm.pm_amount,
+            pm.pm_price,
+            pm.member_is_leader
+            FROM
             board AS b
-                Join
-            board_image AS i
-            ON
-                b.b_no = i.b_no
-                Join
-            party AS p
-            ON
-                b.b_no = p.b_no
-        WHERE
-            b.b_no = 'B000002';
+            LEFT JOIN file_relation AS r ON b.b_no = r.file_usage
+            LEFT JOIN location AS l ON b.b_no = l.b_no
+            LEFT JOIN party AS p ON b.b_no = p.b_no
+            LEFT JOIN party_member AS pm ON p.p_no = pm.p_no
+        <where>
+            <if test="location != null and location != '*'.toString()">
+                l.location_dong LIKE CONCAT('%', #{location}, '%')
+            </if>
+
+            <if test="category != null and category != '*'.toString()">
+                AND p.c_code = #{category}
+            </if>
+
+            <if test="content != null and content != ''">
+                AND b.b_title LIKE CONCAT('%', #{content}, '%')
+            </if>
+            AND b.status_code = 'S040101'
+            AND pm.member_is_leader = '파티장'
+        </where>
     </select>
 </mapper>

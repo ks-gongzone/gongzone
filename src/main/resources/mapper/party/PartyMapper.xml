@@ -7,7 +7,7 @@
     <select id="getPartyDetail" resultType="AcceptDetail">
         SELECT
             b.b_title AS boardTitle,
-            CONCAT("[", c.c_group1, "]", c.c_group2, " - ", c.c_group3) AS partyCateCode,
+            CONCAT('[', c.c_group1, ']', c.c_group2, ' - ', c.c_group3) AS partyCateCode,
             p.p_url AS productUrl,
             b.b_body AS boardBody,
             p.p_amount AS partyAmount,
@@ -16,8 +16,10 @@
             p.p_price_remain AS remainPrice,
             b.b_period AS endDate,
             p.status_code AS status,
-            CONCAT(l.location_do, " ", l.location_si, " ", l.location_gu, " ", l.location_dong, " ", l.location_detail) AS address,
-            p.p_no AS partyNo
+            CONCAT(l.location_do, ' ', l.location_si, ' ', l.location_gu, ' ', l.location_dong, ' ', l.location_detail) AS address,
+            p.p_no AS partyNo,
+            b.m_no AS partyLeader,
+            f.file_path AS img
         FROM
             party AS p
             INNER JOIN
@@ -32,6 +34,14 @@
             category AS c
             ON
             c.c_code = p.c_code
+            INNER JOIN
+            file_relation AS fr
+            ON
+            b.b_no = fr.file_usage
+            INNER JOIN
+            file AS f
+            ON
+            f.file_no = fr.file_no
         WHERE
             p_no = #{partyNo};
     </select>
@@ -39,7 +49,9 @@
         SELECT
             m.m_nick AS memberNick,
             pm.pm_amount AS memberAmount,
-            m.m_email AS memberEmail
+            m.m_email AS memberEmail,
+            m.m_no AS memberNo,
+            pm.p_no AS partyNo
         FROM
             party_member AS pm
                 INNER JOIN
@@ -50,18 +62,35 @@
             pm.p_no = #{partyNo};
     </select>
 
-    <!-- 포인트 번호 찾기 -->
+    <select id="getRequestMember" resultType="com.gongzone.central.party.accept.domain.RequestMember">
+        SELECT
+            m.m_nick AS memberNick,
+            pr.request_amount AS memberAmount,
+            m.m_email AS memberEmail,
+            pr.status_code AS requestStatus,
+            m.m_no AS memberNo,
+            pr.p_no AS partyNo
+        FROM
+            party_request AS pr
+                INNER JOIN
+            member AS m ON pr.m_no = m.m_no
+        WHERE
+            pr.p_no = #{partyNo};
+    </select>
+
+
+    <!-- 파티 번호 찾기 -->
     <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
         SELECT
-            p.p_no AS partyNo
-        FROM
-            party AS p
-        JOIN
-            board AS b
-        ON
-            p.b_no = b.b_no
-        WHERE
-            b.m_no = #{partyId}
+            DISTINCT distinct(p.p_no) AS partyNo
+        FROM party AS p
+            INNER JOIN
+            party_member AS pm
+        ON p.p_no = pm.p_no
+            LEFT JOIN
+            party_request AS pr
+            ON p.p_no = pr.p_no
+        WHERE pm.m_no = #{memberNo}
     </select>
 
     <update id="updatePartyStatus">
@@ -73,6 +102,36 @@
             m_no = #{partyId};
     </update>
 
+
+    <insert id="insertPartyMember" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        <selectKey keyColumn="requestPrice" keyProperty="requestPrice" resultType="int" order="BEFORE">
+            SELECT 5 * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = 'P000003') as requestPrice
+        </selectKey>
+        INSERT INTO party_member
+        (p_member_no, p_no, m_no, pm_amount, pm_price, member_join_date, member_is_leader)
+        VALUES (
+                   #{partyMemberNo},
+                   #{partyNo},
+                   #{memberNo},
+                   #{requestAmount},
+                   #{requestAmount} * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = #{partyNo}),
+                   NOW(),
+                   '파티원'
+               )
+    </insert>
+
+    <update id="updateAmountMember" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        UPDATE party
+        SET
+            p_amount_remain = p_amount_remain - #{requestAmount},
+            p_price_remain = p_price_remain - #{requestPrice},
+            status_code = CASE
+                              WHEN p_amount_remain - #{requestAmount} = 0 THEN 'S060102'
+                              ELSE status_code
+                END
+        WHERE p_no = #{partyNo};
+    </update>
+
     <delete id="deletePartyStatus">
         UPDATE
             party_request
@@ -82,11 +141,66 @@
             m_no = #{partyId};
     </delete>
 
-  <select id="partyList">
-    SELECT
-      *
-    FROM
-      party
-  </select>
+    <select id="requestMemberByPartyId" resultType="com.gongzone.central.party.accept.domain.RequestParty">
+        SELECT
+            p_request_no AS requestNo,
+            p_no AS partyNo,
+            m_no AS memberNo,
+            request_amount AS requestAmount,
+            request_date AS requestDate,
+            status_code AS statusCode
+        FROM
+            party_request
+        WHERE
+            m_no = #{partyId} AND p_no = #{partyNo};
+    </select>
+
+
+
+    <select id="lastPartyMemberNo" resultType="String">
+        select
+            MAX(p_member_no)
+        FROM
+            party_member
+    </select>
+
+    <delete id="kickPartyMember">
+        DELETE FROM party_member
+        WHERE
+            p_no = #{partyNo} AND m_no = #{memberNo};
+    </delete>
+
+    <delete id="deletePartyRequest">
+        DELETE FROM party_request
+        WHERE
+            p_no = #{partyNo} AND m_no = #{partyId};
+    </delete>
+
+    <select id="getPartyUnitPrice" parameterType="String" resultType="int">
+        SELECT CEIL(ROUND(p.p_price / p.p_amount, -1))
+        FROM party AS p
+        WHERE p.p_no = #{partyNo}
+    </select>
+
+    <update id="updateAmountAfterKick" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        UPDATE party
+        SET
+            p_amount_remain = p_amount_remain + #{requestAmount},
+            p_price_remain = p_price_remain + #{requestPrice}
+        WHERE p_no = #{partyNo};
+    </update>
+
+    <insert id="requestJoin" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        INSERT INTO party_request
+            (p_no, m_no, request_amount, request_date, status_code)
+        VALUES
+            (
+                #{partyNo},
+                #{memberNo},
+                #{requestAmount},
+                NOW(),
+                #{statusCode.code}
+            )
+    </insert>
 
 </mapper>
