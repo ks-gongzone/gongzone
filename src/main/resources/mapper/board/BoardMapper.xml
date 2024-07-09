@@ -181,6 +181,7 @@
                 AND b.b_title LIKE CONCAT('%', #{content}, '%')
             </if>
             AND b.status_code = 'S040101'
+            AND pm.member_is_leader = '파티장'
         </where>
     </select>
 </mapper>
