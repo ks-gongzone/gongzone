@@ -82,19 +82,15 @@
     <!-- 파티 번호 찾기 -->
     <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
         SELECT
-            distinct(p.p_no) AS partyNo
-        FROM
-            party AS p
-                JOIN
-            party_request AS pr
-            ON
-                p.p_no = pr.p_no
-                JOIN
+            DISTINCT distinct(p.p_no) AS partyNo
+        FROM party AS p
+            INNER JOIN
             party_member AS pm
-            ON
-                p.p_no = pr.p_no
-        WHERE
-            pm.m_no = #{memberNo}
+        ON p.p_no = pm.p_no
+            LEFT JOIN
+            party_request AS pr
+            ON p.p_no = pr.p_no
+        WHERE pm.m_no = #{memberNo}
     </select>
 
     <update id="updatePartyStatus">
