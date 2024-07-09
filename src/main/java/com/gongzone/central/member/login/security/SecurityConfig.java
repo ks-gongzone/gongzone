@@ -11,6 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +23,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class SecurityConfig {
 
 	private final JwtRequestFilter jwtRequestFilter;
+	private final Http401UnauthorizedEntryPoint http401UnauthorizedEntryPoint;
 
 	private static final String[] BASIC_LIST = {
 			"/api/login",
@@ -33,12 +36,10 @@ public class SecurityConfig {
 			"/api/boards/",
 			"/api/boards/**",
 			"/api/naver/token",
-			"/api/naver/**",
 			"/api/google/token",
-			"/api/google/**",
 			"/api/kakao/token",
-			"/api/kakao/**",
-			"/api/location"
+			"/api/location",
+			"/api/refresh"
 	};
 
 	// 보안 필터 체인을 정의
@@ -50,7 +51,8 @@ public class SecurityConfig {
 						.anyRequest().authenticated()
 				)
 				.exceptionHandling(exception -> exception
-						.authenticationEntryPoint(new Http403ForbiddenEntryPoint()) // 403 Forbidden 처리
+						.authenticationEntryPoint(http401UnauthorizedEntryPoint) // 401 Unauthorized 처리
+						.accessDeniedHandler(new AccessDeniedHandlerImpl()) // 403 Forbidden 처리
 				)
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -70,5 +72,4 @@ public class SecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 	}
-
 }
