@@ -61,4 +61,48 @@
         WHERE t.code_description = #{type}
     </select>
 
+    <!-- 특정 글 조회 후 조회수 증가-->
+    <select id="findAnnounceDetail" resultMap="AnnounceResultMap">
+        SELECT
+            a.announce_no,
+            a.m_admin_no,
+            a.type_code,
+            a.announce_title,
+            a.announce_body,
+            a.announce_date,
+            a.announce_view_count,
+            t.code_description
+        FROM announce AS a
+        INNER JOIN type_code AS t ON a.type_code = t.type_code
+        WHERE a.announce_no = #{announceNo}
+    </select>
+
+    <!-- create -->
+    <!-- 공지 작성 -->
+    <insert id="createAnnounce" parameterType="com.gongzone.central.announce.domain.Announce">
+        INSERT INTO announce (
+            m_admin_no,
+            type_code,
+            announce_title,
+            announce_body,
+            announce_date,
+            announce_view_count
+        )
+        VALUES (
+            #{memberNo},
+            #{typeCode},
+            #{announceTitle},
+            #{announceBody},
+            NOW(),
+            0
+        )
+    </insert>
+
+    <!-- update -->
+    <!-- 조회수 증가 로직 -->
+    <update id="incrementViews">
+        UPDATE announce
+        SET announce_view_count = announce_view_count + 1
+        WHERE announce_no = #{announceNo};
+    </update>
 </mapper>

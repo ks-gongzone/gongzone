@@ -13,8 +13,17 @@ import java.util.List;
  */
 @Mapper
 public interface AnnounceMapper {
+    // 생성 기능
+    void createAnnounce(Announce announce);
+    // 조회 기능
     List<Announce> findAllAnnounce(@Param("offset") int offset, @Param("limit") int limit);
     List<Announce> findAnnounceByType(@Param("offset") int offset, @Param("limit") int limit, @Param("type") String type);
     int countAllAnnounce();
     int countAnnounceByType(@Param("type") String type);
+    Announce findAnnounceDetail(@Param("announceNo") int announceNo);
+    void incrementViews(@Param("announceNo") int announceNo);
+    // 수정 기능
+
+    // 삭제 기능
+
 }
