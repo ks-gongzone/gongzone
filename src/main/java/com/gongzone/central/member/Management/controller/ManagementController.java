@@ -81,14 +81,14 @@ public class ManagementController {
 
     @PostMapping("/punish/insert/{memberNo}")
     public ResponseEntity<String> punishInsert(@PathVariable String memberNo, @RequestBody ResponseInsert responseInsert) {
-        System.out.println("1111111111111111111111111");
         MemberPunish memberPunish = MemberPunish.builder()
                 .memberNo(memberNo)
                 .memberAdminNo(responseInsert.getMemberAdminNo())
                 .punishType(responseInsert.getTypeCode())
-                .punishReason(responseInsert.getPunishReason())
-                .punishPeriod(responseInsert.getPunishPeriod())
+                .punishReason(responseInsert.getReasonDetail())
+                .punishPeriod(responseInsert.getPeriod())
                 .punishStatus(responseInsert.getStatusCode())
+                .memberStatus(responseInsert.getMemberStatusCode())
                 .build();
 
         System.out.println("memberPunish : " + memberPunish);
