@@ -19,13 +19,14 @@ public class AcceptServiceImpl implements AcceptService {
     @Override
     public List<AcceptDetail> getPartyDetail(String partyNo) {
         AcceptDetail detail = acceptMapper.getPartyDetail(partyNo);
-        System.out.println("detail  : " + detail);
+        System.out.println("detail1266  : " + detail);
 
-        List<AcceptMember> participants = acceptMapper.getParticipants(partyNo);
+        String partyNos = detail.getPartyNo();
+        List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
         System.out.println("participants : " + participants);
         detail.setParticipants(participants);
 
-        List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNo);
+        List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
         System.out.println("requestMember : " + requestMember);
         detail.setRequestMember(requestMember);
 
@@ -52,20 +53,27 @@ public class AcceptServiceImpl implements AcceptService {
     @Override
     public List<AcceptDetail> getListParty(String memberNo) {
         List<String> partyNos = getPartyNo(memberNo);
+        System.out.println("partyNos :" + partyNos);
         List<AcceptDetail> details = new ArrayList<>();
 
         for (String partyNo : partyNos) {
             List<AcceptDetail> detail = getPartyDetail(partyNo);
             details.addAll(detail);
         }
+        System.out.println("details on array : " + details);
+
         return details;
     }
 
     @Override
-    public void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode) {
+    public void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount) {
         if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL) {
             System.out.println("삭제 실행");
-            acceptMapper.updatePartyStatus(partyId, statusCode);
+
+            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
+            System.out.println("requestParty : " + requestParty);
+
+            acceptMapper.deletePartyRequest(partyId, partyNo);
         } else if (statusCode == StatusCode.ACCEPT) {
             System.out.println("업데이트 실행");
             acceptMapper.updatePartyStatus(partyId, statusCode);
@@ -81,7 +89,6 @@ public class AcceptServiceImpl implements AcceptService {
 
             acceptMapper.insertPartyMember(requestParty);
             System.out.println("requestParty.getPartyNo() : " + requestParty.getPartyNo());
-
 
             acceptMapper.updateAmountMember(requestParty);
         } else if (statusCode == StatusCode.KICK) {
@@ -99,6 +106,16 @@ public class AcceptServiceImpl implements AcceptService {
 
 
             acceptMapper.updateAmountAfterKick(requestParty);
+        } else if (statusCode == StatusCode.REQUEST) {
+
+            RequestParty requestParty = new RequestParty();
+            requestParty.setPartyNo(partyNo);
+            requestParty.setMemberNo(partyId);
+            requestParty.setRequestAmount(requestAmount);
+            System.out.println("requestParty in request :" + requestParty);
+
+            acceptMapper.requestJoin(requestParty);
+
         }
     }
 

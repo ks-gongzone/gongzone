@@ -7,4 +7,5 @@ public class RequestStatus {
     private String partyId;
     private String partyNo;
     private String statusCode;
+    private int requestAmount;
 }

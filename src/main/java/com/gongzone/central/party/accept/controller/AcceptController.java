@@ -47,10 +47,11 @@ public class AcceptController {
         System.out.println("1111111111111111111");
         try {
             StatusCode status = StatusCode.fromCode(requestStatus.getStatusCode());
-            acceptService.getPartyStatusByNo(partyId, requestStatus.getPartyNo(), status);
+            acceptService.getPartyStatusByNo(partyId, requestStatus.getPartyNo(), status, requestStatus.getRequestAmount());
             return ResponseEntity.ok("Status updated to: " + status);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status code: " + requestStatus.getStatusCode());
         }
     }
+
 }

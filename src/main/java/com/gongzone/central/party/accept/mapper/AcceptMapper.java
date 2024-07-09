@@ -24,4 +24,5 @@ public interface AcceptMapper {
     void updateAmountAfterKick(RequestParty requestParty);
     void deletePartyRequest(@Param("partyId") String partyId, @Param("partyNo") String partyNo);
     int getPartyUnitPrice(String partyNo);
+    void requestJoin(RequestParty requestParty);
 }

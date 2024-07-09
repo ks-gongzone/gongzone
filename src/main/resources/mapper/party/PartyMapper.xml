@@ -82,15 +82,19 @@
     <!-- 파티 번호 찾기 -->
     <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
         SELECT
-            p.p_no AS partyNo
+            distinct(p.p_no) AS partyNo
         FROM
             party AS p
-        JOIN
-            board AS b
-        ON
-            p.b_no = b.b_no
+                JOIN
+            party_request AS pr
+            ON
+                p.p_no = pr.p_no
+                JOIN
+            party_member AS pm
+            ON
+                p.p_no = pr.p_no
         WHERE
-            b.m_no = #{memberNo}
+            pm.m_no = #{memberNo}
     </select>
 
     <update id="updatePartyStatus">
@@ -104,6 +108,9 @@
 
 
     <insert id="insertPartyMember" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        <selectKey keyColumn="requestPrice" keyProperty="requestPrice" resultType="int" order="BEFORE">
+            SELECT 5 * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = 'P000003') as requestPrice
+        </selectKey>
         INSERT INTO party_member
         (p_member_no, p_no, m_no, pm_amount, pm_price, member_join_date, member_is_leader)
         VALUES (
@@ -186,5 +193,18 @@
             p_price_remain = p_price_remain + #{requestPrice}
         WHERE p_no = #{partyNo};
     </update>
+
+    <insert id="requestJoin" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
+        INSERT INTO party_request
+            (p_no, m_no, request_amount, request_date, status_code)
+        VALUES
+            (
+                #{partyNo},
+                #{memberNo},
+                #{requestAmount},
+                NOW(),
+                #{statusCode.code}
+            )
+    </insert>
 
 </mapper>
