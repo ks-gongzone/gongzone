@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.report.mapper.ReportMapper">
+
+    <select id="findReportAll" resultType="ReportMember">
+        SELECT
+            m_report_no AS memberReportNo,
+            m_no AS memberNo,
+            m_target_no AS memberTargetNo,
+            type_code AS typeCode,
+            m_report_reason AS memberReportReason,
+            m_report_date AS memberReportDate,
+            status_code AS statusCode
+        FROM
+            member_report
+    </select>
+
+    <!-- Update -->
+    <update id="updateReportStatus" parameterType="ReportMember">
+        UPDATE
+            member_report
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_report_no = #{memberReportNo};
+    </update>
+
+</mapper>
