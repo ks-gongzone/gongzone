@@ -1,6 +1,6 @@
 package com.gongzone.central.member.Management.controller;
 
-import com.gongzone.central.member.Management.domain.ManagementRequest;
+import com.gongzone.central.member.Management.domain.*;
 import com.gongzone.central.member.Management.service.ManagementService;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.utils.StatusCode;
@@ -26,25 +26,25 @@ public class ManagementController {
     }
 
     @GetMapping("/member/quitListALl")
-    public List<Member> quitListALl() {
+    public List<MemberQuit> quitListALl() {
         System.out.println("1111111111111111111111111");
-        List<Member> members = managementService.getQuitAllMembers();
+        List<MemberQuit> members = managementService.getQuitAllMembers();
         System.out.println("members : " + members.size());
         return members;
     }
 
     @GetMapping("/member/sleepListALl")
-    public List<Member> sleepListALl() {
+    public List<MemberSleep> sleepListALl() {
         System.out.println("1111111111111111111111111");
-        List<Member> members = managementService.getSleepAllMembers();
+        List<MemberSleep> members = managementService.getSleepAllMembers();
         System.out.println("members : " + members.size());
         return members;
     }
 
     @GetMapping("/member/punishListALl")
-    public List<Member> punishListALl() {
+    public List<MemberPunish> punishListALl() {
         System.out.println("1111111111111111111111111");
-        List<Member> members = managementService.getPunishAllMembers();
+        List<MemberPunish> members = managementService.getPunishAllMembers();
         System.out.println("members : " + members.size());
         return members;
     }
@@ -57,5 +57,48 @@ public class ManagementController {
         System.out.println("statusCode : " + statusCode);
         System.out.println("memberNo : " + memberNo);
         return ResponseEntity.ok(String.valueOf(statusCode));
+    }
+
+    @PostMapping("/punish/update/{memberNo}")
+    public ResponseEntity<String> punishUpdate(@PathVariable String memberNo, @RequestBody ResponseAdminMember responseAdminMember) {
+        System.out.println("1111111111111111111111111");
+        MemberPunish memberPunish = MemberPunish.builder()
+                        .memberNo(memberNo)
+                        .punishType(responseAdminMember.getTypeCode())
+                        .punishReason(responseAdminMember.getReasonDetail())
+                        .punishPeriod(responseAdminMember.getPeriod())
+                        .build();
+
+        System.out.println("memberPunish : " + memberPunish);
+        System.out.println("memberNo : " + memberNo);
+        System.out.println("reasonDetail : " + responseAdminMember.getReasonDetail());
+        System.out.println("period : " + responseAdminMember.getPeriod());
+        System.out.println("typeCode : " + responseAdminMember.getTypeCode());
+
+        managementService.getPeriodupdate(memberPunish);
+        return ResponseEntity.ok(String.valueOf(memberPunish));
+    }
+
+    @PostMapping("/punish/insert/{memberNo}")
+    public ResponseEntity<String> punishInsert(@PathVariable String memberNo, @RequestBody ResponseInsert responseInsert) {
+        System.out.println("1111111111111111111111111");
+        MemberPunish memberPunish = MemberPunish.builder()
+                .memberNo(memberNo)
+                .memberAdminNo(responseInsert.getMemberAdminNo())
+                .punishType(responseInsert.getTypeCode())
+                .punishReason(responseInsert.getPunishReason())
+                .punishPeriod(responseInsert.getPunishPeriod())
+                .punishStatus(responseInsert.getStatusCode())
+                .build();
+
+        System.out.println("memberPunish : " + memberPunish);
+        System.out.println("memberNo : " + memberNo);
+
+        managementService.getPunishInsert(memberPunish);
+
+        StatusCode memberStatusCode = StatusCode.fromCode(responseInsert.getMemberStatusCode());
+        managementService.getStatusUpdate(memberNo, memberStatusCode);
+
+        return ResponseEntity.ok(String.valueOf(memberPunish));
     }
 }

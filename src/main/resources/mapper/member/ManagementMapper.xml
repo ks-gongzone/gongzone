@@ -43,64 +43,90 @@
             member
     </select>
 
-    <select id="findQuitList" resultType="Member">
+    <select id="findQuitList" resultType="MemberQuit">
         SELECT
-            m_no AS memberNo,
-            m_level AS memberLevel,
-            m_id AS memberId,
-            m_pw AS memberPw,
-            m_name AS memberName,
-            m_email AS memberEmail,
-            m_phone AS memberPhone,
-            m_gender AS memberGender,
-            m_addr AS memberAddress,
-            m_birthday AS memberBirthday,
-            m_nick AS memberNick,
-            status_code AS memberStatus
+            m.m_no AS memberNo,
+            m.m_level AS memberLevel,
+            m.m_id AS memberId,
+            m.m_pw AS memberPw,
+            m.m_name AS memberName,
+            m.m_email AS memberEmail,
+            m.m_phone AS memberPhone,
+            m.m_gender AS memberGender,
+            m.m_addr AS memberAddress,
+            m.m_birthday AS memberBirthday,
+            m.m_nick AS memberNick,
+            m.status_code AS memberStatus,
+            mq.m_quit_no AS memberQuitNo,
+            mq.type_code AS quitType,
+            mq.quit_reason_detail AS quitReasonDetail,
+            mq.quit_date AS quitDate
         FROM
-            member
+            member AS m
+        INNER JOIN
+            member_quit AS mq
+        ON
+            m.m_no = mq.m_no
         WHERE
             status_code = 'S010104';
     </select>
 
-    <select id="findSleepList" resultType="Member">
+    <select id="findSleepList" resultType="MemberSleep">
         SELECT
-            m_no AS memberNo,
-            m_level AS memberLevel,
-            m_id AS memberId,
-            m_pw AS memberPw,
-            m_name AS memberName,
-            m_email AS memberEmail,
-            m_phone AS memberPhone,
-            m_gender AS memberGender,
-            m_addr AS memberAddress,
-            m_birthday AS memberBirthday,
-            m_nick AS memberNick,
-            status_code AS memberStatus
+            m.m_no AS memberNo,
+            m.m_level AS memberLevel,
+            m.m_id AS memberId,
+            m.m_pw AS memberPw,
+            m.m_name AS memberName,
+            m.m_email AS memberEmail,
+            m.m_phone AS memberPhone,
+            m.m_gender AS memberGender,
+            m.m_addr AS memberAddress,
+            m.m_birthday AS memberBirthday,
+            m.m_nick AS memberNick,
+            m.status_code AS memberStatus,
+            ms.m_sleep_no AS memberSleepNo,
+            ms.m_last_login AS memberLastLogin,
+            ms.m_sleep_date AS memberSleepDate
         FROM
-            member
+            member AS m
+        INNER JOIN
+            member_sleep AS ms
+        ON
+            m.m_no = ms.m_no
         WHERE
             status_code = 'S010102';
     </select>
 
-    <select id="findPunishList" resultType="Member">
+    <select id="findPunishList" resultType="MemberPunish">
         SELECT
-            m_no AS memberNo,
-            m_level AS memberLevel,
-            m_id AS memberId,
-            m_pw AS memberPw,
-            m_name AS memberName,
-            m_email AS memberEmail,
-            m_phone AS memberPhone,
-            m_gender AS memberGender,
-            m_addr AS memberAddress,
-            m_birthday AS memberBirthday,
-            m_nick AS memberNick,
-            status_code AS memberStatus
+            m.m_no AS memberNo,
+            m.m_level AS memberLevel,
+            m.m_id AS memberId,
+            m.m_pw AS memberPw,
+            m.m_name AS memberName,
+            m.m_email AS memberEmail,
+            m.m_phone AS memberPhone,
+            m.m_gender AS memberGender,
+            m.m_addr AS memberAddress,
+            m.m_birthday AS memberBirthday,
+            m.m_nick AS memberNick,
+            m.status_code AS memberStatus,
+            mp.m_punish_no AS memberPunishNo,
+            mp.type_code AS punishType,
+            mp.punish_reason AS punishReason,
+            mp.punish_start_date AS punishStartDate,
+            mp.punish_period AS punishPeriod,
+            mp.punish_end_period AS punishEndPeriod,
+            mp.status_code AS punishStatus
         FROM
-            member
+            member AS m
+        INNER JOIN
+            member_punish AS mp
+        ON
+            m.m_no = mp.m_no
         WHERE
-            status_code = 'S010103';
+            m.status_code = 'S010103';
     </select>
 
     <!-- Update -->
@@ -112,5 +138,23 @@
         WHERE
             m_no = #{memberNo};
     </update>
+
+    <update id="updatePunish" parameterType="MemberPunish">
+        UPDATE
+            member_punish
+        SET
+            punish_period = #{punishPeriod},
+            punish_end_period = DATE_ADD(punish_end_period, INTERVAL #{punishPeriod} DAY)
+        WHERE
+            m_no = #{memberNo};
+    </update>
+
+    <insert id="insertPunish" parameterType="MemberPunish">
+        INSERT INTO
+            member_punish (m_no, m_admin_no, type_code, punish_start_date, punish_reason, punish_period, punish_end_period, status_code)
+        Values
+            (#{memberNo},#{memberAdminNo}, #{punishType}, NOW(), #{punishReason}, #{punishPeriod}, DATE_ADD(NOW(), INTERVAL #{punishPeriod} DAY), #{punishStatus})
+    </insert>
+
 
 </mapper>
