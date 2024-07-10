@@ -13,4 +13,10 @@ public class ReportMember {
     private String meemberReportReason;
     private Date memberReportDate;  //신고일시
     private String statusCode;
+    private String statusReason;
+
+    private String memberAdminNo;
+    private String reasonDetail;
+    private String period;
+    private String memberStatusCode;
 }

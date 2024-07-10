@@ -16,6 +16,8 @@
             status_code AS statusCode
         FROM
             member_report
+        WHERE
+            status_code IN ('S010601', 'S010603');
     </select>
 
     <!-- Update -->
@@ -27,5 +29,21 @@
         WHERE
             m_report_no = #{memberReportNo};
     </update>
+
+    <update id="updateStatus" parameterType="Member">
+        UPDATE
+            member
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{memberNo};
+    </update>
+
+    <insert id="insertReport" parameterType="ReportMember">
+        INSERT INTO member_report
+            (m_no, m_target_no, type_code, m_report_reason, m_report_date, status_code)
+        VALUES
+            (#{memberNo}, #{memberTargetNo}, #{typeCode}, #{memberReportReason}, NOW(), 'S010601')
+    </insert>
 
 </mapper>

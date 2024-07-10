@@ -10,4 +10,6 @@ public interface ReportService {
 
     List<ReportMember> getAllReportMember();
     void getReportStatusUpdate(int memberReportNo, StatusCode statusCode);
+    void getStatusUpdate(String memberNo, StatusCode statusCode);
+    void getReportMemberInsert(ReportMember reportMember);
 }

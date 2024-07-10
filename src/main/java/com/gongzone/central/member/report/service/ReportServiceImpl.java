@@ -27,4 +27,16 @@ public class ReportServiceImpl implements ReportService{
             reportMapper.updateReportStatus(memberReportNo, statusCode);
         }
     }
+
+    @Override
+    public void getStatusUpdate(String memberNo, StatusCode statusCode) {
+        if (statusCode == StatusCode.S010101 || statusCode == StatusCode.S010102 || statusCode == StatusCode.S010103 || statusCode == StatusCode.S010104) {
+            reportMapper.updateStatus(memberNo, statusCode);
+        }
+    }
+
+    @Override
+    public void getReportMemberInsert(ReportMember reportMember) {
+        reportMapper.insertReport(reportMember);
+    }
 }
