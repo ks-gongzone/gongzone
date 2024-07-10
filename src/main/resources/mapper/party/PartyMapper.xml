@@ -226,7 +226,8 @@
             CONCAT(l.location_do, ' ', l.location_si, ' ', l.location_gu, ' ', l.location_dong, ' ', l.location_detail) AS address,
             p.p_no AS partyNo,
             b.m_no AS partyLeader,
-            f.file_path AS img
+            f.file_path AS img,
+            b.b_no AS boardNo
         FROM
             party AS p
                 INNER JOIN
