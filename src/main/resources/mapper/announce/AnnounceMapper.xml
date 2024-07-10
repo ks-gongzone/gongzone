@@ -4,7 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.announce.mapper.AnnounceMapper">
-
     <!-- Result Mapping -->
     <resultMap id="AnnounceResultMap" type="com.gongzone.central.announce.domain.Announce">
         <id     property="announceNo" column="announce_no" />
@@ -16,7 +15,6 @@
         <result property="viewCount" column="announce_view_count" />
         <result property="typeCodeDes" column="code_description" />
     </resultMap>
-
     <!-- read -->
     <!-- 전체공지 조회 -->
     <select id="findAllAnnounce" resultMap="AnnounceResultMap">
@@ -60,7 +58,6 @@
         INNER JOIN type_code AS t ON a.type_code = t.type_code
         WHERE t.code_description = #{type}
     </select>
-
     <!-- 특정 글 조회 후 조회수 증가-->
     <select id="findAnnounceDetail" resultMap="AnnounceResultMap">
         SELECT
@@ -76,7 +73,6 @@
         INNER JOIN type_code AS t ON a.type_code = t.type_code
         WHERE a.announce_no = #{announceNo}
     </select>
-
     <!-- create -->
     <!-- 공지 작성 -->
     <insert id="createAnnounce" parameterType="com.gongzone.central.announce.domain.Announce">
@@ -97,12 +93,33 @@
             0
         )
     </insert>
-
     <!-- update -->
-    <!-- 조회수 증가 로직 -->
+    <!-- 조회수 증가 -->
     <update id="incrementViews">
         UPDATE announce
         SET announce_view_count = announce_view_count + 1
         WHERE announce_no = #{announceNo};
     </update>
+    <!-- 작성 공지사항 수정 -->
+    <update id="updateAnnounce" parameterType="com.gongzone.central.announce.domain.Announce">
+        UPDATE announce
+        <set>
+            <if test="typeCode != null and typeCode != ''">
+                type_code = #{typeCode},
+            </if>
+            <if test="announceTitle != null and announceTitle != ''">
+                announce_title = #{announceTitle},
+            </if>
+            <if test="announceBody != null and announceBody != ''">
+                announce_body = #{announceBody}
+            </if>
+        </set>
+        WHERE announce_no = #{announceNo}
+    </update>
+    <!-- delete -->
+    <!-- 공지사항 삭제 -->
+    <delete id="deleteAnnounce" parameterType="int">
+        DELETE FROM announce
+        WHERE announce_no = #{announceNo}
+    </delete>
 </mapper>

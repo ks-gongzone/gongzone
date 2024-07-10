@@ -20,6 +20,7 @@ public interface AnnounceService {
     Announce findAnnounceDetail(int announceNo);
     void incrementViews(int announceNo);
     // 수정기능
-
+    void updateAnnounce(Announce announce);
     // 삭제기능
+    void deleteAnnounce(int announceNo);
 }
