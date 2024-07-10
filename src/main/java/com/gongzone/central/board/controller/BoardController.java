@@ -23,6 +23,17 @@ public class BoardController {
         this.boardService = boardService;
     }
 
+    @PostMapping("/addView/{boardNo}")
+    public ResponseEntity<String> addView(@PathVariable("boardNo") String boardNo) {
+        try{
+            boardService.updateViewCount(boardNo);
+            return ResponseEntity.ok("Update ViewCount Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok("Update ViewCount Error");
+        }
+    }
+
     @PostMapping("/list")
     public ResponseEntity<List<Board>> getBoardList(@RequestBody BoardSearchRequest request) {
         try {

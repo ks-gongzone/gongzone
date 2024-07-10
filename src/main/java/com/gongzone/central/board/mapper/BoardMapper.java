@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+    void updateViewCount(String boardNo);
     void insertBoard(Board board);
     void insertLocation(Board board);
     void insertFileRelation(Board board);

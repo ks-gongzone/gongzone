@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
+    void updateViewCount(String boardNo);
     void setValue(BoardResponse br, MultipartFile file);
     List<Board> getBoardList(BoardSearchRequest request);
 }
