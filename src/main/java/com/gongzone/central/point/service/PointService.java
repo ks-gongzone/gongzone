@@ -6,7 +6,7 @@ import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import java.util.List;
 
 public interface PointService {
-	List<PointHistory> getAllHistory(String memberPointNo);
+	List<PointHistory> getHistories(String memberPointNo, int size, int page);
 
 	PointHistory getHistory(String memberPointNo, String pointHistoryNo);
 

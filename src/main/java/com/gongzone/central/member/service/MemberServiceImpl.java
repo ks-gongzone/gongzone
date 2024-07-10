@@ -20,7 +20,6 @@ import java.util.List;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
-    private final TokenMapper tokenMapper;
     private final PointMapper pointMapper;
 
     @Override
@@ -79,41 +78,4 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.findByStatus(memberNo);
     }
 
-    @Override
-    public void updateMember(Member member) {
-        memberMapper.update(member);
-    }
-
-    @Override
-    public void deleteMember(String memberNo) {
-        memberMapper.delete(memberNo);
-    }
-
-    @Override
-    public Token registerToken(Token token) {
-        token.setTokenLastUpdate(new Date());
-        tokenMapper.insert(token);
-        return token;
-    }
-
-    @Override
-    public List<Token> getAllTokens() {
-        return tokenMapper.findAll();
-    }
-
-    @Override
-    public Token getTokenByMemberNo(String memberNo) {
-        return tokenMapper.findByMemberNo(memberNo);
-    }
-
-    @Override
-    public void updateToken(Token token) {
-        token.setTokenLastUpdate(new Date());
-        tokenMapper.update(token);
-    }
-
-    @Override
-    public void deleteToken(int tokenNo) {
-        tokenMapper.delete(tokenNo);
-    }
 }

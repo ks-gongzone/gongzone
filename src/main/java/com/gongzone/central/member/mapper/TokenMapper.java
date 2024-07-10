@@ -8,14 +8,9 @@ import java.util.List;
 @Mapper
 public interface TokenMapper {
     void insert(Token token);
-
     List<Token> findAll();
-
     Token findByMemberNo(String memberNo);
-
     void update(Token token);
-
     void delete(int tokenNo);
-
     String getLastTokenNo();
 }
