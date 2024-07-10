@@ -23,6 +23,17 @@ public class BoardController {
         this.boardService = boardService;
     }
 
+    @PostMapping("/wish/{boardNo}/{memberNo}")
+    public ResponseEntity<String> setWish(@PathVariable("boardNo") String boardNo,@PathVariable("memberNo") String memberNo) {
+        try{
+            boardService.setWish(boardNo, memberNo);
+            return ResponseEntity.ok("WishList Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok("WishList Error");
+        }
+    }
+
     @PostMapping("/addView/{boardNo}")
     public ResponseEntity<String> addView(@PathVariable("boardNo") String boardNo) {
         try{
