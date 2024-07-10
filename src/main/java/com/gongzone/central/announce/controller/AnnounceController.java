@@ -2,10 +2,14 @@ package com.gongzone.central.announce.controller;
 
 import com.gongzone.central.announce.domain.Announce;
 import com.gongzone.central.announce.service.AnnounceService;
+import com.gongzone.central.member.login.security.JwtUtil;
+import com.gongzone.central.member.login.service.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
+import javax.print.attribute.standard.PresentationDirection;
 import java.util.*;
 
 /**
@@ -18,6 +22,7 @@ import java.util.*;
 @RequestMapping("api")
 public class AnnounceController {
     private final AnnounceService announceService;
+    private final JwtUtil jwtUtil;
     /**
      * @작성일: 2024-07-03
      * @내용: 변수명 통일을 위한 타입코드 설정
@@ -84,7 +89,7 @@ public class AnnounceController {
      */
     @PostMapping("/announce/{announceNo}/increment")
     public void incrementViews(@PathVariable int announceNo) {
-        System.out.println("증가하는 메서드" + announceNo);
+        System.out.println("조회 수 증가" + announceNo);
         announceService.incrementViews(announceNo);
     }
 
@@ -121,7 +126,7 @@ public class AnnounceController {
             response.put("error", "필수 항목 누락: Body");
             return ResponseEntity.status(400).body(response);
         }
-        if (typeCode == null || typeCodeDes == null) {
+        if (typeCode == null) {
             response.put("error", "필수 항목 누락: typeCode");
             return ResponseEntity.status(400).body(response);
         }
@@ -136,8 +141,78 @@ public class AnnounceController {
         System.out.println("[컨트롤러] 공지사항 내용: " + announceTitle);
         return ResponseEntity.ok(response);
     }
+    /**
+     * @수정일: 2024-07-09
+     * @내용: 공지사항 수정
+     * @참고: (한 번의 요청만 받을 수 있게 putmapping사용)
+     */
+    @PutMapping("/_admin/announce/update/{announceNo}")
+    public ResponseEntity<Map<String, String>> updateAnnounce(
+            @PathVariable("announceNo") int announceNo,
+            @RequestBody Announce announce,
+            Authentication authentication) {
 
+        System.out.println("[컨트롤러]공지사항 수정");
+        Map<String, String> response = new HashMap<>();
 
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String memberNo = jwtUtil.extractMemberNo(token);
 
+        System.out.println("memberNo: " + memberNo);
 
+        Announce existAnnounce = announceService.findAnnounceDetail(announceNo);
+
+        if (existAnnounce == null) {
+            response.put("error", "공지사항이 존재하지 않습니다.");
+        }
+        if (!memberNo.equals("M000001")) {
+            response.put("error", "관리자가 아닙니다.");
+            return ResponseEntity.status(403).body(response);
+        }
+        String typeCodeDes = announce.getTypeCodeDes();
+        String typeCode = (typeCodeDes != null) ? getTypeCode(typeCodeDes) : existAnnounce.getTypeCode();
+
+        // 수정 내용이 null일 시 기존 값 업데이트
+        if (announce.getAnnounceTitle() != null) {
+            existAnnounce.setAnnounceTitle(announce.getAnnounceTitle());
+        }
+        if (announce.getAnnounceBody() != null) {
+            existAnnounce.setAnnounceBody(announce.getAnnounceBody());
+        }
+        existAnnounce.setTypeCode(typeCode);
+        existAnnounce.setAnnounceNo(announceNo);
+
+        announceService.updateAnnounce(existAnnounce);
+        response.put("success", "공지사항 수정완료");
+        return ResponseEntity.ok(response);
+    }
+    /**
+     * @수정일: 2024-07-10
+     * @내용: 공지사항 삭제
+     */
+    @DeleteMapping("/_admin/announce/delete/{announceNo}")
+    public ResponseEntity<Map<String, String>> deleteAnnounce(
+            @PathVariable("announceNo") int announceNo,
+            Authentication authentication) {
+        Map<String, String> response = new HashMap<>();
+
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String memberNo = jwtUtil.extractMemberNo(token);
+        Announce existAnnounce = announceService.findAnnounceDetail(announceNo);
+
+        System.out.println("[컨트롤러] 공지사항 삭제" + memberNo);
+
+        if(!memberNo.equals("M000001")) {
+            response.put("error", "[백앤드] 관리자가 아닙니다.");
+            return ResponseEntity.status(403).body(response);
+        }
+        if (existAnnounce == null) {
+            response.put("error", "[백앤드] 공지사항이 없습니다.");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        announceService.deleteAnnounce(announceNo);
+        response.put("success", "공지사항 삭제완료");
+        return ResponseEntity.ok(response);
+    }
 }

@@ -56,7 +56,24 @@ public class AnnounceServiceImpl implements AnnounceService {
         System.out.println("[서비스]작성 글 제목:" + announce.getAnnounceTitle());
         announceMapper.createAnnounce(announce);
     }
-
+    /**
+     * @작성일: 2024-07-09
+     * @내용: 공지사항 수정
+     */
+    @Override
+    public void updateAnnounce(Announce announce) {
+        System.out.println("[서비스] 공지사항 수정" + announce.getAnnounceNo());
+        announceMapper.updateAnnounce(announce);
+    }
+    /**
+     * @수정일: 2024-07-10
+     * @내용: 공지사항 삭제
+     */
+    @Override
+    public void deleteAnnounce(int announceNo) {
+        System.out.println("[서비스] 공지사항 삭제" + announceNo);
+        announceMapper.deleteAnnounce(announceNo);
+    }
     /**
      * @수정일: 2024-07-03
      * @내용: 타입 확인 후 에러처리

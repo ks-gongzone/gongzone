@@ -79,4 +79,16 @@ public class ReportController {
             return ResponseEntity.ok(false);
         }
     }
+
+    @PostMapping("/ReportMember/report")
+    public ResponseEntity<Boolean> reportMemberInsert(@RequestBody ReportMember reportMember) {
+        System.out.println("11111111111111111111111111");
+        try {
+            reportService.getReportMemberInsert(reportMember);
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            System.out.println("실패 : " + e.getMessage());
+            return ResponseEntity.ok(false);
+        }
+    }
 }
