@@ -83,6 +83,26 @@ public class AcceptServiceImpl implements AcceptService {
     }
 
     @Override
+    public void completeParty(String partyNo) {
+        AcceptDetail detail = acceptMapper.getPartyList(partyNo);
+        String partyNos = detail.getPartyNo();
+        List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
+
+        // 안전장치 추가: remainAmount가 0이 아닌 경우 메서드 종료
+        if (Integer.parseInt(detail.getRemainAmount()) != 0) {
+            System.out.println("remainAmount가 0이 아니므로 completeParty 메서드를 종료합니다.");
+            return;
+        }
+        System.out.println("detail in complete" + detail);
+        acceptMapper.completeBoardStatus(detail.getBoardNo());
+        acceptMapper.completePartyStatus(detail.getPartyNo());
+        System.out.println("participants" + participants);
+        for (AcceptMember member : participants) {
+            acceptMapper.insertPartyPurchase(detail.getPartyNo(), member.getPartyMemberNo(), member.getRequestPrice());
+        }
+    }
+
+    @Override
     public void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount) {
         if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL) {
             System.out.println("삭제 실행");

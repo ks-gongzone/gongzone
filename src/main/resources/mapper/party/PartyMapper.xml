@@ -19,7 +19,9 @@
             CONCAT(l.location_do, ' ', l.location_si, ' ', l.location_gu, ' ', l.location_dong, ' ', l.location_detail) AS address,
             p.p_no AS partyNo,
             b.m_no AS partyLeader,
-            f.file_path AS img
+            f.file_path AS img,
+            b.b_no AS boardNo,
+            b.status_code AS boardStatus
         FROM
             party AS p
             INNER JOIN
@@ -51,7 +53,9 @@
             pm.pm_amount AS memberAmount,
             m.m_email AS memberEmail,
             m.m_no AS memberNo,
-            pm.p_no AS partyNo
+            pm.p_no AS partyNo,
+            pm.pm_price AS requestPrice,
+            pm.p_member_no AS partyMemberNo
         FROM
             party_member AS pm
                 INNER JOIN
@@ -248,5 +252,28 @@
         WHERE
             p_no = #{partyNo};
     </select>
+
+    <update id="completeBoardStatus">
+        UPDATE board
+        SET
+            status_code='S040102'
+        WHERE
+            b_no = #{boardNo};
+    </update>
+
+    <update id="completePartyStatus">
+        UPDATE party
+        SET
+            status_code='S060103'
+        WHERE
+            p_no = #{partyNo};
+    </update>
+
+    <insert id="insertPartyPurchase">
+        INSERT INTO party_purchase
+            (p_no, p_member_no, purchase_price, status_code)
+        VALUES
+            (#{partyNo}, #{partyMemberNo}, #{requestPrice}, 'S060301')
+    </insert>
 
 </mapper>

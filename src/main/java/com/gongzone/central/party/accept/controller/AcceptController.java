@@ -61,4 +61,11 @@ public class AcceptController {
         }
     }
 
+    @PostMapping("/party/updateStatus/{partyNo}")
+    public ResponseEntity<String> updatePartyAndBoardStatus(@PathVariable String partyNo) {
+        acceptService.completeParty(partyNo);
+        return ResponseEntity.ok("Party and Board statuses updated successfully.");
+    }
+
+
 }
