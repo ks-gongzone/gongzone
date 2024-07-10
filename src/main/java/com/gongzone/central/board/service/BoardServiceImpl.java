@@ -29,6 +29,22 @@ public class BoardServiceImpl implements BoardService {
     private final FileUtil fileUtil;
 
     @Override
+    public void setWish(String boardNo, String memberNo){
+        int wishInt = boardMapper.getBoardWish(memberNo, boardNo);
+
+        if(wishInt == 1) {
+            boardMapper.deleteWish(boardNo, memberNo);
+        } else{
+            boardMapper.insertWish(boardNo, memberNo);
+        }
+    }
+
+    @Override
+    public void updateViewCount(String boardNo){
+        boardMapper.updateViewCount(boardNo);
+    }
+
+    @Override
     public List<Board> getBoardList(BoardSearchRequest request) {
         System.out.println(request);
         List<Board> lists = boardMapper.getBoardList(request);

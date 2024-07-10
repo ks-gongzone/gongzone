@@ -4,15 +4,32 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+    <delete id="deleteWish" parameterType="String">
+        DELETE FROM wishlist
+        WHERE b_no = #{boardNo} AND m_no = #{memberNo}
+    </delete>
+
+    <insert id="insertWish" parameterType="String" useGeneratedKeys="true" keyColumn="wish_no">
+        INSERT INTO wishlist
+            (b_no, m_no, wish_date)
+        VALUES (#{boardNo}, #{memberNo}, NOW())
+    </insert>
+
+    <update id="updateViewCount" parameterType="String">
+        UPDATE board
+        SET b_view_count = b_view_count + 1
+        WHERE b_no = #{boardNo}
+    </update>
+
     <select id="getBoardWish" parameterType="String">
         SELECT
             COUNT(1)
         FROM
-            reply AS r
+            wishlist AS w
         WHERE
-            r.b_no = #{boardNo}
+            w.b_no = #{boardNo}
           AND
-            r.m_no = #{memberNo}
+            w.m_no = #{memberNo}
     </select>
 
     <resultMap id="BoardReplyList" type="com.gongzone.central.board.domain.BoardReply">
@@ -183,5 +200,6 @@
             AND b.status_code = 'S040101'
             AND pm.member_is_leader = '파티장'
         </where>
+        ORDER BY b.b_date DESC
     </select>
 </mapper>
