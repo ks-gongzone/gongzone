@@ -43,7 +43,7 @@
         INSERT INTO member_report
             (m_no, m_target_no, type_code, m_report_reason, m_report_date, status_code)
         VALUES
-            (#{memberNo}, #{memberTargetNo}, #{typeCode}, #{memberReportReason}, NOW(), 'S010601')
+            (#{memberNo}, #{memberTargetNo}, #{typeCode}, #{reasonDetail}, NOW(), 'S010601')
     </insert>
 
 </mapper>
