@@ -23,6 +23,8 @@ public class AcceptDetail {
     private String remainAmount;
     private String partyPrice;
     private String remainPrice;
+    private String boardNo;
+    private String boardStatus;
     private Date endDate;
     private String status;
     private String address;
