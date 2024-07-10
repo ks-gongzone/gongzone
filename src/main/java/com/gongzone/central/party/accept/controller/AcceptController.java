@@ -7,7 +7,6 @@ import com.gongzone.central.party.accept.domain.RequestStatus;
 import com.gongzone.central.party.accept.service.AcceptService;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +21,17 @@ public class AcceptController {
     private final AcceptService acceptService;
 
     @GetMapping("/party/accept/{memberNo}")
-    public List<AcceptDetail> getPartyDetail(@PathVariable String memberNo) {
+    public List<AcceptDetail> getPartyList(@PathVariable String memberNo) {
         System.out.println("Received request for party ID: " + memberNo);
         List<AcceptDetail> detail = acceptService.getListParty(memberNo);
+        System.out.println("Returning detail: " + detail);
+        return detail;
+    }
+
+    @GetMapping("/party/detail/{partyNo}")
+    public AcceptDetail getPartyDetail(@PathVariable String partyNo) {
+        System.out.println("Received request for party ID: " + partyNo);
+        AcceptDetail detail = acceptService.getPartyDetailByPartyNo(partyNo);
         System.out.println("Returning detail: " + detail);
         return detail;
     }
