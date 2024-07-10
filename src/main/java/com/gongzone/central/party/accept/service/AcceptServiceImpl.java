@@ -17,8 +17,8 @@ public class AcceptServiceImpl implements AcceptService {
     private final AcceptMapper acceptMapper;
 
     @Override
-    public List<AcceptDetail> getPartyDetail(String partyNo) {
-        AcceptDetail detail = acceptMapper.getPartyDetail(partyNo);
+    public List<AcceptDetail> getPartyList(String partyNo) {
+        AcceptDetail detail = acceptMapper.getPartyList(partyNo);
         System.out.println("detail1266  : " + detail);
 
         String partyNos = detail.getPartyNo();
@@ -33,6 +33,23 @@ public class AcceptServiceImpl implements AcceptService {
         List<AcceptDetail> details = new ArrayList<>();
         details.add(detail);
         return details;
+    }
+
+    @Override
+    public AcceptDetail getPartyDetailByPartyNo(String partyNo) {
+        AcceptDetail detail = acceptMapper.getPartyDetail(partyNo);
+        System.out.println("detail1266  : " + detail);
+
+        String partyNos = detail.getPartyNo();
+        List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
+        System.out.println("participants : " + participants);
+        detail.setParticipants(participants);
+
+        List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
+        System.out.println("requestMember : " + requestMember);
+        detail.setRequestMember(requestMember);
+
+        return detail;
     }
 
     @Override
@@ -57,7 +74,7 @@ public class AcceptServiceImpl implements AcceptService {
         List<AcceptDetail> details = new ArrayList<>();
 
         for (String partyNo : partyNos) {
-            List<AcceptDetail> detail = getPartyDetail(partyNo);
+            List<AcceptDetail> detail = getPartyList(partyNo);
             details.addAll(detail);
         }
         System.out.println("details on array : " + details);

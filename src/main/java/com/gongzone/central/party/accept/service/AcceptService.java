@@ -6,7 +6,7 @@ import com.gongzone.central.utils.StatusCode;
 import java.util.List;
 
 public interface AcceptService {
-    List<AcceptDetail> getPartyDetail(String partyNo);
+    List<AcceptDetail> getPartyList(String partyNo);
     List<AcceptMember> getParticipants(String partyNo);
 
     List<RequestMember> getRequestMember(String partyNo);
@@ -16,6 +16,7 @@ public interface AcceptService {
     List<String> getPartyNo(String memberNo);
     void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount);
     RequestParty getRequestMemberByPartyId(String partyId, String partyNo);
+    AcceptDetail getPartyDetailByPartyNo(String partyNo);
 //    void deletePartyStatusByNo(String partyId);
 
 }

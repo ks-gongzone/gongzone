@@ -9,9 +9,11 @@ import java.util.List;
 
 @Mapper
 public interface AcceptMapper {
+    AcceptDetail getPartyList(String partyNo);
     AcceptDetail getPartyDetail(String partyNo);
     List<AcceptMember> getParticipants(String partyNo);
     List<RequestMember> getRequestMember(String partyNo);
+
 
     List<String> findPointNoByMemberNo(String memberNo);
     void updatePartyStatus(String partyId, StatusCode statusCode);
