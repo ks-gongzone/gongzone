@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.party.accept.mapper.AcceptMapper">
-    <select id="getPartyDetail" resultType="AcceptDetail">
+    <select id="getPartyList" resultType="AcceptDetail">
         SELECT
             b.b_title AS boardTitle,
             CONCAT('[', c.c_group1, ']', c.c_group2, ' - ', c.c_group3) AS partyCateCode,
@@ -81,16 +81,19 @@
 
     <!-- 파티 번호 찾기 -->
     <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
-        SELECT
-            DISTINCT distinct(p.p_no) AS partyNo
-        FROM party AS p
-            INNER JOIN
-            party_member AS pm
-        ON p.p_no = pm.p_no
-            LEFT JOIN
-            party_request AS pr
-            ON p.p_no = pr.p_no
-        WHERE pm.m_no = #{memberNo}
+        (SELECT DISTINCT p.p_no AS partyNo
+         FROM party AS p
+                  INNER JOIN party_member AS pm
+                             ON p.p_no = pm.p_no
+         WHERE pm.m_no = #{memberNo})
+
+        UNION
+
+        (SELECT DISTINCT p.p_no AS partyNo
+         FROM party AS p
+                  INNER JOIN party_request AS pr
+                             ON p.p_no = pr.p_no
+         WHERE pr.m_no = #{memberNo});
     </select>
 
     <update id="updatePartyStatus">
@@ -105,7 +108,8 @@
 
     <insert id="insertPartyMember" parameterType="com.gongzone.central.party.accept.domain.RequestParty">
         <selectKey keyColumn="requestPrice" keyProperty="requestPrice" resultType="int" order="BEFORE">
-            SELECT 5 * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = 'P000003') as requestPrice
+            SELECT
+            (#{requestAmount} * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = #{partyNo})) AS requestPrice
         </selectKey>
         INSERT INTO party_member
         (p_member_no, p_no, m_no, pm_amount, pm_price, member_join_date, member_is_leader)
@@ -114,7 +118,7 @@
                    #{partyNo},
                    #{memberNo},
                    #{requestAmount},
-                   #{requestAmount} * (SELECT CEIL(ROUND(p.p_price / p.p_amount, -1)) FROM party AS p WHERE p.p_no = #{partyNo}),
+                   #{requestPrice},
                    NOW(),
                    '파티원'
                )
@@ -199,8 +203,50 @@
                 #{memberNo},
                 #{requestAmount},
                 NOW(),
-                #{statusCode.code}
+                "S060201"
             )
     </insert>
+
+    <select id="getPartyDetail" resultType="AcceptDetail">
+        SELECT
+            b.b_title AS boardTitle,
+            CONCAT('[', c.c_group1, ']', c.c_group2, ' - ', c.c_group3) AS partyCateCode,
+            p.p_url AS productUrl,
+            b.b_body AS boardBody,
+            p.p_amount AS partyAmount,
+            p.p_amount_remain AS remainAmount,
+            p.p_price AS partyPrice,
+            p.p_price_remain AS remainPrice,
+            b.b_period AS endDate,
+            p.status_code AS status,
+            CONCAT(l.location_do, ' ', l.location_si, ' ', l.location_gu, ' ', l.location_dong, ' ', l.location_detail) AS address,
+            p.p_no AS partyNo,
+            b.m_no AS partyLeader,
+            f.file_path AS img
+        FROM
+            party AS p
+                INNER JOIN
+            board AS b
+            ON
+                p.b_no = b.b_no
+                INNER JOIN
+            location AS l
+            ON
+                b.b_no = l.b_no
+                INNER JOIN
+            category AS c
+            ON
+                c.c_code = p.c_code
+                INNER JOIN
+            file_relation AS fr
+            ON
+                b.b_no = fr.file_usage
+                INNER JOIN
+            file AS f
+            ON
+                f.file_no = fr.file_no
+        WHERE
+            p_no = #{partyNo};
+    </select>
 
 </mapper>
