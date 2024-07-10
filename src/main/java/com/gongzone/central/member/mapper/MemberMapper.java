@@ -19,8 +19,4 @@ public interface MemberMapper {
     void update(Member member);
     void delete(String member);
     Member info(String memberNo);
-
-//    int findMemberNo();
-
-
 }
