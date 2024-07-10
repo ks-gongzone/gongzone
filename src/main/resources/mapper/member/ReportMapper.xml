@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.report.mapper.ReportMapper">
+
+    <select id="findReportAll" resultType="ReportMember">
+        SELECT
+            m_report_no AS memberReportNo,
+            m_no AS memberNo,
+            m_target_no AS memberTargetNo,
+            type_code AS typeCode,
+            m_report_reason AS memberReportReason,
+            m_report_date AS memberReportDate,
+            status_code AS statusCode
+        FROM
+            member_report
+        WHERE
+            status_code IN ('S010601', 'S010603');
+    </select>
+
+    <!-- Update -->
+    <update id="updateReportStatus" parameterType="ReportMember">
+        UPDATE
+            member_report
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_report_no = #{memberReportNo};
+    </update>
+
+    <update id="updateStatus" parameterType="Member">
+        UPDATE
+            member
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_no = #{memberNo};
+    </update>
+
+    <insert id="insertReport" parameterType="ReportMember">
+        INSERT INTO member_report
+            (m_no, m_target_no, type_code, m_report_reason, m_report_date, status_code)
+        VALUES
+            (#{memberNo}, #{memberTargetNo}, #{typeCode}, #{memberReportReason}, NOW(), 'S010601')
+    </insert>
+
+</mapper>
