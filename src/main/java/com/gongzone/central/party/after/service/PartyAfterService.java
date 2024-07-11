@@ -6,4 +6,8 @@ public interface PartyAfterService {
 
 	void purchase(PartyPurchaseRequest partyPurchaseRequest);
 
+
+	// Below for test
+	void testInsertParty();
+
 }

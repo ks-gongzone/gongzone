@@ -46,4 +46,28 @@ public class PartyAfterController {
 		return response;
 	}
 
+	@Operation(summary = "테스트: 활성 파티를 삽입한다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+						 description = "SUCCESS",
+						 content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "500",
+						 description = "FAILED_INTERNAL_ERROR"),
+	})
+	@PostMapping("/test")
+	public ResponseEntity<Result> postTestParty() {
+		ResponseEntity<Result> response;
+
+		try {
+			partyAfterService.testInsertParty();
+			response = ResponseEntity.ok().body(new Result("SUCCESS"));
+		} catch (Exception e) {
+			System.err.printf("Exception during postTestParty: \n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
+			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
+		}
+
+		return response;
+	}
+
 }
