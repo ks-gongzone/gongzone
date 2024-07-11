@@ -1,8 +1,8 @@
 package com.gongzone.central.point.service;
 
+import com.gongzone.central.party.after.domain.request.PartyPurchaseRequest;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
-import com.gongzone.central.point.domain.request.PointDecreaseRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import java.util.List;
 
@@ -18,6 +18,6 @@ public interface PointService {
 
 	void withdraw(String memberNo, PointWithdrawRequest request);
 
-	String decrease(String memberPointNo, PointDecreaseRequest request);
+	String decrease(String memberPointNo, PartyPurchaseRequest request);
 
 }

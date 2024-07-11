@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +31,14 @@ public class PartyAfterController {
 			@ApiResponse(responseCode = "500",
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
-	@PostMapping("/purchase")
-	public ResponseEntity<Result> postPartyPurchase(@RequestBody PartyPurchaseRequest partyPurchaseRequest) {
+	@PostMapping("/{partyNo}/purchase/{memberNo}")
+	public ResponseEntity<Result> postPartyPurchase(@PathVariable String partyNo,
+													@PathVariable String memberNo,
+													@RequestBody PartyPurchaseRequest partyPurchaseRequest) {
 		ResponseEntity<Result> response;
 
 		try {
-			partyAfterService.purchase(partyPurchaseRequest);
+			partyAfterService.purchase(partyNo, memberNo, partyPurchaseRequest);
 			response = ResponseEntity.ok().body(new Result("SUCCESS"));
 		} catch (Exception e) {
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
