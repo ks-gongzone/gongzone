@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.myInfo.interaction.mapper.InteractionMapper">
+    <resultMap id="interactionMemberResultMap" type="com.gongzone.central.member.myInfo.interaction.domain.InteractionMember">
+        <id     property="memberNo"     column="m_no" />
+        <result property="memberName"   column="m_name" />
+        <result property="gender"       column="m_gender" />
+        <!-- 테이블에 존재하지 않는 가상 컬럼 생성 -->
+        <result property="isFollowing"  column="isFollowing"/>
+        <result property="isBlocked"    column="isBlocked"/>
+    </resultMap>
+    <!-- read -->
+    <!-- memberNo 활용, 유저 조회 및 팔로우 차단 상태 체크 -->
+    <select id="findMemberByNo" resultMap="interactionMemberResultMap">
+        SELECT
+            m.m_no,
+            m.m_name,
+            m.m_gender,
+            CASE
+                WHEN f.m_no IS NOT NULL THEN TRUE
+                ELSE FALSE
+            END AS isFollowing,
+            CASE
+                WHEN b.m_no IS NOT NULL THEN TRUE
+                ELSE FALSE
+            END AS isBlocked
+        FROM
+            member AS m
+        LEFT JOIN
+            follow AS f ON m.m_no = f.m_target_no AND f.m_no = #{currentUserNo}
+        LEFT JOIN
+            block AS b ON m.m_no = b.m_target_no AND b.m_no = #{currentUserNo}
+        WHERE
+            m.m_no = #{memberNo}
+    </select>
+    <!-- 전체 회원 이름 검색 -->
+    <select id="findAllMembers" resultMap="interactionMemberResultMap">
+        SELECT
+            m.m_no,
+            m.m_name,
+            m.m_gender,
+        CASE
+            WHEN f.m_no IS NOT NULL THEN TRUE
+            ELSE FALSE
+        END AS isFollowing,
+        CASE
+            WHEN b.m_no IS NOT NULL THEN TRUE
+            ELSE FALSE
+        END AS isBlocked
+        FROM member AS m
+        LEFT JOIN
+            follow AS f ON m.m_no = f.m_target_no AND f.m_no = #{currentUserNo}
+        LEFT JOIN
+            block AS b ON m.m_no = b.m_target_no AND b.m_no = #{currentUserNo}
+        WHERE
+            m.m_name LIKE CONCAT('%', #{memberName}, '%')
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+    <!-- 블랙리스트(악성) 유저 관리 -->
+    <select id="getWarningCount" resultType="int">
+        SELECT COUNT(*) FROM block WHERE m_target_no = #{memberNo}
+    </select>
+    <!-- 충성(인기) 유저 관리 -->
+    <select id="getMemberFollowCount" resultType="int">
+        SELECT COUNT(*) FROM follow WHERE m_target_no = #{memberNo}
+    </select>
+    <!-- 전체 유저 수 조회 -->
+    <select id="getTotalMembers" resultType="int">
+        SELECT COUNT(m_no) FROM member
+    </select>
+</mapper>
