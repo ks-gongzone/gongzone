@@ -10,7 +10,7 @@ public class ReportMember {
     private String memberNo;
     private String memberTargetNo;
     private String typeCode;
-    private String meemberReportReason;
+    private String memberReportReason;
     private Date memberReportDate;  //신고일시
     private String statusCode;
     private String statusReason;

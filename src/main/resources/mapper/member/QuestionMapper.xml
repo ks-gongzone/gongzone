@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.question.mapper.QuestionMapper">
+
+    <select id="findQuestionAll" resultType="QuestionMember">
+        SELECT
+            m_question_no AS memberQuestionNo,
+            m_no AS memberNo,
+            type_code AS typeCode,
+            m_question_body AS memberQuestionBody,
+            m_question_date AS memberQuestionDate,
+            status_code AS statusCode
+        FROM
+            member_question
+        WHERE
+            status_code IN ('S010701', 'S010703');
+    </select>
+
+    <update id="updateQuestionStatus" parameterType="QuestionMember">
+        UPDATE
+            member_question
+        SET
+            status_code = #{statusCode.code}
+        WHERE
+            m_question_no = #{memberQuestionNo}
+    </update>
+
+    <insert id="insertQuestion" parameterType="QuestionMember">
+        INSERT INTO member_question
+            (m_no, type_code, m_question_body, m_question_date, status_code)
+        VALUES
+            (#{memberNo}, #{typeCode}, #{memberQuestionBody}, NOW(), 'S010701')
+    </insert>
+
+</mapper>

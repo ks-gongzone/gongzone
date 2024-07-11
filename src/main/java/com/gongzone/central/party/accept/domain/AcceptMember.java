@@ -17,4 +17,6 @@ public class AcceptMember {
     private String memberAmount;
     private String memberEmail;
     private String partyNo;
+    private int requestPrice;
+    private String partyMemberNo;
 }

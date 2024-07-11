@@ -17,6 +17,8 @@ public interface AcceptService {
     void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount);
     RequestParty getRequestMemberByPartyId(String partyId, String partyNo);
     AcceptDetail getPartyDetailByPartyNo(String partyNo);
+    void completeParty(String partyNo);
+
 //    void deletePartyStatusByNo(String partyId);
 
 }

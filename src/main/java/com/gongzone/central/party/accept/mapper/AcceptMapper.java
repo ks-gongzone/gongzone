@@ -27,4 +27,7 @@ public interface AcceptMapper {
     void deletePartyRequest(@Param("partyId") String partyId, @Param("partyNo") String partyNo);
     int getPartyUnitPrice(String partyNo);
     void requestJoin(RequestParty requestParty);
+    void completeBoardStatus(String boardNo);
+    void completePartyStatus(String partyNo);
+    void insertPartyPurchase(@Param("partyNo") String partyNo, @Param("partyMemberNo") String partyMemberNo, @Param("requestPrice") int requestPrice);
 }
