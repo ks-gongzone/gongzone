@@ -4,7 +4,11 @@ import com.gongzone.central.member.note.domain.Note;
 import com.gongzone.central.member.note.mapper.NoteMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,27 +19,35 @@ public class NoteServiceImpl implements NoteService {
 
 
     @Override
-    public Note getNoteByNo(int noteNo) {
-        return noteMapper.getNoteByNo(noteNo);
+    public Mono<Note> getNoteByNo(int noteNo) {
+        return Mono.fromCallable(() -> noteMapper.getNoteByNo(noteNo))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public List<Note> getNoteListByMemberNo(String memberNo) {
-        return noteMapper.noteList(memberNo);
+    public Flux<Note> getNoteListByMemberNo(String memberNo) {
+        return Flux.defer(() -> Flux.fromIterable(noteMapper.noteList(memberNo)))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public void saveNote(Note note) {
-        noteMapper.insertNote(note);
+    public Mono<Void> saveNote(Note note) {
+        return Mono.fromRunnable(() -> noteMapper.insertNote(note))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 
     @Override
-    public void updateReadTime(int noteNo) {
-        noteMapper.updateReadTimeNote(noteNo);
+    public Mono<Void> updateReadTime(int noteNo) {
+        return Mono.fromRunnable(() -> noteMapper.updateReadTimeNote(noteNo))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 
     @Override
-    public void updateDeleteNote(int noteNo) {
-        noteMapper.updateDeleteNote(noteNo);
+    public Mono<Void> updateDeleteNote(int noteNo) {
+        return Mono.fromRunnable(() -> noteMapper.updateDeleteNote(noteNo))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 }
