@@ -6,14 +6,15 @@ import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import java.util.List;
 
 public interface PointService {
-	List<PointHistory> getHistories(String memberPointNo, int size, int page);
 
-	PointHistory getHistory(String memberPointNo, String pointHistoryNo);
+	List<PointHistory> getHistories(String memberNo, int size, int page);
 
-	Integer getCurrentPoint(String memberPointNo);
+	PointHistory getHistory(String memberNo, String pointHistoryNo);
 
-	void charge(String memberPointNo, PointChargeRequest request);
+	Integer getCurrentPoint(String memberNo);
 
-	void withdraw(String memberPointNo, PointWithdrawRequest request);
+	void charge(String memberNo, PointChargeRequest request);
+
+	void withdraw(String memberNo, PointWithdrawRequest request);
 
 }

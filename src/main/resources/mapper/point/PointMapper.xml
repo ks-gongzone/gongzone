@@ -139,5 +139,13 @@
       member_point
   </select>
 
+  <select id="getMemberPointNo" resultType="String">
+    SELECT
+      m_point_no
+    FROM
+      member_point
+    WHERE
+      m_no = #{memberNo};
+  </select>
 
 </mapper>
