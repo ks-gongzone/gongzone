@@ -1,10 +1,17 @@
 package com.gongzone.central.point.service;
 
 
+import static com.gongzone.central.utils.StatusCode.STATUS_POINT_WITHDRAW_SUCCESS;
+
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
+import com.gongzone.central.point.domain.request.PointDecreaseRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.point.payment.domain.Payment;
+import com.gongzone.central.point.payment.service.PaymentHistoryService;
+import com.gongzone.central.point.withdrawal.domain.Withdraw;
+import com.gongzone.central.point.withdrawal.service.WithdrawHistoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +21,9 @@ import org.springframework.stereotype.Service;
 public class PointServiceImpl implements PointService {
 
 	private final PointTransactionService pointTransactionService;
+	private final PointHistoryService pointHistoryService;
+	private final PaymentHistoryService paymentHistoryService;
+	private final WithdrawHistoryService withdrawHistoryService;
 
 	private final PointMapper pointMapper;
 
@@ -84,6 +94,17 @@ public class PointServiceImpl implements PointService {
 	 */
 	private String getMemberPointNo(String memberNo) {
 		return pointMapper.getMemberPointNo(memberNo);
+	}
+
+	/**
+	 * 요청을 기반으로 회원 포인트를 차감한다.
+	 *
+	 * @param request 포인트 차감 객체
+	 * @return historyNo
+	 */
+	@Override
+	public String decrease(String memberPointNo, PointDecreaseRequest request) {
+		return pointHistoryService.insert(memberPointNo, request);
 	}
 
 }

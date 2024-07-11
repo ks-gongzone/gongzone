@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.party.after.mapper.PartyAfterMapper">
+
+  <!-- Result Map -->
+  <resultMap id="PartyPurchaseDetailResultMap" type="PartyPurchaseDetail">
+    <id column="purchase_no" property="purchaseNo" />
+    <result column="p_no" property="partyNo" />
+    <result column="p_member_no" property="purchaseMemberNo" />
+    <result column="purchase_price" property="purchasePrice" />
+    <result column="status_code" property="status" />
+  </resultMap>
+
+  <resultMap id="PartyPurchaseResultMap" type="PartyPurchase">
+    <id column="purchase_detail_no" property="purchaseDetailNo" />
+    <result column="purchase_no" property="purchaseNo" />
+    <result column="point_history_no" property="pointHistoryNo" />
+    <result column="purchase_price" property="purchasePrice" />
+    <result column="purchase_date" property="purchaseDate" />
+  </resultMap>
+
+
+  <!-- Query -->
+  <insert id="insertPurchaseDetail">
+    INSERT INTO party_purchase_detail (purchase_no, point_history_no, purchase_price)
+    VALUES
+      (#{purchaseNo}, #{pointHistoryNo}, #{purchasePrice});
+  </insert>
+
+  <update id="updatePurchaseSuccess">
+    UPDATE party_purchase
+    SET status_code = 'S060302' -- 파티 결제 성공 코드
+    WHERE
+      purchase_no = #{purchaseNo};
+  </update>
+
+</mapper>
