@@ -64,7 +64,7 @@
   <!-- 여기 as 붙임-->
   <select id="getCurrentPoint" parameterType="String" resultType="int">
     SELECT
-      m_point AS memberPoint
+      m_point
     FROM
       member_point
     WHERE
@@ -139,5 +139,13 @@
       member_point
   </select>
 
+  <select id="getMemberPointNo" resultType="String">
+    SELECT
+      m_point_no
+    FROM
+      member_point
+    WHERE
+      m_no = #{memberNo};
+  </select>
 
 </mapper>

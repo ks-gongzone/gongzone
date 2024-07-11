@@ -1,6 +1,7 @@
 package com.gongzone.central.party.accept.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gongzone.central.board.domain.BoardReply;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,5 +35,6 @@ public class AcceptDetail {
     private String partyNo;         // 진짜 partyNo
     private String partyLeader;
     private List<RequestMember> requestMember;
+    private List<BoardReply> boardReply;
     private String img;
 }

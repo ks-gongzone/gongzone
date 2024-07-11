@@ -1,5 +1,7 @@
 package com.gongzone.central.party.accept.service;
 
+import com.gongzone.central.board.domain.BoardReply;
+import com.gongzone.central.board.mapper.BoardMapper;
 import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.party.accept.mapper.AcceptMapper;
 import com.gongzone.central.utils.MySqlUtil;
@@ -15,6 +17,12 @@ import java.util.List;
 public class AcceptServiceImpl implements AcceptService {
 
     private final AcceptMapper acceptMapper;
+    private final BoardMapper boardMapper;
+
+    @Override
+    public PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo) {
+        return acceptMapper.getPartyMemberPurchase(memberNo, partyNo);
+    }
 
     @Override
     public List<AcceptDetail> getPartyList(String partyNo) {
@@ -48,6 +56,10 @@ public class AcceptServiceImpl implements AcceptService {
         List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
         System.out.println("requestMember : " + requestMember);
         detail.setRequestMember(requestMember);
+
+        String boardNos = detail.getBoardNo();
+        List<BoardReply> boardReply = boardMapper.getBoardReplyList(boardNos);
+        detail.setBoardReply(boardReply);
 
         return detail;
     }
