@@ -20,9 +20,16 @@
         SELECT * FROM note WHERE note_no = #{noteNo}
     </select>
 
-    <select id="noteList" resultMap="NoteResultMap">
+    <select id="noteList" resultType="Note">
         SELECT
-            *
+            note_no AS noteNo,
+            m_target_no AS memberNo,
+            m_target_no AS memberTargetNo,
+            note_body AS noteBody,
+            note_send_time AS noteSendTime,
+            note_read_time AS noteReadTime,
+            status_code AS statusCode,
+            status_code_target AS statusCodeTarget
         FROM
             note
         WHERE
