@@ -83,6 +83,7 @@ public class ReportController {
     @PostMapping("/ReportMember/report")
     public ResponseEntity<Boolean> reportMemberInsert(@RequestBody ReportMember reportMember) {
         System.out.println("11111111111111111111111111");
+        System.out.println("reportMember" + reportMember);
         try {
             reportService.getReportMemberInsert(reportMember);
             return ResponseEntity.ok(true);
