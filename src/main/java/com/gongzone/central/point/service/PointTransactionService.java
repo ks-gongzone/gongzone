@@ -61,6 +61,7 @@ public class PointTransactionService {
 		withdraw.setPointHistoryNo(historyNo);
 
 		// 포인트 인출 성공 시
+		// TODO: 유형 별 상태 코드 부여하도록
 		withdraw.setStatusCode(STATUS_POINT_WITHDRAW_SUCCESS.getCode());
 		withdrawHistoryService.insert(withdraw);
 
@@ -74,7 +75,7 @@ public class PointTransactionService {
 	 * @param memberPointNo 회원 포인트 번호
 	 * @param request       포인트 변동 객체
 	 */
-	private void updatePoint(String memberPointNo, PointRequest request) {
+	public void updatePoint(String memberPointNo, PointRequest request) {
 		int change = request.getPointChange();
 		pointMapper.updatePoint(memberPointNo, change);
 	}

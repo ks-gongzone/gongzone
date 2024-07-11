@@ -3,6 +3,7 @@ package com.gongzone.central.point.service;
 
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
+import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class PointServiceImpl implements PointService {
 
 	private final PointTransactionService pointTransactionService;
+	private final PointHistoryService pointHistoryService;
 
 	private final PointMapper pointMapper;
 
@@ -84,6 +86,21 @@ public class PointServiceImpl implements PointService {
 	 */
 	private String getMemberPointNo(String memberNo) {
 		return pointMapper.getMemberPointNo(memberNo);
+	}
+
+	@Override
+	public void update(String memberNo, PointRequest request) {
+		pointTransactionService.updatePoint(memberNo, request);
+	}
+
+	@Override
+	public String insertHistory(String memberNo, PointRequest request) {
+		return pointHistoryService.insert(getMemberPointNo(memberNo), request);
+	}
+
+	@Override
+	public void updateHistorySuccess(String historyNo, PointRequest request) {
+		pointHistoryService.updateSuccess(historyNo, request);
 	}
 
 }

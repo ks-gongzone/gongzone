@@ -23,7 +23,7 @@ public class PointHistoryService {
 	 */
 	public String insert(String memberPointNo, PointRequest request) {
 		calculatePointUpdate(memberPointNo, request);
-
+		
 		String last = pointMapper.getLastHistoryPk();
 		PointHistory pointHistory = PointHistory.builder()
 												.pointHistoryNo(MySqlUtil.generatePrimaryKey(last))
