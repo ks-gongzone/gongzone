@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.note.mapper.NoteMapper">
+
+    <resultMap id="NoteResultMap" type="Note">
+        <id property="note_no" column="noteNo"/>
+        <result property="m_no" column="memberNo"/>
+        <result property="m_target_no" column="memberTargetNo"/>
+        <result property="note_body" column="noteBody"/>
+        <result property="note_send_time" column="noteSendTime"/>
+        <result property="note_read_time" column="noteReadTime"/>
+        <result property="status_code" column="statusCode"/>
+        <result property="status_code_target" column="statusCodeTarget"/>
+    </resultMap>
+
+    <select id="getNoteByNo" resultMap="NoteResultMap">
+        SELECT * FROM note WHERE note_no = #{noteNo}
+    </select>
+
+    <select id="noteList" resultMap="NoteResultMap">
+        SELECT
+            *
+        FROM
+            note
+        WHERE
+            m_no = #{memberNo}
+          OR
+            m_target_no = #{memberNo}
+          AND
+            (status_code = 'S010301' OR status_code = 'S010302')
+          AND
+            (status_code_target = 'S010301' OR status_code_target = 'S010302')
+    </select>
+
+    <insert id="insertNote" parameterType="Note">
+        INSERT INTO note (m_no, m_target_no, note_body, note_read_time, status_code, status_code_target)
+        VALUES (#{memberNo}, #{memberTargetNo}, #{noteBody}, #{noteReadTime}, 'S010301', 'S010301')
+    </insert>
+
+    <update id="updateReadTimeNote">
+        UPDATE note
+        SET
+            note_read_time = NOW(),
+            status_code = 'S010302',
+            status_code_target = 'S010302'
+        WHERE note_no = #{noteNo}
+    </update>
+
+    <update id="updateDeleteNote">
+        UPDATE note
+        SET
+            status_code = 'S010303',
+            status_code_target = 'S010303'
+        WHERE note_no = #{noteNo}
+    </update>
+
+</mapper>
