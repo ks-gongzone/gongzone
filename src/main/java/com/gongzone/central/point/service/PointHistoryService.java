@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PointHistoryService {
+
 	private final PointMapper pointMapper;
 
 
