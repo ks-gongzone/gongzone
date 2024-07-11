@@ -7,14 +7,14 @@ public enum TypeCode {
     TYPE_2("T010102", "회원", "로그인", "네이버"),
     TYPE_3("T010103", "회원", "로그인", "구글"),
     TYPE_4("T010104", "회원", "로그인", "카카오"),
-    TYPE_5("T010201", "회원", "알림", "공지"),
-    TYPE_6("T010202", "회원", "알림", "광고성"),
-    TYPE_7("T010203", "회원", "알림", "회원"),
-    TYPE_8("T010204", "회원", "알림", "쪽지"),
-    TYPE_9("T010205", "회원", "알림", "게시글"),
-    TYPE_10("T010206", "회원", "알림", "파티"),
-    TYPE_11("T010207", "회원", "알림", "SMS"),
-    TYPE_12("T010208", "회원", "알림", "이메일"),
+    announce("T010201", "회원", "알림", "공지"),
+    marketing("T010202", "회원", "알림", "광고성"),
+    member("T010203", "회원", "알림", "회원"),
+    note("T010204", "회원", "알림", "쪽지"),
+    bulletin("T010205", "회원", "알림", "게시글"),
+    party("T010206", "회원", "알림", "파티"),
+    sms("T010207", "회원", "알림", "SMS"),
+    email("T010208", "회원", "알림", "이메일"),
     TYPE_13("T010301", "회원", "탈퇴", "서비스 불만족"),
     TYPE_14("T010302", "회원", "탈퇴", "기타"),
     TYPE_15("T010401", "회원", "제재", "부적절한 콘텐츠"),
@@ -52,7 +52,6 @@ public enum TypeCode {
     TYPE_POINT_DECREASE_ADMIN_3("T030403", "포인트", "감소(관리자)", "파티장 입금");
 
     @Getter
-
     private final String code;
     private final String codeGroup;
     private final String codeGroupSub;
@@ -72,6 +71,15 @@ public enum TypeCode {
             }
         }
         throw new IllegalArgumentException("Invalid status code: " + code);
+    }
+
+    public static TypeCode fromCode(String code) {
+        for (TypeCode typeCode : values()) {
+            if (typeCode.getCode().equals(code)) {
+                return typeCode;
+            }
+        }
+        throw new IllegalArgumentException("Unknown typeCode: " + code);
     }
 
     @Override

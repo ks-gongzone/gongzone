@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class PointController {
+
 	private final PointService pointService;
 
 	@Operation(summary = "특정 회원의 포인트 내역 전체를 요청한다.")
@@ -35,9 +36,9 @@ public class PointController {
 			@ApiResponse(responseCode = "500",
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
-	@GetMapping("/{memberPointNo}/point/history")
-	public ResponseEntity<Result> getMemberPointHistories(@Parameter(description = "회원 포인트 번호(MPxxxxxx)")
-														  @PathVariable String memberPointNo,
+	@GetMapping("/{memberNo}/point/history")
+	public ResponseEntity<Result> getMemberPointHistories(@Parameter(description = "회원 번호(Mxxxxxx)")
+														  @PathVariable String memberNo,
 														  @Parameter(description = "페이지 크기(int)")
 														  @RequestParam(defaultValue = "10") int pageSize,
 														  @Parameter(description = "요청 페이지(int)")
@@ -45,7 +46,7 @@ public class PointController {
 		ResponseEntity<Result> response;
 
 		try {
-			List<PointHistory> pointHistories = pointService.getHistories(memberPointNo, pageSize, pageNo);
+			List<PointHistory> pointHistories = pointService.getHistories(memberNo, pageSize, pageNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
 			System.err.println("Exception during getAllMemberPointHistory: " + e.getClass().getName());
@@ -64,15 +65,15 @@ public class PointController {
 			@ApiResponse(responseCode = "500",
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
-	@GetMapping("/{memberPointNo}/point/history/{pointHistoryNo}")
-	public ResponseEntity<Result> getMemberPointHistory(@Parameter(description = "회원 포인트 번호(MPxxxxxx)")
-														@PathVariable String memberPointNo,
+	@GetMapping("/{memberNo}/point/history/{pointHistoryNo}")
+	public ResponseEntity<Result> getMemberPointHistory(@Parameter(description = "회원 번호(Mxxxxxx)")
+														@PathVariable String memberNo,
 														@Parameter(description = "포인트 내역 번호(PHxxxxxx)")
 														@PathVariable String pointHistoryNo) {
 		ResponseEntity<Result> response;
 
 		try {
-			PointHistory pointHistory = pointService.getHistory(memberPointNo, pointHistoryNo);
+			PointHistory pointHistory = pointService.getHistory(memberNo, pointHistoryNo);
 			response = ResponseEntity.ok(new Result(pointHistory));
 		} catch (Exception e) {
 			System.err.println("Exception during getMemberPointHistory: " + e.getClass().getName());
@@ -91,13 +92,13 @@ public class PointController {
 			@ApiResponse(responseCode = "500",
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
-	@GetMapping("/{memberPointNo}/point")
-	public ResponseEntity<Result> getMemberPoint(@Parameter(description = "회원 포인트 번호(MPxxxxxx)")
-												 @PathVariable String memberPointNo) {
+	@GetMapping("/{memberNo}/point")
+	public ResponseEntity<Result> getMemberPoint(@Parameter(description = "회원 번호(Mxxxxxx)")
+												 @PathVariable String memberNo) {
 		ResponseEntity<Result> response;
 
 		try {
-			Integer point = pointService.getCurrentPoint(memberPointNo);
+			Integer point = pointService.getCurrentPoint(memberNo);
 			response = ResponseEntity.ok(new Result(point));
 		} catch (Exception e) {
 			System.err.println("Exception during getMemberPoint: " + e.getClass().getName());
@@ -116,15 +117,15 @@ public class PointController {
 			@ApiResponse(responseCode = "500",
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
-	@PostMapping("/{memberPointNo}/point/charge")
-	public ResponseEntity<Result> postMemberPointCharge(@Parameter(description = "회원 포인트 번호(MPxxxxxx)")
-														@PathVariable String memberPointNo,
+	@PostMapping("/{memberNo}/point/charge")
+	public ResponseEntity<Result> postMemberPointCharge(@Parameter(description = "회원 번호(Mxxxxxx)")
+														@PathVariable String memberNo,
 														@Parameter(description = "포인트 충전 요청 객체(json)")
 														@RequestBody PointChargeRequest request) {
 		ResponseEntity<Result> response;
 
 		try {
-			pointService.charge(memberPointNo, request);
+			pointService.charge(memberNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
 			System.err.println("Error during postMemberPointCharge: " + e.getClass().getName());
@@ -143,15 +144,15 @@ public class PointController {
 			@ApiResponse(responseCode = "500",
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
-	@PostMapping("/{memberPointNo}/point/withdraw")
-	public ResponseEntity<Result> postMemberPointWithdraw(@Parameter(description = "회원 포인트 번호(MPxxxxxx)")
-														  @PathVariable String memberPointNo,
+	@PostMapping("/{memberNo}/point/withdraw")
+	public ResponseEntity<Result> postMemberPointWithdraw(@Parameter(description = "회원 번호(Mxxxxxx)")
+														  @PathVariable String memberNo,
 														  @Parameter(description = "포인트 인출 요청 객체(json)")
 														  @RequestBody PointWithdrawRequest request) {
 		ResponseEntity<Result> response;
 
 		try {
-			pointService.withdraw(memberPointNo, request);
+			pointService.withdraw(memberNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
 			System.err.println("Error during point postMemberPointWithdraw: " + e.getClass().getName());

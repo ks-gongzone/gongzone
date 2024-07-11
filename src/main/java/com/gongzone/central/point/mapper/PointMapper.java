@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PointMapper {
+
 	List<PointHistory> getHistories(@Param("memberPointNo") String memberPointNo,
 									@Param("size") int size,
 									@Param("page") int page);
@@ -32,5 +33,7 @@ public interface PointMapper {
 	void insertPoint(Point point);
 
 	String getLastMemberPointNo();
+
+	String getMemberPointNo(String memberNo);
 
 }

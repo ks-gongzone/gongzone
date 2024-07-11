@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.party.after.mapper.PartyAfterMapper">
+
+  <!-- Result Map -->
+  <resultMap id="PartyPurchaseDetailResultMap" type="PartyPurchaseDetail">
+    <id column="purchase_no" property="purchaseNo" />
+    <result column="p_no" property="partyNo" />
+    <result column="p_member_no" property="purchaseMemberNo" />
+    <result column="purchase_price" property="purchasePrice" />
+    <result column="status_code" property="status" />
+  </resultMap>
+
+  <resultMap id="PartyPurchaseResultMap" type="PartyPurchase">
+    <id column="purchase_detail_no" property="purchaseDetailNo" />
+    <result column="purchase_no" property="purchaseNo" />
+    <result column="point_history_no" property="pointHistoryNo" />
+    <result column="purchase_price" property="purchasePrice" />
+    <result column="purchase_date" property="purchaseDate" />
+  </resultMap>
+
+
+  <!-- Query -->
+  <insert id="insertPurchaseDetail">
+    INSERT INTO party_purchase_detail (purchase_no, point_history_no, purchase_price)
+    VALUES
+      (#{purchaseNo}, #{pointHistoryNo}, #{purchasePrice});
+  </insert>
+
+  <update id="updatePurchaseSuccess">
+    UPDATE party_purchase
+    SET status_code = 'S060302' -- 파티 결제 성공 코드
+    WHERE
+      purchase_no = #{purchaseNo};
+  </update>
+
+
+  <!--  테스트: 게시글 삽입 -->
+  <insert id="testInsertBoard">
+    -- 1. 게시글 삽입
+    INSERT INTO board (b_no, m_no, b_title, b_body, b_period)
+    VALUES
+      (#{boardNo}, 'M000002', 'party after 테스트', 'party after 테스트 본문', '2024-08-01 18:00:00');
+  </insert>
+  <select id="testGetLastIdxBoard" resultType="String">
+    SELECT
+      max(b_no)
+    FROM
+      board;
+  </select>
+  <insert id="testInsertLocation">
+    -- 1-1. 게시글 위치 삽입
+    INSERT INTO location (b_no, location_do, location_si, location_gu, location_dong, location_detail, location_x, location_y)
+    VALUES
+      (#{boardNo}, '전북특별자치도', '전주시', '완산구', '효자동1가', '뷰티빌경로당', 35.81099567968826, 127.114009593637)
+  </insert>
+  <insert id="testInsertFile" useGeneratedKeys="true">
+    -- 1-2. 게시글 이미지 삽입
+    INSERT INTO file (file_original_name, file_new_name, file_path, file_size, file_date)
+    VALUES
+      ('밥.png', '밥1822030091846800.png', '/api/attachement/20240708/밥1822030091846800.png', 217360, '2024-07-08 12:09:26');
+  </insert>
+  <insert id="testInsertFileRelation">
+    -- 1-3. 게시글 이미지 관계 삽입
+    INSERT INTO file_relation (file_no, file_usage)
+    VALUES
+      (#{fileNo}, #{boardNo});
+  </insert>
+
+  <!--  테스트: 파티 삽입 -->
+  <insert id="testInsertParty">
+    -- 2. 파티 삽입
+    INSERT INTO party (p_no, b_no, c_code, p_url, p_amount, p_amount_remain, p_price, p_price_remain)
+    VALUES
+      (#{partyNo}, #{boardNo}, 'CF0101', 'https://gongzone.shop', 2, 0, 2000, 0) -- 업데이트 과정 생략
+  </insert>
+  <select id="testGetLastIdxParty" resultType="String">
+    SELECT
+      max(p_no)
+    FROM
+      party;
+  </select>
+
+  <!--  테스트: 파티장, 파티원 삽입 -->
+  <insert id="testInsertPartyLeader">
+    -- 3. 파티장 삽입
+    INSERT INTO party_member (p_member_no, p_no, m_no, pm_amount, pm_price, member_is_leader)
+    VALUES
+      (#{partyMemberNo}, #{partyNo}, 'M000002', 1, #{purchasePrice}, '파티장');
+  </insert>
+  <insert id="testInsertPartyMember">
+    -- 3-1. 파티원 삽입
+    INSERT INTO party_member (p_member_no, p_no, m_no, pm_amount, pm_price)
+    VALUES
+      (#{partyMemberNo}, #{partyNo}, 'M000003', 1, #{purchasePrice});
+  </insert>
+  <select id="testGetLastIdxPartyMember" resultType="String">
+    SELECT
+      max(p_member_no)
+    FROM
+      party_member;
+  </select>
+
+  <!-- 테스트: 게시글, 파티 상태 변경(모집완료, 결제대기) -->
+  <update id="testChangeBoardStatus">
+    -- 4. 파티 상태 변경(모집완료)
+    UPDATE board
+    SET status_code = #{status}
+    WHERE
+      b_no = #{boardNo};
+  </update>
+  <update id="testChangePartyStatus">
+    -- 4. 파티 상태 변경(결제대기)
+    UPDATE party
+    SET status_code = #{status}
+    WHERE
+      p_no = #{partyNo};
+  </update>
+
+  <!-- 테스트: 파티 결제내역 삽입 -->
+  <insert id="testInsertPartyPurchase">
+    -- 5. 파티 결제내역 삽입(초기화)
+    INSERT INTO party_purchase (p_no, p_member_no, purchase_price)
+    VALUES
+      (#{partyNo}, #{partyMemberNo}, #{purchasePrice});
+  </insert>
+
+</mapper>
