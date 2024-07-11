@@ -278,4 +278,22 @@
             (#{partyNo}, #{partyMemberNo}, #{requestPrice}, 'S060301')
     </insert>
 
+    <select id="getPartyMemberPurchase" resultType="PartyMemberPurchase">
+        SELECT
+            pp.purchase_no AS purchaseNo,
+            pp.purchase_price AS purchasePrice,
+            mp.m_point AS memberPoint
+        FROM
+            party_purchase AS pp
+                INNER JOIN
+            party_member AS pm
+            ON
+                pp.p_member_no = pm.p_member_no
+                INNER JOIN
+            member_point AS mp
+            ON
+                pm.m_no = mp.m_no
+        WHERE
+            pm.m_no = #{memberNo} AND pm.p_no = #{partyNo}
+    </select>
 </mapper>
