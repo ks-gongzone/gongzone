@@ -38,6 +38,8 @@
         <result property="memberNo" column="m_no"/>
         <result property="replyBody" column="reply_body"/>
         <result property="replyDate" column="reply_date"/>
+        <result property="replyReportCount" column="reply_report_count"/>
+        <result property="statusCode" column="status_code"/>
     </resultMap>
 
     <select id="getBoardReplyList" parameterType="String" resultMap="BoardReplyList">
@@ -46,7 +48,9 @@
             r.b_no,
             r.m_no,
             r.reply_body,
-            r.reply_date
+            r.reply_date,
+            r.reply_report_count,
+            r.status_code
         FROM
             reply AS r
         WHERE

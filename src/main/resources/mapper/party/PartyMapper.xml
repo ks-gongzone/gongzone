@@ -254,6 +254,7 @@
             p_no = #{partyNo};
     </select>
 
+
     <update id="completeBoardStatus">
         UPDATE board
         SET
