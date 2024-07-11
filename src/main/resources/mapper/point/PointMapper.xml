@@ -64,7 +64,7 @@
   <!-- 여기 as 붙임-->
   <select id="getCurrentPoint" parameterType="String" resultType="int">
     SELECT
-      m_point AS memberPoint
+      m_point
     FROM
       member_point
     WHERE

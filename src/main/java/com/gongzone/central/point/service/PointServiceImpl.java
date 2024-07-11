@@ -1,9 +1,9 @@
 package com.gongzone.central.point.service;
 
 
-import com.gongzone.central.party.after.domain.request.PartyPurchaseRequest;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointChargeRequest;
+import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import java.util.List;
@@ -88,15 +88,19 @@ public class PointServiceImpl implements PointService {
 		return pointMapper.getMemberPointNo(memberNo);
 	}
 
-	/**
-	 * 요청을 기반으로 회원 포인트를 차감한다.
-	 *
-	 * @param request 포인트 차감 객체
-	 * @return historyNo
-	 */
 	@Override
-	public String decrease(String memberPointNo, PartyPurchaseRequest request) {
-		return pointHistoryService.insert(memberPointNo, request);
+	public void update(String memberNo, PointRequest request) {
+		pointTransactionService.updatePoint(memberNo, request);
+	}
+
+	@Override
+	public String insertHistory(String memberNo, PointRequest request) {
+		return pointHistoryService.insert(getMemberPointNo(memberNo), request);
+	}
+
+	@Override
+	public void updateHistorySuccess(String historyNo, PointRequest request) {
+		pointHistoryService.updateSuccess(historyNo, request);
 	}
 
 }

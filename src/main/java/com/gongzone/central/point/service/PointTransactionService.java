@@ -75,7 +75,7 @@ public class PointTransactionService {
 	 * @param memberPointNo 회원 포인트 번호
 	 * @param request       포인트 변동 객체
 	 */
-	private void updatePoint(String memberPointNo, PointRequest request) {
+	public void updatePoint(String memberPointNo, PointRequest request) {
 		int change = request.getPointChange();
 		pointMapper.updatePoint(memberPointNo, change);
 	}

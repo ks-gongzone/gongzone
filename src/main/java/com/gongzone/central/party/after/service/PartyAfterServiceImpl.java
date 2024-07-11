@@ -6,7 +6,6 @@ import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.request.PartyPurchaseRequest;
 import com.gongzone.central.party.after.mapper.PartyAfterMapper;
-import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.utils.MySqlUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,27 +19,27 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 	private final PointService pointService;
 
 	private final PartyAfterMapper partyAfterMapper;
-	private final PointMapper pointMapper;
 
 
 	@Override
+	@Transactional
 	public void purchase(String partyNo, String memberNo, PartyPurchaseRequest request) {
 		PartyPurchaseDetail partyPurchaseDetail = request.getPartyPurchaseDetail();
 
-		try {
-			// 1. 포인트 삭감한다.
-			String historyNo = pointService.decrease(pointMapper.getMemberPointNo(memberNo), request);
+		// 1. 포인트 삭감한다.
+		pointService.update(memberNo, request);
+		String historyNo = pointService.insertHistory(memberNo, request);
 
-			// 2. 상세정보(PartyPurchaseDetail) 삽입
-			partyPurchaseDetail.setPointHistoryNo(historyNo);
-			partyAfterMapper.insertPurchaseDetail(partyPurchaseDetail);
+		// 2. 상세정보(PartyPurchaseDetail) 삽입
+		partyPurchaseDetail.setPointHistoryNo(historyNo);
+		partyAfterMapper.insertPurchaseDetail(partyPurchaseDetail);
 
-			// 3. 결제내역(PartyPurchase) 업데이트
-			String purchaseNo = partyPurchaseDetail.getPurchaseNo();
-			partyAfterMapper.updatePurchaseSuccess(purchaseNo);
-		} catch (Exception e) {
-			throw e;
-		}
+		// 3. 결제내역(PartyPurchase) 업데이트
+		String purchaseNo = partyPurchaseDetail.getPurchaseNo();
+		partyAfterMapper.updatePurchaseSuccess(purchaseNo);
+
+		// 4. 포인트 내역 업데이트
+		pointService.updateHistorySuccess(historyNo, request);
 	}
 
 	/**

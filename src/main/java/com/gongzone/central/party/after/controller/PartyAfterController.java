@@ -42,8 +42,8 @@ public class PartyAfterController {
 			response = ResponseEntity.ok().body(new Result("SUCCESS"));
 		} catch (Exception e) {
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
-			System.err.println("Exception during postPartyPurchase: " + e.getClass().getName());
-			System.err.println(e.getCause().toString());
+			System.err.printf("Exception:\n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
 		}
 
 		return response;
