@@ -22,6 +22,11 @@ public class AcceptServiceImpl implements AcceptService {
     private final MemberMapper memberMapper;
 
     @Override
+    public PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo) {
+        return acceptMapper.getPartyMemberPurchase(memberNo, partyNo);
+    }
+
+    @Override
     public List<AcceptDetail> getPartyList(String partyNo) {
         AcceptDetail detail = acceptMapper.getPartyList(partyNo);
         System.out.println("detail1266  : " + detail);

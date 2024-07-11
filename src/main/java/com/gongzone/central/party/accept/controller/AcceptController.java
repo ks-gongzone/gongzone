@@ -1,9 +1,6 @@
 package com.gongzone.central.party.accept.controller;
 
-import com.gongzone.central.party.accept.domain.AcceptDetail;
-import com.gongzone.central.party.accept.domain.AcceptMember;
-import com.gongzone.central.party.accept.domain.RequestMember;
-import com.gongzone.central.party.accept.domain.RequestStatus;
+import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.party.accept.service.AcceptService;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +36,11 @@ public class AcceptController {
     @GetMapping("/party/accept/{partyId}/participants")
     public List<AcceptMember> getParticipants(@PathVariable String partyId) {
         return acceptService.getParticipants(partyId);
+    }
+
+    @GetMapping("/party/purchase/{memberNo}/{partyNo}")
+    public PartyMemberPurchase getPurchaseInfo(@PathVariable String memberNo, @PathVariable String partyNo) {
+        return acceptService.getPurchaseInfo(memberNo, partyNo);
     }
 
 
