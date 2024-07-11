@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/boards")
 @Slf4j
@@ -29,13 +31,14 @@ public class BoardReplyController {
     }
 
     @PostMapping("/reply/add")
-    public ResponseEntity<String> addReply(@RequestBody BoardReply boardReply) {
+    public List<BoardReply> addReply(@RequestBody BoardReply boardReply) {
         try{
             boardReplyService.addReply(boardReply);
-            return ResponseEntity.ok("Reply Insert Success");
+            List<BoardReply> newReply = boardReplyService.getNewReply(boardReply.getBoardNo());
+            return newReply;
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.ok("Reply Insert Error");
+            return null;
         }
     }
 }
