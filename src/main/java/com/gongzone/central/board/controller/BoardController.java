@@ -1,5 +1,6 @@
 package com.gongzone.central.board.controller;
 
+import com.gongzone.central.board.domain.BoardReply;
 import com.gongzone.central.board.domain.BoardResponse;
 import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.domain.Board;
