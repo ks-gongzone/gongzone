@@ -57,6 +57,7 @@ public class AlertSEEServiceImpl implements AlertSEEService {
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(alertAllow -> {
                     TypeCode alertType = TypeCode.fromCode(alertSSE.getTypeCode());
+                    alertAllow.setMemberNo(alertSSE.getMemberNo());
                     if (shouldSendAlert(alertAllow, alertType)) {
                         return Mono.fromCallable(() -> {
                             alertSSEMapper.insertAlertSSE(alertSSE);

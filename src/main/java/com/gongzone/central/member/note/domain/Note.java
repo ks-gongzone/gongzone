@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 @Data
 public class Note {
     private int noteNo;                 // 고유번호
+    private String memberId;
     private String memberNo;            // 보낸회원
     private String memberTargetNo;      // 수신회원
     private String noteBody;            // 내용

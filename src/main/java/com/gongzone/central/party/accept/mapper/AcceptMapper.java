@@ -16,15 +16,15 @@ public interface AcceptMapper {
 
 
     List<String> findPointNoByMemberNo(String memberNo);
-    void updatePartyStatus(String partyId, StatusCode statusCode);
-    // void deletePartyStatus(String partyId);
+    void updatePartyStatus(String memberNo, StatusCode statusCode);
+    // void deletePartyStatus(String memberNo);
     void insertPartyMember(RequestParty requestParty);
-    RequestParty requestMemberByPartyId(@Param("partyId") String partyId, @Param("partyNo") String partyNo);
+    RequestParty requestMemberBymemberNo(@Param("memberNo") String memberNo, @Param("partyNo") String partyNo);
     void updateAmountMember(RequestParty requestParty);
     String lastPartyMemberNo();
     void kickPartyMember(RequestParty requestParty);
     void updateAmountAfterKick(RequestParty requestParty);
-    void deletePartyRequest(@Param("partyId") String partyId, @Param("partyNo") String partyNo);
+    void deletePartyRequest(@Param("memberNo") String memberNo, @Param("partyNo") String partyNo);
     int getPartyUnitPrice(String partyNo);
     void requestJoin(RequestParty requestParty);
     void completeBoardStatus(String boardNo);

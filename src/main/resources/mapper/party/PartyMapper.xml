@@ -106,7 +106,7 @@
         SET
             status_code = #{statusCode.code}
         WHERE
-            m_no = #{partyId};
+            m_no = #{memberNo};
     </update>
 
 
@@ -146,10 +146,10 @@
         SET
             status_code = #{statusCode.code}
         WHERE
-            m_no = #{partyId};
+            m_no = #{memberNo};
     </delete>
 
-    <select id="requestMemberByPartyId" resultType="com.gongzone.central.party.accept.domain.RequestParty">
+    <select id="requestMemberBymemberNo" resultType="com.gongzone.central.party.accept.domain.RequestParty">
         SELECT
             p_request_no AS requestNo,
             p_no AS partyNo,
@@ -160,7 +160,7 @@
         FROM
             party_request
         WHERE
-            m_no = #{partyId} AND p_no = #{partyNo};
+            m_no = #{memberNo} AND p_no = #{partyNo};
     </select>
 
 
@@ -181,7 +181,7 @@
     <delete id="deletePartyRequest">
         DELETE FROM party_request
         WHERE
-            p_no = #{partyNo} AND m_no = #{partyId};
+            p_no = #{partyNo} AND m_no = #{memberNo};
     </delete>
 
     <select id="getPartyUnitPrice" parameterType="String" resultType="int">
@@ -296,4 +296,5 @@
         WHERE
             pm.m_no = #{memberNo} AND pm.p_no = #{partyNo}
     </select>
+
 </mapper>
