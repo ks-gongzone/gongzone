@@ -1,6 +1,7 @@
 package com.gongzone.central.party.after.service;
 
 import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLETE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
@@ -45,7 +46,19 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 
 		// 4. 포인트 내역 업데이트(성공)
 		pointService.updateHistorySuccess(historyNo, request);
+
+		// 5. 파티 결제현황 확인
+		if (partyAfterMapper.checkPurchaseComplete(partyNo)) {
+			// 5-1. 파티 상태 업데이트(파티장 결제대기)
+			partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_PAYMENT_WAITING_LEADER.getCode());
+			// TODO: 파티장에게 결제 요청 알림 발송
+			// NOTE: 결제 요청 알림과 함께 쇼핑몰 배송이 출발하면 운송장 번호 입력 요청
+
+			// 5-2. 파티 배송 현황 삽입
+			partyAfterMapper.insertPartyShipping(partyNo);
+		}
 	}
+
 
 	/**
 	 * 테스트: 활성 파티 삽입
@@ -64,20 +77,15 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		// 파티 삽입
 		String partyNo = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxParty());
 		partyAfterMapper.testInsertParty(partyNo, boardNo);
-		// 파티장 삽입
-		String purchasePrice1 = "1000";
-		String partyMemberNo1 = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
-		partyAfterMapper.testInsertPartyLeader(partyMemberNo1, partyNo, purchasePrice1);
 		// 파티원 삽입
-		String purchasePrice2 = "1000";
-		String partyMemberNo2 = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
-		partyAfterMapper.testInsertPartyMember(partyMemberNo2, partyNo, purchasePrice2);
+		String purchasePrice = "1000";
+		String partyMemberNo = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
+		partyAfterMapper.testInsertPartyMember(partyMemberNo, partyNo, purchasePrice);
 		// 게시글(모집완료), 파티(파티원 결제대기) 상태변경
 		partyAfterMapper.testChangeBoardStatus(boardNo, STATUS_BOARD_RECRUIT_COMPLETE.getCode());
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_PAYMENT_WAITING_MEMBER.getCode());
-		// 파티장, 파티원 결제현황 삽입
-		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo1, purchasePrice1);
-		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo2, purchasePrice2);
+		// 파티원 결제현황 삽입
+		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo, purchasePrice);
 	}
 
 }

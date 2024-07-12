@@ -25,17 +25,37 @@
 
   <!-- Query -->
   <insert id="insertPurchaseDetail">
+    -- 결제 상세정보 삽입
     INSERT INTO party_purchase_detail (purchase_no, point_history_no, purchase_price)
     VALUES
       (#{purchaseNo}, #{pointHistoryNo}, #{purchasePrice});
   </insert>
 
-  <update id="updatePurchaseSuccess">
+  <update id="updatePurchaseComplete">
+    -- 파티원 결제상태 업데이트
     UPDATE party_purchase
     SET status_code = 'S060302' -- 파티 결제 성공 코드
     WHERE
       purchase_no = #{purchaseNo};
   </update>
+
+  <select id="checkPurchaseComplete">
+    -- 결제하지 않은 파티원이 있다면 false 반환
+    SELECT
+      CASE WHEN count(*) > 0 THEN FALSE ELSE TRUE END
+    FROM
+      party_purchase
+    WHERE
+      p_no = #{partyNo}
+      AND status_code = 'S060301';
+  </select>
+
+  <insert id="insertPartyShipping">
+    INSERT INTO
+      party_shipping (p_no)
+    VALUES
+      (#{partyNo});
+  </insert>
 
 
   <!--  테스트: 게시글 삽입 -->

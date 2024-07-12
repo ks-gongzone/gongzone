@@ -11,6 +11,10 @@ public interface PartyAfterMapper {
 
 	void updatePurchaseComplete(String purchaseNo);
 
+	boolean checkPurchaseComplete(String partyNo);
+
+	void insertPartyShipping(String partyNo);
+
 
 	// Below for test
 	void testInsertParty(@Param("partyNo") String partyNo,
@@ -24,10 +28,6 @@ public interface PartyAfterMapper {
 
 	void testInsertFileRelation(@Param("fileNo") int fileNo,
 								@Param("boardNo") String boardNo);
-
-	void testInsertPartyLeader(@Param("partyMemberNo") String partyMemberNo,
-							   @Param("partyNo") String partyNo,
-							   @Param("purchasePrice") String purchasePrice);
 
 	void testInsertPartyMember(@Param("partyMemberNo") String partyMemberNo,
 							   @Param("partyNo") String partyNo,

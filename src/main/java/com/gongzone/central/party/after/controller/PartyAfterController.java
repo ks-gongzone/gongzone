@@ -2,6 +2,7 @@ package com.gongzone.central.party.after.controller;
 
 import com.gongzone.central.common.Response.Result;
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
+import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.service.PartyAfterService;
 import com.gongzone.central.point.domain.request.PointRequest;
 import io.swagger.v3.oas.annotations.Operation;
