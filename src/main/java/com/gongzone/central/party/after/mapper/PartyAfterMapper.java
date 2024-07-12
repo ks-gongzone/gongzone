@@ -1,6 +1,9 @@
 package com.gongzone.central.party.after.mapper;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
+import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Shipping;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -9,7 +12,19 @@ public interface PartyAfterMapper {
 
 	void insertPurchaseDetail(PartyPurchaseDetail detail);
 
-	void updatePurchaseSuccess(String purchaseNo);
+	void updatePurchaseComplete(String purchaseNo);
+
+	boolean checkPurchaseComplete(String partyNo);
+
+	void insertShipping(String partyNo);
+
+	void updateShipping(Shipping shipping);
+
+	List<String> getPartyMembers(String partyNo);
+
+	String getLastIdxReception();
+
+	void insertReception(String partyNo, List<Reception> receptions);
 
 
 	// Below for test
@@ -24,10 +39,6 @@ public interface PartyAfterMapper {
 
 	void testInsertFileRelation(@Param("fileNo") int fileNo,
 								@Param("boardNo") String boardNo);
-
-	void testInsertPartyLeader(@Param("partyMemberNo") String partyMemberNo,
-							   @Param("partyNo") String partyNo,
-							   @Param("purchasePrice") String purchasePrice);
 
 	void testInsertPartyMember(@Param("partyMemberNo") String partyMemberNo,
 							   @Param("partyNo") String partyNo,

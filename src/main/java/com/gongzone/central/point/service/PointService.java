@@ -1,9 +1,7 @@
 package com.gongzone.central.point.service;
 
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.request.PointChargeRequest;
 import com.gongzone.central.point.domain.request.PointRequest;
-import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import java.util.List;
 
 public interface PointService {
@@ -14,9 +12,9 @@ public interface PointService {
 
 	Integer getCurrentPoint(String memberNo);
 
-	void charge(String memberNo, PointChargeRequest request);
+	void charge(String memberNo, PointRequest request);
 
-	void withdraw(String memberNo, PointWithdrawRequest request);
+	void withdraw(String memberNo, PointRequest request);
 
 	void update(String memberNo, PointRequest request);
 
