@@ -16,11 +16,3 @@ public interface AlertSEEService {
     Mono<Void> updateDeleteAlertSSE(int alertNo);
     Mono<Void> sendAlert(AlertSSE alertSSE);
 }
-
-
-/*AlertSSE getAlertSSEByNo(String memberNo);
-List<AlertSSE> alertSSEList(String memberNo);
-void insertAlertSSE(AlertSSE alertSSE);
-void updateReadTimeAlertSSE(int noteNo);
-void updateDeleteAlertSSE(int noteNo);
-AlertAllow getAlertAllow(String memberNo);*/

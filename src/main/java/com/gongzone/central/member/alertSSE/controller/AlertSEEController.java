@@ -30,12 +30,12 @@ public class AlertSEEController {
         return alertSEEService.saveAlertSSE(alertSSE);
     }
 
-    @PutMapping("/updateReadTime/{alertNo}")
+    @PostMapping("/updateReadTime/{alertNo}")
     public Mono<Void> updateReadTimeAlertSSE(@PathVariable int alertNo) {
         return alertSEEService.updateReadAlertSSE(alertNo);
     }
 
-    @DeleteMapping("/updateDelete/{alertNo}")
+    @PostMapping("/updateDelete/{alertNo}")
     public Mono<Void> updateDeleteAlertSSE(@PathVariable int alertNo) {
         return alertSEEService.updateDeleteAlertSSE(alertNo);
     }
