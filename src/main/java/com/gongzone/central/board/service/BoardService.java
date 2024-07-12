@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
+    List<Board> getBoardInfo(String boardNo);
     void setWish(String boardNo, String memberNo);
     void updateViewCount(String boardNo);
     void setValue(BoardResponse br, MultipartFile file);

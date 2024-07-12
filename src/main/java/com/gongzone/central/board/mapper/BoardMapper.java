@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+    List<Board> getBoardInfo(String boardNo);
     void deleteWish(String boardNo, String memberNo);
     void insertWish(String boardNo, String memberNo);
     void updateViewCount(String boardNo);

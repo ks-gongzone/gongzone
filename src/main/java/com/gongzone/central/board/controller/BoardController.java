@@ -23,6 +23,16 @@ public class BoardController {
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
+    @PostMapping("/{boardNo}/info")
+    public ResponseEntity<List<Board>> getBoardInfo(@PathVariable("boardNo") String boardNo) {
+        try {
+            List<Board> response = boardService.getBoardInfo(boardNo);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(null);
+        }
+    }
 
     @PostMapping("/wish/{boardNo}/{memberNo}")
     public ResponseEntity<String> setWish(@PathVariable("boardNo") String boardNo,@PathVariable("memberNo") String memberNo) {
