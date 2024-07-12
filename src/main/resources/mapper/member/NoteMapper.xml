@@ -59,7 +59,13 @@
     <update id="updateDeleteNote">
         UPDATE note
         SET
-            status_code = 'S010303',
+            status_code = 'S010303'
+        WHERE note_no = #{noteNo}
+    </update>
+
+    <update id="updateDeleteNoteTarget">
+        UPDATE note
+        SET
             status_code_target = 'S010303'
         WHERE note_no = #{noteNo}
     </update>
