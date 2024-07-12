@@ -2,9 +2,7 @@ package com.gongzone.central.point.service;
 
 
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.request.PointChargeRequest;
 import com.gongzone.central.point.domain.request.PointRequest;
-import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +61,7 @@ public class PointServiceImpl implements PointService {
 	 * @param request  포인트 충전 객체
 	 */
 	@Override
-	public void charge(String memberNo, PointChargeRequest request) {
+	public void charge(String memberNo, PointRequest request) {
 		pointTransactionService.charge(getMemberPointNo(memberNo), request);
 	}
 
@@ -74,7 +72,7 @@ public class PointServiceImpl implements PointService {
 	 * @param request  회원 포인트 인출 객체
 	 */
 	@Override
-	public void withdraw(String memberNo, PointWithdrawRequest request) {
+	public void withdraw(String memberNo, PointRequest request) {
 		pointTransactionService.withdraw(getMemberPointNo(memberNo), request);
 	}
 

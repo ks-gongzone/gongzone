@@ -1,10 +1,6 @@
 package com.gongzone.central.point.service;
 
-import static com.gongzone.central.utils.StatusCode.STATUS_POINT_WITHDRAW_SUCCESS;
-
-import com.gongzone.central.point.domain.request.PointChargeRequest;
 import com.gongzone.central.point.domain.request.PointRequest;
-import com.gongzone.central.point.domain.request.PointWithdrawRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.payment.service.PaymentHistoryService;
@@ -33,17 +29,23 @@ public class PointTransactionService {
 	 * @param memberPointNo 회원 포인트 번호
 	 * @param request       포인트 충전 객체
 	 */
-	public void charge(String memberPointNo, PointChargeRequest request) {
+	public void charge(String memberPointNo, PointRequest request) {
+		// 1. 포인트 내역 삽입
 		String historyNo = pointHistoryService.insert(memberPointNo, request);
 
-		// TODO: 결제 정보 확인
-		Payment payment = request.getPayment();
+		// 1-1. 충전 내역 생성
+		// TODO: 포트원 서버에 충전 정보 확인
+		Payment payment = (Payment) request.getDetail();
 		payment.setPointHistoryNo(historyNo);
 
-		// 포인트 충전 성공 시, 보유 포인트 update 및 충전 내역 update
+		// 충전 정보 유효할 시
+		// 2. 충전 내역 삽입
 		paymentHistoryService.insert(payment);
 
+		// 3. 포인트 증가
 		updatePoint(memberPointNo, request);
+
+		// 4. 포인트 내역 업데이트(성공)
 		pointHistoryService.updateSuccess(historyNo, request);
 	}
 
@@ -53,19 +55,24 @@ public class PointTransactionService {
 	 * @param memberPointNo 회원 포인트 번호
 	 * @param request       회원 포인트 인출 객체
 	 */
-	public void withdraw(String memberPointNo, PointWithdrawRequest request) {
+	public void withdraw(String memberPointNo, PointRequest request) {
+		// 1. 포인트 내역 삽입
 		String historyNo = pointHistoryService.insert(memberPointNo, request);
 
 		// TODO: 실제 운영 계좌에서 포인트 출금 처리
-		Withdraw withdraw = request.getWithdraw();
+		// 1-1. 인출 내역 생성
+		Withdraw withdraw = (Withdraw) request.getDetail();
 		withdraw.setPointHistoryNo(historyNo);
 
-		// 포인트 인출 성공 시
-		// TODO: 유형 별 상태 코드 부여하도록
-		withdraw.setStatusCode(STATUS_POINT_WITHDRAW_SUCCESS.getCode());
+		// 2. 인출 내역 삽입
 		withdrawHistoryService.insert(withdraw);
+		// TODO: 관리자 인출 처리 필요(관리자 페이지에 구현)
+		// NOTE: 인출 상태코드 테이블 변경 필요 -> (인출 대기중, 인출 완료)
 
+		// 3. 포인트 차감
 		updatePoint(memberPointNo, request);
+
+		// 4. 포인트 내역 업데이트(성공)
 		pointHistoryService.updateSuccess(historyNo, request);
 	}
 

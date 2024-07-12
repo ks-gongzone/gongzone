@@ -2,9 +2,10 @@ package com.gongzone.central.point.controller;
 
 import com.gongzone.central.common.Response.Result;
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.request.PointChargeRequest;
-import com.gongzone.central.point.domain.request.PointWithdrawRequest;
+import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.service.PointService;
+import com.gongzone.central.point.withdrawal.domain.Withdraw;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -121,15 +122,15 @@ public class PointController {
 	public ResponseEntity<Result> postMemberPointCharge(@Parameter(description = "회원 번호(Mxxxxxx)")
 														@PathVariable String memberNo,
 														@Parameter(description = "포인트 충전 요청 객체(json)")
-														@RequestBody PointChargeRequest request) {
+														@RequestBody PointRequest<Payment> request) {
 		ResponseEntity<Result> response;
 
 		try {
 			pointService.charge(memberNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
-			System.err.println("Error during postMemberPointCharge: " + e.getClass().getName());
-			System.err.println(e.getCause().toString());
+			System.err.printf("Exception:\n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
@@ -148,15 +149,15 @@ public class PointController {
 	public ResponseEntity<Result> postMemberPointWithdraw(@Parameter(description = "회원 번호(Mxxxxxx)")
 														  @PathVariable String memberNo,
 														  @Parameter(description = "포인트 인출 요청 객체(json)")
-														  @RequestBody PointWithdrawRequest request) {
+														  @RequestBody PointRequest<Withdraw> request) {
 		ResponseEntity<Result> response;
 
 		try {
 			pointService.withdraw(memberNo, request);
 			response = ResponseEntity.ok(new Result("SUCCESS"));
 		} catch (RuntimeException e) {
-			System.err.println("Error during point postMemberPointWithdraw: " + e.getClass().getName());
-			System.err.println(e.getCause().toString());
+			System.err.printf("Exception:\n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
