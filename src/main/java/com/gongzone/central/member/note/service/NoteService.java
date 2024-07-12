@@ -13,4 +13,5 @@ public interface NoteService {
     Mono<Void> saveNote(Note note);
     Mono<Void> updateReadTime(int noteNo);
     Mono<Void> updateDeleteNote(int noteNo);
+    Mono<Void> updateDeleteNoteTarget(int noteNo);
 }

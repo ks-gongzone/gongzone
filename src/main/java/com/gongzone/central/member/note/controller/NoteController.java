@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -16,28 +14,33 @@ public class NoteController {
 
     private final NoteService noteService;
 
-    @GetMapping("/noteCheck/{noteNo}")
+    @GetMapping("/note/noteCheck/{noteNo}")
     public Mono<Note> getNoteByNo(@PathVariable int noteNo) {
         return noteService.getNoteByNo(noteNo);
     }
 
-    @GetMapping("/noteList/{memberNo}")
+    @GetMapping("/note/noteList/{memberNo}")
     public Flux<Note> noteList(@PathVariable String memberNo) {
         return noteService.getNoteListByMemberNo(memberNo);
     }
 
-    @PostMapping("/insertNote")
+    @PostMapping("/note/insertNote")
     public Mono<Void> insertNote(@RequestBody Note note) {
         return noteService.saveNote(note);
     }
 
-    @PutMapping("/updateReadTime/{noteNo}")
+    @PostMapping("/note/updateReadTime/{noteNo}")
     public Mono<Void> updateReadTimeNote(@PathVariable int noteNo) {
         return noteService.updateReadTime(noteNo);
     }
 
-    @DeleteMapping("/updateDelete/{noteNo}")
+    @PostMapping("/note/updateDelete/{noteNo}")
     public Mono<Void> updateDeleteNote(@PathVariable int noteNo) {
         return noteService.updateDeleteNote(noteNo);
+    }
+
+    @PostMapping("/note/updateDeleteTarget/{noteNo}")
+    public Mono<Void> updateDeleteNoteTarget(@PathVariable int noteNo) {
+        return noteService.updateDeleteNoteTarget(noteNo);
     }
 }

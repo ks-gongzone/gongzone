@@ -33,15 +33,15 @@ public class SecurityConfig {
 			"/v3/api-docs/**",
 			"/swagger-ui.html",
 			"/api/location",
-			"/api/boards/",
-			"/api/boards/**",
+			"/api/boards/list",
 			"/api/naver/token",
 			"/api/google/token",
 			"/api/kakao/token",
 			"/api/location",
 			"/api/refresh",
 			"/api/attachement/**",
-			"/api/noteList/**"
+			"/api/note/**",
+			"/api/alertSSE/**"
 	};
 
 	// 보안 필터 체인을 정의

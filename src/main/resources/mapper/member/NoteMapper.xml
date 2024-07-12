@@ -6,14 +6,15 @@
 <mapper namespace="com.gongzone.central.member.note.mapper.NoteMapper">
 
     <resultMap id="NoteResultMap" type="Note">
-        <id property="note_no" column="noteNo"/>
-        <result property="m_no" column="memberNo"/>
-        <result property="m_target_no" column="memberTargetNo"/>
-        <result property="note_body" column="noteBody"/>
-        <result property="note_send_time" column="noteSendTime"/>
-        <result property="note_read_time" column="noteReadTime"/>
-        <result property="status_code" column="statusCode"/>
-        <result property="status_code_target" column="statusCodeTarget"/>
+        <id property="n.note_no" column="noteNo"/>
+        <id property="m.m_id" column="memberId"/>
+        <result property="n.m_no" column="memberNo"/>
+        <result property="n.m_target_no" column="memberTargetNo"/>
+        <result property="n.note_body" column="noteBody"/>
+        <result property="n.note_send_time" column="noteSendTime"/>
+        <result property="n.note_read_time" column="noteReadTime"/>
+        <result property="n.status_code" column="statusCode"/>
+        <result property="n.status_code_target" column="statusCodeTarget"/>
     </resultMap>
 
     <select id="getNoteByNo" resultMap="NoteResultMap">
@@ -22,29 +23,34 @@
 
     <select id="noteList" resultType="Note">
         SELECT
-            note_no AS noteNo,
-            m_target_no AS memberNo,
-            m_target_no AS memberTargetNo,
-            note_body AS noteBody,
-            note_send_time AS noteSendTime,
-            note_read_time AS noteReadTime,
-            status_code AS statusCode,
-            status_code_target AS statusCodeTarget
+            n.note_no AS noteNo,
+            m.m_id AS memberId,
+            n.m_target_no AS memberNo,
+            n.m_target_no AS memberTargetNo,
+            n.note_body AS noteBody,
+            n.note_send_time AS noteSendTime,
+            n.note_read_time AS noteReadTime,
+            n.status_code AS statusCode,
+            n.status_code_target AS statusCodeTarget
         FROM
-            note
+            note AS n
+                INNER JOIN
+            member AS m
+            ON
+                n.m_no = m.m_no
         WHERE
-            m_no = #{memberNo}
-          OR
-            m_target_no = #{memberNo}
-          AND
-            (status_code = 'S010301' OR status_code = 'S010302')
-          AND
-            (status_code_target = 'S010301' OR status_code_target = 'S010302')
+            n.m_no = #{memberNo}
+           OR
+            n.m_target_no = #{memberNo}
+                AND
+            (n.status_code = 'S010301' OR n.status_code = 'S010302')
+                AND
+            (n.status_code_target = 'S010301' OR n.status_code_target = 'S010302')
     </select>
 
     <insert id="insertNote" parameterType="Note">
-        INSERT INTO note (m_no, m_target_no, note_body, note_read_time, status_code, status_code_target)
-        VALUES (#{memberNo}, #{memberTargetNo}, #{noteBody}, #{noteReadTime}, 'S010301', 'S010301')
+        INSERT INTO note (m_no, m_target_no, note_body, status_code, status_code_target)
+        VALUES (#{memberNo}, #{memberTargetNo}, #{noteBody}, 'S010301', 'S010301')
     </insert>
 
     <update id="updateReadTimeNote">
@@ -59,7 +65,13 @@
     <update id="updateDeleteNote">
         UPDATE note
         SET
-            status_code = 'S010303',
+            status_code = 'S010303'
+        WHERE note_no = #{noteNo}
+    </update>
+
+    <update id="updateDeleteNoteTarget">
+        UPDATE note
+        SET
             status_code_target = 'S010303'
         WHERE note_no = #{noteNo}
     </update>
