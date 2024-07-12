@@ -9,7 +9,7 @@ public interface PartyAfterMapper {
 
 	void insertPurchaseDetail(PartyPurchaseDetail detail);
 
-	void updatePurchaseSuccess(String purchaseNo);
+	void updatePurchaseComplete(String purchaseNo);
 
 
 	// Below for test

@@ -1,8 +1,9 @@
 package com.gongzone.central.party.after.controller;
 
 import com.gongzone.central.common.Response.Result;
-import com.gongzone.central.party.after.domain.request.PartyPurchaseRequest;
+import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.service.PartyAfterService;
+import com.gongzone.central.point.domain.request.PointRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,11 +35,11 @@ public class PartyAfterController {
 	@PostMapping("/{partyNo}/purchase/{memberNo}")
 	public ResponseEntity<Result> postPartyPurchase(@PathVariable String partyNo,
 													@PathVariable String memberNo,
-													@RequestBody PartyPurchaseRequest partyPurchaseRequest) {
+													@RequestBody PointRequest<PartyPurchaseDetail> request) {
 		ResponseEntity<Result> response;
 
 		try {
-			partyAfterService.purchase(partyNo, memberNo, partyPurchaseRequest);
+			partyAfterService.purchase(partyNo, memberNo, request);
 			response = ResponseEntity.ok().body(new Result("SUCCESS"));
 		} catch (Exception e) {
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
