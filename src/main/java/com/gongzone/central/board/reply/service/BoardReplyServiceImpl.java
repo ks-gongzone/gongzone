@@ -19,6 +19,11 @@ public class BoardReplyServiceImpl implements BoardReplyService {
     private final MemberMapper memberMapper;
 
     @Override
+    public void deleteReply(BoardReply boardReply) {
+        boardReplyMapper.deleteReply(boardReply);
+    }
+
+    @Override
     public List<BoardReply> getNewReply(String boardNo){
         List<BoardReply> newReply = boardMapper.getBoardReplyList(boardNo);
         for (int i=0; i<newReply.size(); i++) {
