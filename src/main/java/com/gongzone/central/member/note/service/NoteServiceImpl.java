@@ -50,4 +50,11 @@ public class NoteServiceImpl implements NoteService {
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
+
+    @Override
+    public Mono<Void> updateDeleteNoteTarget(int noteNo) {
+        return Mono.fromRunnable(() -> noteMapper.updateDeleteNoteTarget(noteNo))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
+    }
 }
