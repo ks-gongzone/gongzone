@@ -19,9 +19,15 @@
         SELECT * FROM alert WHERE alert_no = #{alertNo}
     </select>
 
-    <select id="alertSSEList" resultMap="AlertSSEResultMap">
+    <select id="alertSSEList" resultType="AlertSSE">
         SELECT
-            *
+            alert_no AS alertNo,
+            m_no AS memberNo,
+            type_code AS typeCode,
+            alert_detail AS alertDetail,
+            alert_uptime AS alertUpTime,
+            alert_readtime AS alertReadTime,
+            status_code AS statusCode
         FROM
             alert
         WHERE

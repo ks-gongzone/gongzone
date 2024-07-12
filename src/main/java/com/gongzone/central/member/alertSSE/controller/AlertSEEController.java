@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/alertSSE")
 public class AlertSEEController {
 
     private final AlertSEEService alertSEEService;
