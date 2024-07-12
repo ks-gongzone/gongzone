@@ -13,29 +13,6 @@
         <result property="isBlocked"    column="isBlocked"/>
     </resultMap>
     <!-- read -->
-    <!-- memberNo 활용, 유저 조회 및 팔로우 차단 상태 체크 -->
-    <select id="findMemberByNo" resultMap="interactionMemberResultMap">
-        SELECT
-            m.m_no,
-            m.m_name,
-            m.m_gender,
-            CASE
-                WHEN f.m_no IS NOT NULL THEN TRUE
-                ELSE FALSE
-            END AS isFollowing,
-            CASE
-                WHEN b.m_no IS NOT NULL THEN TRUE
-                ELSE FALSE
-            END AS isBlocked
-        FROM
-            member AS m
-        LEFT JOIN
-            follow AS f ON m.m_no = f.m_target_no AND f.m_no = #{currentUserNo}
-        LEFT JOIN
-            block AS b ON m.m_no = b.m_target_no AND b.m_no = #{currentUserNo}
-        WHERE
-            m.m_no = #{memberNo}
-    </select>
     <!-- 전체 회원 이름 검색 -->
     <select id="findAllMembers" resultMap="interactionMemberResultMap">
         SELECT
@@ -63,7 +40,7 @@
     <select id="getWarningCount" resultType="int">
         SELECT COUNT(*) FROM block WHERE m_target_no = #{memberNo}
     </select>
-    <!-- 충성(인기) 유저 관리 -->
+    <!-- 인기 유저 관리 -->
     <select id="getMemberFollowCount" resultType="int">
         SELECT COUNT(*) FROM follow WHERE m_target_no = #{memberNo}
     </select>
@@ -71,4 +48,38 @@
     <select id="getTotalMembers" resultType="int">
         SELECT COUNT(m_no) FROM member
     </select>
+
+    <!-- insert -->
+    <!-- 팔로우 추가 -->
+    <insert id="insertFollow" parameterType="map">
+        INSERT INTO follow (m_no, m_target_no)
+        SELECT #{currentUserNo}, #{targetMemberNo}
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM follow
+            WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
+        )
+    </insert>
+    <!-- 차단 추가 -->
+    <insert id="insertBlock" parameterType="map">
+        INSERT INTO block (m_no, m_target_no)
+        SELECT #{currentUserNo}, #{targetMemberNo}
+        WHERE NOT EXISTS (
+        SELECT 1
+        FROM block
+        WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
+        )
+    </insert>
+
+    <!-- delete -->
+    <!-- 팔로우 취소 -->
+    <delete id="deleteFollow" parameterType="map">
+        DELETE FROM follow
+        WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
+    </delete>
+    <!-- 차단 취소 -->
+    <delete id="deleteBlock" parameterType="map">
+        DELETE FROM block
+        WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
+    </delete>
 </mapper>

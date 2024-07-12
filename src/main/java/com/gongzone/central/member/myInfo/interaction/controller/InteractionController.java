@@ -15,43 +15,16 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api/members/interaction")
 public class InteractionController {
     private final InteractionService interactionService;
     private final JwtUtil jwtUtil;
 
     /**
      * @작성일: 2024-07-11
-     * @내용: [회원] 유저 조회
+     * @내용: [회원] 유저 조회 및 검색 조회
      */
-    @GetMapping("/interaction/{memberNo}")
-    public ResponseEntity<InteractionMember> getMemberInfo(
-            @PathVariable String memberNo,
-            Authentication authentication) {
-        String token = ((MemberDetails) authentication.getPrincipal()).getMemberNo();
-        String currentUserNo = jwtUtil.extractMemberNo(token);
-
-        System.out.println("[컨트롤러] 회원 상호 작용 조회" + currentUserNo);
-        if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 회원 상호 작용 조회, 로그인이 필요합니다.");
-            return ResponseEntity.status(403).body(null);
-        }
-        if (memberNo == null || memberNo.trim().isEmpty()) {
-            System.out.println("[컨트롤러] 회원 상호 작용 조회, 요청 회원 번호확인 바람");
-            return ResponseEntity.status(400).body(null);
-        }
-
-        InteractionMember member = interactionService.getMemberByNo(memberNo, currentUserNo);
-        if (member == null) {
-            System.out.println("[컨트롤러] 회원 상호 작용 조회, 해당 회원 정보 없음");
-        }
-        return ResponseEntity.ok(member);
-    }
-    /**
-     * @작성일: 2024-07-11
-     * @내용: [비회원] 유저 조회 및 검색 조회
-     */
-    @GetMapping("/interaction")
+    @GetMapping("")
     public ResponseEntity<Map<String, Object>> getAllPublicMembers(
             @RequestParam(required = false, defaultValue = "") String memberName,
             @RequestParam(defaultValue = "1") int page,
@@ -79,5 +52,85 @@ public class InteractionController {
         response.put("currentPage", page);
         return ResponseEntity.ok(response);
     }
+    /**
+     * @작성일: 2024-07-12
+     * @수정일: 2024-07-12
+     * @내용: 팔로잉 컨트롤러
+     */
+    @PostMapping("/follow")
+    public ResponseEntity<Void> followMember(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String currentUserNo = jwtUtil.extractMemberNo(token);
+        String targetMemberNo = request.get("targetMemberNo");
 
+        System.out.println("[컨트롤러] 팔로잉 유저" + currentUserNo);
+        System.out.println("[컨트롤러] 팔로잉 타겟" + targetMemberNo);
+
+        if (currentUserNo == null) {
+            System.out.println("[컨틀롤러] 팔로잉: 로그인 오류");
+            return ResponseEntity.status(403).build();
+        }
+        // currentUser와 targetMember가 같이 있는 행이 존재하는지 판별 후 존재 시 에러로직 추가
+        interactionService.followMember(currentUserNo, targetMemberNo);
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/follow")
+    public ResponseEntity<Void> unfollowMember(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String currentUserNo = jwtUtil.extractMemberNo(token);
+        String targetMemberNo = request.get("targetMemberNo");
+
+        System.out.println("[컨트롤러] 언팔로우 유저" + currentUserNo);
+        System.out.println("[컨트롤러] 언팔로우 타겟" + targetMemberNo);
+
+        if (currentUserNo == null) {
+            return ResponseEntity.status(403).build();
+        }
+        interactionService.unFollowMember(currentUserNo, targetMemberNo);
+        return ResponseEntity.ok().build();
+    }
+    /**
+     * @작성일: 2024-07-12
+     * @수정일: 2024-07-12
+     * @내용: 차단 컨트롤러
+     */
+    @PostMapping("/block")
+    public ResponseEntity<Void> blockMember(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String currentUserNo = jwtUtil.extractMemberNo(token);
+        String targetMemberNo = request.get("targetMemberNo");
+
+        System.out.println("[컨트롤러] 차단 유저" + currentUserNo);
+        System.out.println("[컨트롤러] 차단 타겟" + targetMemberNo);
+
+        if (currentUserNo == null) {
+            return ResponseEntity.status(403).build();
+        }
+        interactionService.blockMember(currentUserNo, targetMemberNo);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/block")
+    public ResponseEntity<Void> unBlockMember(
+            @RequestBody Map<String, String> request,
+            Authentication authentication) {
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String currentUserNo = jwtUtil.extractMemberNo(token);
+        String targetMemberNo = request.get("targetMemberNo");
+
+        System.out.println("[컨트롤러] 차단 해제 유저" + currentUserNo);
+        System.out.println("[컨트롤러] 차단 해제 타겟" + targetMemberNo);
+
+        if (currentUserNo == null) {
+            return ResponseEntity.status(403).build();
+        }
+        interactionService.unBlockMember(currentUserNo, targetMemberNo);
+        return ResponseEntity.ok().build();
+    }
 }

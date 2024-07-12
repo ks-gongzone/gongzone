@@ -17,4 +17,8 @@ public class InteractionMember {
     private final boolean isBlocked;
     private final boolean isWarning; // target_no 컬럼에 10개 이상 존재 시 주의요망 유저
     private final boolean isPopular; // 팔로우 당한 수 상위 10% 이내 일 시 인기 유저
+
+    // 현재 접속 중인 유저와 타겟이 될 유저 구분
+    private final String currentUserNo;
+    private final String targetMemberNo;
 }

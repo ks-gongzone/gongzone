@@ -5,7 +5,13 @@ import com.gongzone.central.member.myInfo.interaction.domain.InteractionMember;
 import java.util.List;
 
 public interface InteractionService {
-    InteractionMember getMemberByNo(String memberNo, String currentUserNo);
-    InteractionMember filterData(InteractionMember member, String memberNo);
-    List<InteractionMember> findAllMembers(String currenUserNo, String memberName, int page, int size);
+    // read
+    InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo);
+    List<InteractionMember> findAllMembers(String currentUserNo, String memberName, int page, int size);
+    // following action
+    void followMember(String currentUserNo, String targetMemberNo);
+    void unFollowMember(String currentUserNo, String targetMemberNo);
+    // blocking action
+    void blockMember(String currentUserNo, String targetMemberNo);
+    void unBlockMember(String currentUserNo, String targetMemberNo);
 }
