@@ -34,7 +34,8 @@
   <update id="updatePurchaseComplete">
     -- 파티원 결제상태 업데이트
     UPDATE party_purchase
-    SET status_code = 'S060302' -- 파티 결제 성공 코드
+    SET
+      status_code = 'S060302' -- 파티 결제 성공 코드
     WHERE
       purchase_no = #{purchaseNo};
   </update>
@@ -51,10 +52,52 @@
   </select>
 
   <insert id="insertPartyShipping">
+    -- 파티 배송 현황 초기값 삽입
     INSERT INTO
       party_shipping (p_no)
     VALUES
       (#{partyNo});
+  </insert>
+
+  <update id="updateShipping">
+    -- 파티 배송 현황 갱신
+    UPDATE party_shipping
+    SET
+      invoice_courier = #{invoiceCourier},
+      invoice_code    = #{invoiceCode},
+      add_date        = current_timestamp,
+      status_code     = 'S060402'
+    WHERE
+      shipping_no = #{shippingNo};
+  </update>
+
+  <select id="getPartyMembers" resultType="String">
+    <![CDATA[
+    SELECT
+      p_member_no
+    FROM
+      party_member
+    WHERE
+      p_no = #{partyNo}
+      AND member_is_leader <> '파티장';
+    ]]>
+  </select>
+
+  <select id="getLastIdxReception">
+    SELECT
+      max(r_no)
+    FROM
+      party_reception;
+  </select>
+
+  <insert id="insertReception">
+    -- 파티원의 수취현황 초기값을 삽입한다.
+    INSERT INTO party_reception (r_no, p_no, p_member_no)
+    VALUES
+    <foreach collection="receptions" item="reception" separator=",">
+      (#{reception.receptionNo}, #{partyNo}, #{reception.partyMemberNo})
+    </foreach>
+    ;
   </insert>
 
 
@@ -128,14 +171,16 @@
   <update id="testChangeBoardStatus">
     -- 4. 파티 상태 변경(모집완료)
     UPDATE board
-    SET status_code = #{status}
+    SET
+      status_code = #{status}
     WHERE
       b_no = #{boardNo};
   </update>
   <update id="testChangePartyStatus">
     -- 4. 파티 상태 변경(결제대기)
     UPDATE party
-    SET status_code = #{status}
+    SET
+      status_code = #{status}
     WHERE
       p_no = #{partyNo};
   </update>

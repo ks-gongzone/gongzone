@@ -3,12 +3,18 @@ package com.gongzone.central.party.after.service;
 import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLETE;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_BEFORE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
+import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.mapper.PartyAfterMapper;
 import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.utils.MySqlUtil;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +61,55 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 			// NOTE: 결제 요청 알림과 함께 쇼핑몰 배송이 출발하면 운송장 번호 입력 요청
 
 			// 5-2. 파티 배송 현황 삽입
-			partyAfterMapper.insertPartyShipping(partyNo);
+			partyAfterMapper.insertShipping(partyNo);
 		}
+	}
+
+	/**
+	 * 파티의 배송 현황을 업데이트한다.
+	 *
+	 * @param shippingNo 배송현황 고유번호
+	 * @param shipping   배송현황 객체
+	 */
+	@Override
+	@Transactional
+	public void updateShipping(String partyNo, String shippingNo, Shipping shipping) {
+		// 1. 배송 현황 삽입
+		shipping.setShippingNo(shippingNo);
+		partyAfterMapper.updateShipping(shipping);
+
+		// 2. 파티 상태 변경
+		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_SHIPPING.getCode());
+	}
+
+	/**
+	 * 파티의 배송을 완료한다.
+	 *
+	 * @param shippingNo 배송현황 고유번호
+	 */
+	@Override
+	@Transactional
+	public void updateShippingComplete(String partyNo, String shippingNo) {
+		// 1. 파티 번호를 이용해 파티원 목록 획득
+		List<String> partyMembers = partyAfterMapper.getPartyMembers(partyNo);
+		System.out.println(partyMembers);
+
+		// 1-1. 수취현황 리스트 생성
+		String last = partyAfterMapper.getLastIdxReception();
+		AtomicInteger sequence = new AtomicInteger(MySqlUtil.getNextIdx(last));
+		List<Reception> receptions = partyMembers.stream()
+												 .map(Reception::new)
+												 .peek(reception -> {
+													 int seq = sequence.getAndIncrement();
+													 String receptionNo = MySqlUtil.generatePrimaryKey("R", seq);
+													 reception.setReceptionNo(receptionNo);
+												 }).toList();
+
+		// 2. 파티원 각각을 수취현황 테이블에 등록
+		partyAfterMapper.insertReception(partyNo, receptions);
+
+		// 3. 파티 상태 변경 -> (수취대기중)
+		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_BEFORE.getCode());
 	}
 
 

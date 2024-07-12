@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,57 @@ public class PartyAfterController {
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 			System.err.printf("Exception:\n\t%s\n", e);
 			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
+		}
+
+		return response;
+	}
+
+	@Operation(summary = "파티의 배송 정보를 입력한다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+						 description = "SUCCESS",
+						 content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "500",
+						 description = "FAILED_INTERNAL_ERROR"),
+	})
+	@PatchMapping("/{partyNo}/shipping/{shippingNo}")
+	public ResponseEntity<Result> postPartyShipping(@PathVariable String partyNo,
+													@PathVariable String shippingNo,
+													@RequestBody Shipping shipping) {
+		ResponseEntity<Result> response;
+
+		try {
+			partyAfterService.updateShipping(partyNo, shippingNo, shipping);
+			response = ResponseEntity.ok().body(new Result("SUCCESS"));
+		} catch (Exception e) {
+			System.err.printf("Exception during postPartyShipping: \n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
+			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
+		}
+
+		return response;
+	}
+
+	@Operation(summary = "파티의 배송을 완료한다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+						 description = "SUCCESS",
+						 content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "500",
+						 description = "FAILED_INTERNAL_ERROR"),
+	})
+	@PostMapping("/{partyNo}/shipping/{shippingNo}/complete")
+	public ResponseEntity<Result> postPartyShippingComplete(@PathVariable String partyNo,
+															@PathVariable String shippingNo) {
+		ResponseEntity<Result> response;
+
+		try {
+			partyAfterService.updateShippingComplete(partyNo, shippingNo);
+			response = ResponseEntity.ok().body(new Result("SUCCESS"));
+		} catch (Exception e) {
+			System.err.printf("Exception during postPartyShippingComplete: \n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
+			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
 		return response;

@@ -1,6 +1,9 @@
 package com.gongzone.central.party.after.mapper;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
+import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Shipping;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +16,15 @@ public interface PartyAfterMapper {
 
 	boolean checkPurchaseComplete(String partyNo);
 
-	void insertPartyShipping(String partyNo);
+	void insertShipping(String partyNo);
+
+	void updateShipping(Shipping shipping);
+
+	List<String> getPartyMembers(String partyNo);
+
+	String getLastIdxReception();
+
+	void insertReception(String partyNo, List<Reception> receptions);
 
 
 	// Below for test
