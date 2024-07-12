@@ -2,6 +2,7 @@ package com.gongzone.central.party.accept.service;
 
 import com.gongzone.central.board.domain.BoardReply;
 import com.gongzone.central.board.mapper.BoardMapper;
+import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.party.accept.mapper.AcceptMapper;
 import com.gongzone.central.utils.MySqlUtil;
@@ -18,6 +19,7 @@ public class AcceptServiceImpl implements AcceptService {
 
     private final AcceptMapper acceptMapper;
     private final BoardMapper boardMapper;
+    private final MemberMapper memberMapper;
 
     @Override
     public PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo) {
@@ -59,6 +61,10 @@ public class AcceptServiceImpl implements AcceptService {
 
         String boardNos = detail.getBoardNo();
         List<BoardReply> boardReply = boardMapper.getBoardReplyList(boardNos);
+        for (int i=0; i<boardReply.size(); i++) {
+            String memberId = (memberMapper.info(boardReply.get(i).getMemberNo())).getMemberId();
+            boardReply.get(i).setMemberId(memberId);
+        }
         detail.setBoardReply(boardReply);
 
         return detail;
