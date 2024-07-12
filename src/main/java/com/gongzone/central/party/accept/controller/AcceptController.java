@@ -45,7 +45,7 @@ public class AcceptController {
     }
 
 
-    @GetMapping("/party/accept/{memberNo}/requestmember")
+    @GetMapping("/alertSSE/party/accept/{memberNo}/requestmember")
     public List<RequestMember> getRequestMember(@PathVariable String memberNo) {
         List<RequestMember> requestMember = acceptService.getRequestMember(memberNo);
         System.out.println("Request members returned to client: " + requestMember);
@@ -67,14 +67,13 @@ public class AcceptController {
         }
     }
 
-
-
-
-    @PostMapping("/party/updateStatus/{partyNo}")
-    public ResponseEntity<String> updatePartyAndBoardStatus(@PathVariable String partyNo) {
-        acceptService.completeParty(partyNo);
-        return ResponseEntity.ok("Party and Board statuses updated successfully.");
+    @PostMapping("/alertSSE/party/updateStatus/{partyNo}")
+    public Mono<ResponseEntity<String>> updatePartyAndBoardStatus(@PathVariable String partyNo) {
+        return acceptService.completeParty(partyNo)
+                .then(Mono.just(ResponseEntity.ok("Party and Board statuses updated successfully.")))
+                .onErrorResume(e -> {
+                    e.printStackTrace();
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the statuses."));
+                });
     }
-
-
 }

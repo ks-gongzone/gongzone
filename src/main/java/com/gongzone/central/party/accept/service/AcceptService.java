@@ -18,7 +18,7 @@ public interface AcceptService {
     Mono<Void> getPartyStatusByNo(String memberNo, String partyNo, StatusCode statusCode, int requestAmount);
     RequestParty getRequestMemberBymemberNo(String memberNo, String partyNo);
     AcceptDetail getPartyDetailByPartyNo(String partyNo);
-    void completeParty(String partyNo);
+    Mono<Void> completeParty(String partyNo);
     PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo);
 //    void deletePartyStatusByNo(String memberNo);
 

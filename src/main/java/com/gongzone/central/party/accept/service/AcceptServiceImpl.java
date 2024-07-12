@@ -12,6 +12,7 @@ import com.gongzone.central.utils.MySqlUtil;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -107,7 +108,7 @@ public class AcceptServiceImpl implements AcceptService {
     }
 
     @Override
-    public void completeParty(String partyNo) {
+    public Mono<Void> completeParty(String partyNo) {
         AcceptDetail detail = acceptMapper.getPartyList(partyNo);
         String partyNos = detail.getPartyNo();
         List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
@@ -115,7 +116,7 @@ public class AcceptServiceImpl implements AcceptService {
         // 안전장치 추가: remainAmount가 0이 아닌 경우 메서드 종료
         if (Integer.parseInt(detail.getRemainAmount()) != 0) {
             System.out.println("remainAmount가 0이 아니므로 completeParty 메서드를 종료합니다.");
-            return;
+            return Mono.empty();
         }
         System.out.println("detail in complete" + detail);
         acceptMapper.completeBoardStatus(detail.getBoardNo());
@@ -124,6 +125,10 @@ public class AcceptServiceImpl implements AcceptService {
         for (AcceptMember member : participants) {
             acceptMapper.insertPartyPurchase(detail.getPartyNo(), member.getPartyMemberNo(), member.getRequestPrice());
         }
+
+        return Flux.fromIterable(participants)
+                .flatMap(participant -> completeAlert(participant.getMemberNo()))
+                .then();
     }
 
     @Override
@@ -179,7 +184,11 @@ public class AcceptServiceImpl implements AcceptService {
             System.out.println("requestParty in request :" + requestParty);
 
             acceptMapper.requestJoin(requestParty);
-            return requestAlert(memberNo);
+
+
+            String leaderNo = acceptMapper.getPartyLeaderByPartyNo(partyNo);
+            // memberNo 대신 leaderNo == 결국 memberNo
+            return requestAlert(leaderNo);
         }
         return Mono.empty();
     }
@@ -239,6 +248,26 @@ public class AcceptServiceImpl implements AcceptService {
                     alertSSE.setMemberNo(memberNo);
                     alertSSE.setTypeCode("T010206"); // 알림 유형 코드
                     alertSSE.setAlertDetail("파티에서 강퇴되었습니다.");
+                    return alertSSE;
+                })
+                .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(e -> {
+                    e.printStackTrace();
+                })
+                .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+    }
+
+    private Mono<Void> completeAlert(String memberNo) {
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("newLastPartyMemberNo : " + memberNo);
+        return Mono.fromCallable(() -> {
+                    AlertSSE alertSSE = new AlertSSE();
+                    alertSSE.setMemberNo(memberNo);
+                    alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+                    alertSSE.setAlertDetail("파티 모집이 완료되었습니다. 결제를 진행해주세요!");
                     return alertSSE;
                 })
                 .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경

@@ -297,4 +297,16 @@
             pm.m_no = #{memberNo} AND pm.p_no = #{partyNo}
     </select>
 
+    <select id="getPartyLeaderByPartyNo">
+        SELECT
+            m_no AS memberNo
+        FROM
+            party_member
+        WHERE
+            p_no = #{partyNo}
+          AND
+            member_is_leader = '파티장'
+    </select>
+
+
 </mapper>
