@@ -20,8 +20,6 @@ public class BoardReplyController {
     @DeleteMapping("/reply/delete")
     public List<BoardReply> deleteReply(@RequestBody BoardReply boardReply) {
         try{
-            System.out.println("111111111111111111111111");
-            log.info("111111111", boardReply);
             boardReplyService.deleteReply(boardReply);
             List<BoardReply> newReply = boardReplyService.getNewReply(boardReply.getBoardNo());
             return newReply;
