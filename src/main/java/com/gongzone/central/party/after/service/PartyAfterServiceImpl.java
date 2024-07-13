@@ -131,14 +131,19 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		String partyNo = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxParty());
 		partyAfterMapper.testInsertParty(partyNo, boardNo);
 		// 파티원 삽입
+		String purchasePrice2 = "1000";
+		String partyMemberNo2 = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
+		partyAfterMapper.testInsertPartyMember(partyMemberNo2, partyNo, purchasePrice2);
+		// 파티원 삽입
 		String purchasePrice = "1000";
 		String partyMemberNo = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
 		partyAfterMapper.testInsertPartyMember(partyMemberNo, partyNo, purchasePrice);
 		// 게시글(모집완료), 파티(파티원 결제대기) 상태변경
 		partyAfterMapper.testChangeBoardStatus(boardNo, STATUS_BOARD_RECRUIT_COMPLETE.getCode());
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_PAYMENT_WAITING_MEMBER.getCode());
-		// 파티원 결제현황 삽입
+		// 파티장, 파티원 결제현황 삽입
 		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo, purchasePrice);
+		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo2, purchasePrice2);
 	}
 
 }
