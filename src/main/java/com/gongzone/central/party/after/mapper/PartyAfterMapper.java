@@ -24,7 +24,14 @@ public interface PartyAfterMapper {
 
 	String getLastIdxReception();
 
-	void insertReception(String partyNo, List<Reception> receptions);
+	void insertReception(@Param("partyNo") String partyNo,
+						 @Param("receptions") List<Reception> receptions);
+
+	void updateReception(Reception reception);
+	
+	boolean checkReceptionComplete(String partyNo);
+
+	void insertPartySettlement(String partyNo);
 
 
 	// Below for test
