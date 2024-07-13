@@ -4,6 +4,8 @@ import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLET
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_BEFORE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_COMPLETE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SETTLEMENT_WAITING;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
@@ -110,6 +112,36 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 
 		// 3. 파티 상태 변경 -> (수취대기중)
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_BEFORE.getCode());
+	}
+
+	/**
+	 * 파티장의 수취상태를 '수취완료'로 변경한다.
+	 *
+	 * @param partyNo     파티 고유번호
+	 * @param receptionNo 수취확인 고유번호
+	 * @param reception   수취확인 객체
+	 */
+	@Override
+	@Transactional
+	public void updateReceptionComplete(String partyNo, String receptionNo, Reception reception) {
+		// 1. 수취현황 변경(성공)
+		reception.setReceptionNo(receptionNo);
+		reception.setStatusCode(STATUS_PARTY_RECEPTION_COMPLETE.getCode());
+		partyAfterMapper.updateReception(reception);
+
+		// 2. 파티의 수취가 완료되었는지 확인
+		System.out.println();
+		System.out.println();
+		System.out.println("\tpartyAfterMapper.checkReceptionComplete(partyNo) = " + partyAfterMapper.checkReceptionComplete(partyNo));
+		System.out.println();
+		System.out.println();
+		if (partyAfterMapper.checkReceptionComplete(partyNo)) {
+			// 2-1. 파티 상태 변경
+			partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_SETTLEMENT_WAITING.getCode());
+
+			// 2-2. 파티장 정산 테이블 초기값 삽입
+			partyAfterMapper.insertPartySettlement(partyNo);
+		}
 	}
 
 

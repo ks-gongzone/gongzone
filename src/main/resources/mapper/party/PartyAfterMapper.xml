@@ -100,6 +100,39 @@
     ;
   </insert>
 
+  <update id="updateReception">
+    -- 파티원 수취현황을 변경한다(성공)
+    UPDATE party_reception
+    SET
+      reception_comment = #{receptionComment},
+      reception_date    = current_timestamp,
+      status_code       = #{statusCode}
+    WHERE
+      r_no = #{receptionNo};
+  </update>
+
+  <select id="checkReceptionComplete" resultType="boolean">
+    -- 파티 수취 현황을 확인한다. (수취 완료되지 않은 파티원이 있다면 false 반환)
+    SELECT
+      CASE WHEN count(*) > 0 THEN FALSE ELSE TRUE END
+    FROM
+      party_reception
+    WHERE
+      p_no = #{partyNo}
+      AND NOT status_code = 'S060502'; -- NOT 수취완료
+  </select>
+
+  <insert id="insertPartySettlement">
+    INSERT INTO party_settlement (p_no, p_member_no)
+    VALUES
+      (#{partyNo}, (SELECT
+                      p_member_no
+                    FROM
+                      party_member
+                    WHERE
+                      p_no = #{partyNo}
+                      AND member_is_leader = '파티장'));
+  </insert>
 
   <!--  테스트: 게시글 삽입 -->
   <insert id="testInsertBoard">
