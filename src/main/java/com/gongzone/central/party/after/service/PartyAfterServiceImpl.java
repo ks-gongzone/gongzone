@@ -1,13 +1,5 @@
 package com.gongzone.central.party.after.service;
 
-import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLETE;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_BEFORE;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_COMPLETE;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SETTLEMENT_WAITING;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING;
-
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
 import com.gongzone.central.party.after.domain.Shipping;
@@ -20,6 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.gongzone.central.utils.StatusCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -111,7 +105,10 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		partyAfterMapper.insertReception(partyNo, receptions);
 
 		// 3. 파티 상태 변경 -> (수취대기중)
-		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_BEFORE.getCode());
+		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_WAITING.getCode());
+
+		// 4. 파티 수취 상태 변경 -> (배송 완료)
+		partyAfterMapper.updateShippingStatus(partyNo, STATUS_PARTY_SHIPPING_COMPLETE.getCode());
 	}
 
 	/**

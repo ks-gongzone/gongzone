@@ -21,31 +21,36 @@
             b.m_no AS partyLeader,
             f.file_path AS img,
             b.b_no AS boardNo,
-            b.status_code AS boardStatus
+            b.status_code AS boardStatus,
+            ps.shipping_no AS shippingNo
         FROM
             party AS p
-            INNER JOIN
+                INNER JOIN
             board AS b
             ON
-            p.b_no = b.b_no
-            INNER JOIN
+                p.b_no = b.b_no
+                INNER JOIN
             location AS l
             ON
-            b.b_no = l.b_no
-            INNER JOIN
+                b.b_no = l.b_no
+                INNER JOIN
             category AS c
             ON
-            c.c_code = p.c_code
-            INNER JOIN
+                c.c_code = p.c_code
+                INNER JOIN
             file_relation AS fr
             ON
-            b.b_no = fr.file_usage
-            INNER JOIN
+                b.b_no = fr.file_usage
+                INNER JOIN
             file AS f
             ON
-            f.file_no = fr.file_no
+                f.file_no = fr.file_no
+                LEFT JOIN
+            party_shipping AS ps
+            ON
+                p.p_no = ps.p_no
         WHERE
-            p_no = #{partyNo};
+            p.p_no = #{partyNo};
     </select>
     <select id="getParticipants" resultType="com.gongzone.central.party.accept.domain.AcceptMember">
         SELECT
@@ -55,13 +60,18 @@
             m.m_no AS memberNo,
             pm.p_no AS partyNo,
             pm.pm_price AS requestPrice,
-            pm.p_member_no AS partyMemberNo
+            pm.p_member_no AS partyMemberNo,
+            pr.r_no AS receptionNo
         FROM
             party_member AS pm
                 INNER JOIN
             member AS m
             ON
                 pm.m_no = m.m_no
+                LEFT JOIN
+            party_reception AS pr
+            ON
+                pm.p_member_no = pr.p_member_no
         WHERE
             pm.p_no = #{partyNo};
     </select>
@@ -227,7 +237,9 @@
             p.p_no AS partyNo,
             b.m_no AS partyLeader,
             f.file_path AS img,
-            b.b_no AS boardNo
+            b.b_no AS boardNo,
+            ps.shipping_no AS shippingNo
+
         FROM
             party AS p
                 INNER JOIN
@@ -250,8 +262,12 @@
             file AS f
             ON
                 f.file_no = fr.file_no
+                LEFT JOIN
+            party_shipping AS ps
+            ON
+                p.p_no = ps.p_no
         WHERE
-            p_no = #{partyNo};
+            p.p_no = #{partyNo};
     </select>
 
 

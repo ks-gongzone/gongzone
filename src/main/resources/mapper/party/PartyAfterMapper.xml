@@ -51,7 +51,7 @@
       AND status_code = 'S060301';
   </select>
 
-  <insert id="insertPartyShipping">
+  <insert id="insertShipping">
     -- 파티 배송 현황 초기값 삽입
     INSERT INTO
       party_shipping (p_no)
@@ -133,6 +133,15 @@
                       p_no = #{partyNo}
                       AND member_is_leader = '파티장'));
   </insert>
+
+  <update id="updateShippingStatus">
+    -- 파티 수취 상태를 업데이트 한다.
+    UPDATE party_reception
+    SET
+      status_code       = #{statusCode}
+    WHERE
+      r_no = #{partyNo};
+  </update>
 
   <!--  테스트: 게시글 삽입 -->
   <insert id="testInsertBoard">

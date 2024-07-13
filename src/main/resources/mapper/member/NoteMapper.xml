@@ -25,7 +25,7 @@
         SELECT
             n.note_no AS noteNo,
             m.m_id AS memberId,
-            n.m_target_no AS memberNo,
+            n.m_no AS memberNo,
             n.m_target_no AS memberTargetNo,
             n.note_body AS noteBody,
             n.note_send_time AS noteSendTime,
@@ -39,8 +39,6 @@
             ON
                 n.m_no = m.m_no
         WHERE
-            n.m_no = #{memberNo}
-           OR
             n.m_target_no = #{memberNo}
                 AND
             (n.status_code = 'S010301' OR n.status_code = 'S010302')
