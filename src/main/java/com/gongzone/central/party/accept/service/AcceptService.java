@@ -20,6 +20,7 @@ public interface AcceptService {
     AcceptDetail getPartyDetailByPartyNo(String partyNo);
     Mono<Void> completeParty(String partyNo);
     PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo);
+
 //    void deletePartyStatusByNo(String memberNo);
 
 }
