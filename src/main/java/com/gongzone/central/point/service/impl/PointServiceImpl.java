@@ -1,9 +1,13 @@
-package com.gongzone.central.point.service;
+package com.gongzone.central.point.service.impl;
 
 
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.mapper.PointHistoryMapper;
 import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.point.service.PointHistoryService;
+import com.gongzone.central.point.service.PointService;
+import com.gongzone.central.point.service.PointTransactionService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ public class PointServiceImpl implements PointService {
 	private final PointHistoryService pointHistoryService;
 
 	private final PointMapper pointMapper;
+	private final PointHistoryMapper pointHistoryMapper;
 
 
 	/**
@@ -28,7 +33,7 @@ public class PointServiceImpl implements PointService {
 	 */
 	@Override
 	public List<PointHistory> getHistories(String memberNo, int size, int page) {
-		return pointMapper.getHistories(getMemberPointNo(memberNo), size, page - 1);
+		return pointHistoryMapper.getHistories(getMemberPointNo(memberNo), size, page - 1);
 	}
 
 	/**
@@ -40,7 +45,7 @@ public class PointServiceImpl implements PointService {
 	 */
 	@Override
 	public PointHistory getHistory(String memberNo, String pointHistoryNo) {
-		return pointMapper.getHistory(getMemberPointNo(memberNo), pointHistoryNo);
+		return pointHistoryMapper.getHistory(getMemberPointNo(memberNo), pointHistoryNo);
 	}
 
 	/**

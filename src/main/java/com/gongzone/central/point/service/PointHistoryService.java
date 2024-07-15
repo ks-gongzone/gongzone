@@ -2,6 +2,7 @@ package com.gongzone.central.point.service;
 
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.mapper.PointHistoryMapper;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class PointHistoryService {
 
 	private final PointMapper pointMapper;
+	private final PointHistoryMapper pointHistoryMapper;
 
 
 	/**
@@ -23,8 +25,8 @@ public class PointHistoryService {
 	 */
 	public String insert(String memberPointNo, PointRequest request) {
 		calculatePointUpdate(memberPointNo, request);
-		
-		String last = pointMapper.getLastHistoryPk();
+
+		String last = pointHistoryMapper.getLastHistoryPk();
 		PointHistory pointHistory = PointHistory.builder()
 												.pointHistoryNo(MySqlUtil.generatePrimaryKey(last))
 												.memberPointNo(memberPointNo)
@@ -33,7 +35,7 @@ public class PointHistoryService {
 												.pointHistoryAfter(request.getPointBefore())  // 처음 insert 시 실패를 가정한다. 따라서 before 값 삽입
 												.type(request.getChangeType())
 												.build();
-		pointMapper.insertPointHistory(pointHistory);
+		pointHistoryMapper.insertPointHistory(pointHistory);
 
 		return pointHistory.getPointHistoryNo();
 	}
@@ -60,7 +62,7 @@ public class PointHistoryService {
 	 */
 	public void updateSuccess(String historyNo, PointRequest pointCharge) {
 		int pointHistoryAfter = pointCharge.getPointAfter();
-		pointMapper.updateHistorySuccess(historyNo, pointHistoryAfter);
+		pointHistoryMapper.updateHistorySuccess(historyNo, pointHistoryAfter);
 	}
 
 }
