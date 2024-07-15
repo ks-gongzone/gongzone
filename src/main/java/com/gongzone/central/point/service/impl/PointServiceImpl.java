@@ -1,20 +1,20 @@
-package com.gongzone.central.point.service;
+package com.gongzone.central.point.service.impl;
+
 
 import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.payment.service.PaymentHistoryService;
+import com.gongzone.central.point.service.PointHistoryService;
+import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.point.withdrawal.domain.Withdraw;
 import com.gongzone.central.point.withdrawal.service.WithdrawHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- *
- */
 @Service
 @RequiredArgsConstructor
-public class PointTransactionService {
+public class PointServiceImpl implements PointService {
 
 	private final PointHistoryService pointHistoryService;
 	private final PaymentHistoryService paymentHistoryService;
@@ -24,12 +24,28 @@ public class PointTransactionService {
 
 
 	/**
+	 * 회원이 현재 보유한 포인트를 반환한다.
+	 *
+	 * @param memberNo 회원 번호
+	 * @return 현재 보유 포인트
+	 */
+	@Override
+	public Integer getCurrentPoint(String memberNo) {
+		return pointMapper.getCurrentPoint(getPointNo(memberNo));
+	}
+
+	/**
 	 * 요청을 기반으로 회원 포인트 충전을 처리한다.
 	 *
-	 * @param memberPointNo 회원 포인트 번호
-	 * @param request       포인트 충전 객체
+	 * @param memberNo 회원 번호
+	 * @param request  포인트 충전 객체
 	 */
-	public void charge(String memberPointNo, PointRequest request) {
+	@Override
+	public void charge(String memberNo, PointRequest request) {
+		pointCharge(getPointNo(memberNo), request);
+	}
+
+	private void pointCharge(String memberPointNo, PointRequest request) {
 		// 1. 포인트 내역 삽입
 		String historyNo = pointHistoryService.insert(memberPointNo, request);
 
@@ -52,10 +68,15 @@ public class PointTransactionService {
 	/**
 	 * 요청을 기반으로 회원 포인트 인출을 처리한다.
 	 *
-	 * @param memberPointNo 회원 포인트 번호
-	 * @param request       회원 포인트 인출 객체
+	 * @param memberNo 회원 번호
+	 * @param request  회원 포인트 인출 객체
 	 */
-	public void withdraw(String memberPointNo, PointRequest request) {
+	@Override
+	public void withdraw(String memberNo, PointRequest request) {
+		pointWithdraw(getPointNo(memberNo), request);
+	}
+
+	private void pointWithdraw(String memberPointNo, PointRequest request) {
 		// 1. 포인트 내역 삽입
 		String historyNo = pointHistoryService.insert(memberPointNo, request);
 
@@ -77,12 +98,22 @@ public class PointTransactionService {
 	}
 
 	/**
-	 * 포인트 변동 객체를 이용해 실제로 포인트를 변화시킨다.
+	 * 회원 번호를 받아 회원 포인트 번호를 반환한다.
 	 *
-	 * @param memberPointNo 회원 포인트 번호
-	 * @param request       포인트 변동 객체
+	 * @param memberNo 회원 번호
+	 * @return 회원 포인트 번호
 	 */
-	public void updatePoint(String memberPointNo, PointRequest request) {
+	@Override
+	public String getPointNo(String memberNo) {
+		return pointMapper.getPointNo(memberNo);
+	}
+
+	@Override
+	public void update(String memberNo, PointRequest request) {
+		updatePoint(getPointNo(memberNo), request);
+	}
+
+	private void updatePoint(String memberPointNo, PointRequest request) {
 		int change = request.getPointChange();
 		pointMapper.updatePoint(memberPointNo, change);
 	}

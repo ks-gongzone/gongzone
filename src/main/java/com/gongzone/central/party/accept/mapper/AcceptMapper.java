@@ -32,4 +32,5 @@ public interface AcceptMapper {
     void insertPartyPurchase(@Param("partyNo") String partyNo, @Param("partyMemberNo") String partyMemberNo, @Param("requestPrice") int requestPrice);
     PartyMemberPurchase getPartyMemberPurchase(String memberNo, String partyNo);
     String getPartyLeaderByPartyNo(String partyNo);
+    void updatePartyLeaderPurchase(String memberNo);
 }

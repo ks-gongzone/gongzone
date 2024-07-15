@@ -7,10 +7,11 @@
 
   <!-- Query -->
   <insert id="insertPaymentHistory">
+    -- insertPaymentHistory: 포인트 충전 정보를 삽입한다.
     INSERT INTO point_payment
-    (point_history_no, pay_type, pay_tx_type, pay_tx_id, pay_id, pay_code, pay_message, status_code)
+      (point_history_no, pay_type, pay_tx_type, pay_tx_id, pay_id, pay_code, pay_message, status_code)
     VALUES
-    (#{pointHistoryNo}, #{type}, #{transactionType}, #{txId}, #{paymentId}, #{code}, #{message}, #{status});
+      (#{pointHistoryNo}, #{type}, #{transactionType}, #{txId}, #{paymentId}, #{code}, #{message}, #{status});
   </insert>
 
 </mapper>

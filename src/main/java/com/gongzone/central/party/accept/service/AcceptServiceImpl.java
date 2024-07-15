@@ -125,6 +125,8 @@ public class AcceptServiceImpl implements AcceptService {
         for (AcceptMember member : participants) {
             acceptMapper.insertPartyPurchase(detail.getPartyNo(), member.getPartyMemberNo(), member.getRequestPrice());
         }
+        String leaderNo = detail.getPartyLeader();
+        acceptMapper.updatePartyLeaderPurchase(leaderNo);
 
         return Flux.fromIterable(participants)
                 .flatMap(participant -> completeAlert(participant.getMemberNo()))
