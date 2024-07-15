@@ -9,10 +9,11 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
-    void updatePartyMember(String boardNo, Board board);
-    void updateParty(String boardNo, Board board);
-    void updateLocation(String boardNo, Board board);
-    void updateBoard(String boardNo, Board board);
+    String getPartyNo(String boardNo);
+    void updatePartyMember(Board board);
+    void updateParty(Board board);
+    void updateLocation(Board board);
+    void updateBoard(Board board);
 
     List<Board> getBoardInfo(String boardNo);
 

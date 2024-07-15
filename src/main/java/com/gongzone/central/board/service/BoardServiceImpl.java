@@ -29,13 +29,15 @@ public class BoardServiceImpl implements BoardService {
     private final FileUtil fileUtil;
 
     @Override
+    @Transactional
     public void updateBoardNoImage(String boardNo, BoardResponse br){
-        System.out.println("222222222222222222222222222222222");
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime endDateTime = LocalDateTime.parse(br.getEndDate(), formatter);
+        String endDateString = br.getEndDate().replace("T", " ");
+        LocalDateTime endDateTime = LocalDateTime.parse(endDateString, formatter);
+
         Board board = Board.builder()
                 .memberNo(br.getMemberNo())
+                .boardNo(boardNo)
                 .boardTitle(br.getTitle())
                 .category(br.getCategory())
                 .productUrl(br.getURL())
@@ -60,10 +62,12 @@ public class BoardServiceImpl implements BoardService {
 
         board.setAmountPrice(unitPrice*board.getAmount());
 
-        boardMapper.updatePartyMember(boardNo, board);
-        boardMapper.updateParty(boardNo, board);
-        boardMapper.updateLocation(boardNo,board);
-        boardMapper.updateBoard(boardNo,board);
+        board.setPartyNo(boardMapper.getPartyNo(boardNo));
+
+        boardMapper.updatePartyMember(board);
+        boardMapper.updateParty(board);
+        boardMapper.updateLocation(board);
+        boardMapper.updateBoard(board);
     }
 
     @Override
