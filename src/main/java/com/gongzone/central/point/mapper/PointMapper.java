@@ -14,10 +14,10 @@ public interface PointMapper {
 
 	Point getPointNoByMemberNo(String memberNo);
 
+	String getPointNo(String memberNo);
+
 	void insertPoint(Point point);
 
 	String getLastMemberPointNo();
-
-	String getMemberPointNo(String memberNo);
 
 }

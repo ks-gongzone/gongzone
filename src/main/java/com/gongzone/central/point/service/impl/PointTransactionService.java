@@ -1,9 +1,10 @@
-package com.gongzone.central.point.service;
+package com.gongzone.central.point.service.impl;
 
 import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.payment.service.PaymentHistoryService;
+import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.withdrawal.domain.Withdraw;
 import com.gongzone.central.point.withdrawal.service.WithdrawHistoryService;
 import lombok.RequiredArgsConstructor;

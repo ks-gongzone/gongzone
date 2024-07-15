@@ -49,7 +49,7 @@ public class AdminPartyAfterServiceImpl implements AdminPartyAfterService {
 		String memberHistoryPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastHistoryPk());
 		String partyMemberNo = partyAfterMapper.getLeaderPartyMemberNo(partyNo);
 		String memberNo = partyAfterMapper.getMemberNoByPartyMemberNo(partyMemberNo);
-		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
+		String memberPointNo = pointMapper.getPointNo(memberNo);
 		int memberCurrentPoint = pointMapper.getCurrentPoint(memberPointNo);
 		PointHistory memberHistory = PointHistory.builder()
 												 .pointHistoryNo(memberHistoryPk)

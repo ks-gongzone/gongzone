@@ -56,6 +56,16 @@
       m_point_no = #{memberPointNo};
   </select>
 
+  <select id="getPointNo" resultType="String">
+    -- getMemberPointNo: 회원 번호를 이용해 회원 포인트 번호를 얻는다.
+    SELECT
+      m_point_no
+    FROM
+      member_point
+    WHERE
+      m_no = #{memberNo};
+  </select>
+
   <insert id="insertPoint" parameterType="Point">
     -- insertPoint: 포인트 테이블에 초기 값을 삽입한다.
     INSERT INTO member_point
@@ -70,16 +80,6 @@
       max(m_point_no)
     FROM
       member_point
-  </select>
-
-  <select id="getMemberPointNo" resultType="String">
-    -- getMemberPointNo: 회원 번호를 이용해 회원 포인트 번호를 얻는다.
-    SELECT
-      m_point_no
-    FROM
-      member_point
-    WHERE
-      m_no = #{memberNo};
   </select>
 
 </mapper>

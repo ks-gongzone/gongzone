@@ -1,14 +1,9 @@
 package com.gongzone.central.point.service.impl;
 
 
-import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointRequest;
-import com.gongzone.central.point.mapper.PointHistoryMapper;
 import com.gongzone.central.point.mapper.PointMapper;
-import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
-import com.gongzone.central.point.service.PointTransactionService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,36 +12,9 @@ import org.springframework.stereotype.Service;
 public class PointServiceImpl implements PointService {
 
 	private final PointTransactionService pointTransactionService;
-	private final PointHistoryService pointHistoryService;
 
 	private final PointMapper pointMapper;
-	private final PointHistoryMapper pointHistoryMapper;
 
-
-	/**
-	 * 회원의 (모든) 포인트 사용 내역을 반환한다.
-	 *
-	 * @param memberNo 회원 번호
-	 * @param size     페이지 크기
-	 * @param page     페이지 번호
-	 * @return 포인트 사용내역 List
-	 */
-	@Override
-	public List<PointHistory> getHistories(String memberNo, int size, int page) {
-		return pointHistoryMapper.getHistories(getMemberPointNo(memberNo), size, page - 1);
-	}
-
-	/**
-	 * 회원의 포인트 사용 내역을 반환한다.
-	 *
-	 * @param memberNo       회원 번호
-	 * @param pointHistoryNo 포인트 내역 번호
-	 * @return 포인트 사용내역
-	 */
-	@Override
-	public PointHistory getHistory(String memberNo, String pointHistoryNo) {
-		return pointHistoryMapper.getHistory(getMemberPointNo(memberNo), pointHistoryNo);
-	}
 
 	/**
 	 * 회원이 현재 보유한 포인트를 반환한다.
@@ -56,7 +24,7 @@ public class PointServiceImpl implements PointService {
 	 */
 	@Override
 	public Integer getCurrentPoint(String memberNo) {
-		return pointMapper.getCurrentPoint(getMemberPointNo(memberNo));
+		return pointMapper.getCurrentPoint(getPointNo(memberNo));
 	}
 
 	/**
@@ -67,7 +35,7 @@ public class PointServiceImpl implements PointService {
 	 */
 	@Override
 	public void charge(String memberNo, PointRequest request) {
-		pointTransactionService.charge(getMemberPointNo(memberNo), request);
+		pointTransactionService.charge(getPointNo(memberNo), request);
 	}
 
 	/**
@@ -78,7 +46,7 @@ public class PointServiceImpl implements PointService {
 	 */
 	@Override
 	public void withdraw(String memberNo, PointRequest request) {
-		pointTransactionService.withdraw(getMemberPointNo(memberNo), request);
+		pointTransactionService.withdraw(getPointNo(memberNo), request);
 	}
 
 	/**
@@ -87,23 +55,14 @@ public class PointServiceImpl implements PointService {
 	 * @param memberNo 회원 번호
 	 * @return 회원 포인트 번호
 	 */
-	private String getMemberPointNo(String memberNo) {
-		return pointMapper.getMemberPointNo(memberNo);
+	@Override
+	public String getPointNo(String memberNo) {
+		return pointMapper.getPointNo(memberNo);
 	}
 
 	@Override
 	public void update(String memberNo, PointRequest request) {
-		pointTransactionService.updatePoint(getMemberPointNo(memberNo), request);
-	}
-
-	@Override
-	public String insertHistory(String memberNo, PointRequest request) {
-		return pointHistoryService.insert(getMemberPointNo(memberNo), request);
-	}
-
-	@Override
-	public void updateHistorySuccess(String historyNo, PointRequest request) {
-		pointHistoryService.updateSuccess(historyNo, request);
+		pointTransactionService.updatePoint(getPointNo(memberNo), request);
 	}
 
 }
