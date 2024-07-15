@@ -37,4 +37,5 @@ public class AcceptDetail {
     private List<RequestMember> requestMember;
     private List<BoardReply> boardReply;
     private String img;
+    private int shippingNo;
 }

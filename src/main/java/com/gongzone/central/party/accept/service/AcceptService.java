@@ -2,6 +2,7 @@ package com.gongzone.central.party.accept.service;
 
 import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.utils.StatusCode;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -14,12 +15,11 @@ public interface AcceptService {
     List<AcceptDetail> getListParty(String memberNo);
 
     List<String> getPartyNo(String memberNo);
-    void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount);
-    RequestParty getRequestMemberByPartyId(String partyId, String partyNo);
+    Mono<Void> getPartyStatusByNo(String memberNo, String partyNo, StatusCode statusCode, int requestAmount);
+    RequestParty getRequestMemberBymemberNo(String memberNo, String partyNo);
     AcceptDetail getPartyDetailByPartyNo(String partyNo);
-    void completeParty(String partyNo);
+    Mono<Void> completeParty(String partyNo);
     PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo);
-
-//    void deletePartyStatusByNo(String partyId);
+//    void deletePartyStatusByNo(String memberNo);
 
 }

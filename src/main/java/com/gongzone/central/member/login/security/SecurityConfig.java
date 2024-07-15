@@ -39,7 +39,9 @@ public class SecurityConfig {
 			"/api/kakao/token",
 			"/api/location",
 			"/api/refresh",
-			"/api/attachement/**"
+			"/api/attachement/**",
+			"/api/note/**",
+			"/api/alertSSE/**"
 	};
 
 	// 보안 필터 체인을 정의

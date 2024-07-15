@@ -88,7 +88,7 @@ public class PointServiceImpl implements PointService {
 
 	@Override
 	public void update(String memberNo, PointRequest request) {
-		pointTransactionService.updatePoint(memberNo, request);
+		pointTransactionService.updatePoint(getMemberPointNo(memberNo), request);
 	}
 
 	@Override

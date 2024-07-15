@@ -37,7 +37,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/naver/token",
             "/api/google/token",
             "/api/kakao/token",
-            "/api/attachement"
+            "/api/attachement",
+            "/api/alertSSE/**"
     };
     private final MemberServiceImpl memberServiceImpl;
 

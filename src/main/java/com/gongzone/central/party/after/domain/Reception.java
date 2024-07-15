@@ -12,6 +12,9 @@ public class Reception {
 	private String receptionDate;
 	private String statusCode;
 
+	public Reception() {
+	}
+
 	public Reception(String partyMemberNo) {
 		this.partyMemberNo = partyMemberNo;
 	}

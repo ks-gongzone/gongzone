@@ -8,6 +8,7 @@ import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -30,6 +31,14 @@ public class QuestionController {
         questionService.getQuestionStatusUpdate(memberQuestionNo, statusCode);
         return statusCode.toString();
     }
+
+    /*@PostMapping("/QuestionStatusUpdate/{memberQuestionNo}")
+    public Mono<String> statusUpdate(@PathVariable int memberQuestionNo, @RequestBody QuestionMember questionMember) {
+        System.out.println("22222222222222222222222222222222222222222");
+        StatusCode statusCode = StatusCode.fromCode(questionMember.getStatusCode());
+        return questionService.getQuestionStatusUpdate(memberQuestionNo, statusCode)
+                .then(Mono.just(statusCode.toString()));
+    }*/
 
     @PostMapping("/QuestionMember/insert")
     public ResponseEntity<Boolean> questionMemberInsert(@RequestBody QuestionMember questionMember) {
