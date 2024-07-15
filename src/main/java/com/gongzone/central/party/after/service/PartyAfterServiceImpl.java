@@ -177,8 +177,7 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		// 게시글(모집완료), 파티(파티원 결제대기) 상태변경
 		partyAfterMapper.testChangeBoardStatus(boardNo, STATUS_BOARD_RECRUIT_COMPLETE.getCode());
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_PAYMENT_WAITING_MEMBER.getCode());
-		// 파티장, 파티원 결제현황 삽입
-		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo, purchasePrice);
+		// 파티원 결제현황 삽입
 		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo2, purchasePrice2);
 	}
 

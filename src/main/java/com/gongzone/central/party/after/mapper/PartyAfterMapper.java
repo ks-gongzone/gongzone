@@ -86,4 +86,6 @@ public interface PartyAfterMapper {
 
 	String getMemberNoByPartyMemberNo(String partyMemberNo);
 
+	void updatePartyComplete(String partyNo);
+
 }
