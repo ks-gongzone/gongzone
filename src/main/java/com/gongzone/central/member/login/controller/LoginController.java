@@ -75,8 +75,8 @@ public class LoginController {
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("잘못된 사용자이거나 비밀번호가 일치하지 않습니다."));
         } catch (Exception e) {
-            int loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo());
-            loginLogService.logLoginFailure(loginNumber);
+            LoginLog loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
+            loginLogService.logLoginFailure(loginNumber.getLoginNo());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponse("로그인 중 오류가 발생했습니다."));
         }
@@ -104,8 +104,8 @@ public class LoginController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody LoginRequest logoutRequest, HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
-        int loginNo = loginLogService.getLoginNoByMemberNo(jwtUtil.extractMemberNo(token));
-        loginLogService.logLogout(loginNo);
+        LoginLog loginNo = loginLogService.getLoginNoByMemberNo(jwtUtil.extractMemberNo(token), logoutRequest.getUserAgent());
+        loginLogService.logLogout(loginNo.getLoginNo());
 
         return ResponseEntity.ok().body("로그아웃 성공");
     }

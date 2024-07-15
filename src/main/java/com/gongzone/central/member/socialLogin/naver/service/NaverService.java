@@ -148,8 +148,8 @@ public class NaverService {
 
             return socialMember;
         } catch (Exception e) {
-            int loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo());
-            loginLogService.logLoginFailure(loginNumber);
+            LoginLog loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
+            loginLogService.logLoginFailure(loginNumber.getLoginNo());
             throw new Exception("네이버 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
             lock.unlock();
