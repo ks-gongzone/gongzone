@@ -4,6 +4,7 @@ import com.gongzone.central.common.Response.Result;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.payment.domain.Payment;
+import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.point.withdrawal.domain.Withdraw;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PointController {
 
 	private final PointService pointService;
+	private final PointHistoryService pointHistoryService;
+
 
 	@Operation(summary = "특정 회원의 포인트 내역 전체를 요청한다.")
 	@ApiResponses(value = {
@@ -47,7 +50,7 @@ public class PointController {
 		ResponseEntity<Result> response;
 
 		try {
-			List<PointHistory> pointHistories = pointService.getHistories(memberNo, pageSize, pageNo);
+			List<PointHistory> pointHistories = pointHistoryService.getHistories(memberNo, pageSize, pageNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
 			System.err.println("Exception during getAllMemberPointHistory: " + e.getClass().getName());
@@ -74,7 +77,7 @@ public class PointController {
 		ResponseEntity<Result> response;
 
 		try {
-			PointHistory pointHistory = pointService.getHistory(memberNo, pointHistoryNo);
+			PointHistory pointHistory = pointHistoryService.getHistory(memberNo, pointHistoryNo);
 			response = ResponseEntity.ok(new Result(pointHistory));
 		} catch (Exception e) {
 			System.err.println("Exception during getMemberPointHistory: " + e.getClass().getName());
@@ -102,8 +105,8 @@ public class PointController {
 			Integer point = pointService.getCurrentPoint(memberNo);
 			response = ResponseEntity.ok(new Result(point));
 		} catch (Exception e) {
-			System.err.println("Exception during getMemberPoint: " + e.getClass().getName());
-			System.err.println(e.getCause().toString());
+			System.err.printf("Exception:\n\t%s\n", e);
+			System.err.printf("\tCaused by: %s\n", e.getCause() != null ? e.getCause().toString() : "null");
 			response = ResponseEntity.internalServerError().body(new Result("FAILED_INTERNAL_ERROR"));
 		}
 
