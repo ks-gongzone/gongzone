@@ -1,5 +1,14 @@
 package com.gongzone.central.party.after.service;
 
+import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLETE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_COMPLETE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_WAITING;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SETTLEMENT_WAITING;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING_COMPLETE;
+
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
 import com.gongzone.central.party.after.domain.Shipping;
@@ -12,8 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.gongzone.central.utils.StatusCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -112,7 +119,7 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 	}
 
 	/**
-	 * 파티장의 수취상태를 '수취완료'로 변경한다.
+	 * 파티원의 수취상태를 '수취완료'로 변경한다.
 	 *
 	 * @param partyNo     파티 고유번호
 	 * @param receptionNo 수취확인 고유번호
@@ -127,11 +134,6 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		partyAfterMapper.updateReception(reception);
 
 		// 2. 파티의 수취가 완료되었는지 확인
-		System.out.println();
-		System.out.println();
-		System.out.println("\tpartyAfterMapper.checkReceptionComplete(partyNo) = " + partyAfterMapper.checkReceptionComplete(partyNo));
-		System.out.println();
-		System.out.println();
 		if (partyAfterMapper.checkReceptionComplete(partyNo)) {
 			// 2-1. 파티 상태 변경
 			partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_SETTLEMENT_WAITING.getCode());
