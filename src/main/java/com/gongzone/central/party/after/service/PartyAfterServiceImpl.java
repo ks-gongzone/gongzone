@@ -11,6 +11,7 @@ import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING_COMPLE
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Settlement;
 import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.mapper.PartyAfterMapper;
 import com.gongzone.central.point.domain.request.PointRequest;
@@ -139,7 +140,9 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 			partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_SETTLEMENT_WAITING.getCode());
 
 			// 2-2. 파티장 정산 테이블 초기값 삽입
-			partyAfterMapper.insertPartySettlement(partyNo);
+			int price = partyAfterMapper.getSettlementPrice(partyNo);
+			Settlement settlement = new Settlement(partyNo, price);
+			partyAfterMapper.insertPartySettlement(settlement);
 		}
 	}
 

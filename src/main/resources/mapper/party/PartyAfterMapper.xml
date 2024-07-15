@@ -122,8 +122,19 @@
       AND NOT status_code = 'S060502'; -- NOT 수취완료
   </select>
 
+  <select id="getSettlementPrice">
+    -- 파티 정산금액을 반환한다.
+    SELECT
+      sum(pm_price)
+    FROM
+      party_member
+    WHERE
+      p_no = #{partyNo}
+      AND NOT member_is_leader = '파티장';
+  </select>
+
   <insert id="insertPartySettlement">
-    INSERT INTO party_settlement (p_no, p_member_no)
+    INSERT INTO party_settlement (p_no, p_member_no, p_settle_price)
     VALUES
       (#{partyNo}, (SELECT
                       p_member_no
@@ -131,16 +142,16 @@
                       party_member
                     WHERE
                       p_no = #{partyNo}
-                      AND member_is_leader = '파티장'));
+                      AND member_is_leader = '파티장'), #{partySettlePrice});
   </insert>
 
   <update id="updateShippingStatus">
     -- 파티 수취 상태를 업데이트 한다.
-    UPDATE party_reception
+    UPDATE party_shipping
     SET
-      status_code       = #{statusCode}
+      status_code = #{statusCode}
     WHERE
-      r_no = #{partyNo};
+      p_no = #{partyNo};
   </update>
 
   <!--  테스트: 게시글 삽입 -->

@@ -2,6 +2,7 @@ package com.gongzone.central.party.after.mapper;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Settlement;
 import com.gongzone.central.party.after.domain.Shipping;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,13 +29,15 @@ public interface PartyAfterMapper {
 						 @Param("receptions") List<Reception> receptions);
 
 	void updateReception(Reception reception);
-	
+
 	boolean checkReceptionComplete(String partyNo);
 
-	void insertPartySettlement(String partyNo);
+	int getSettlementPrice(String partyNo);
+
+	void insertPartySettlement(Settlement settlement);
 
 	void updateShippingStatus(@Param("partyNo") String partyNo,
-							  @Param("status") String status);
+							  @Param("statusCode") String statusCode);
 
 
 	// Below for test
