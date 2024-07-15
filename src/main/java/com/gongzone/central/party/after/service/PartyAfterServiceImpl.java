@@ -140,7 +140,7 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 			partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_SETTLEMENT_WAITING.getCode());
 
 			// 2-2. 파티장 정산 테이블 초기값 삽입
-			int price = partyAfterMapper.getSettlementPrice(partyNo);
+			int price = partyAfterMapper.calculateSettlementPrice(partyNo);
 			Settlement settlement = new Settlement(partyNo, price);
 			partyAfterMapper.insertPartySettlement(settlement);
 		}

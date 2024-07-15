@@ -122,7 +122,7 @@
       AND NOT status_code = 'S060502'; -- NOT 수취완료
   </select>
 
-  <select id="getSettlementPrice">
+  <select id="calculateSettlementPrice">
     -- 파티 정산금액을 반환한다.
     SELECT
       sum(pm_price)
@@ -153,6 +153,58 @@
     WHERE
       p_no = #{partyNo};
   </update>
+
+  <select id="getSettlementPrice">
+    SELECT
+      p_settle_price
+    FROM
+      party_settlement
+    WHERE
+      p_no = #{partyNo};
+  </select>
+
+  <select id="getLeaderPartyMemberNo">
+    SELECT
+      p_member_no
+    FROM
+      party_member
+    WHERE
+      p_no = #{partyNo}
+      AND member_is_leader = '파티장';
+  </select>
+
+  <select id="getMemberNoByPartyMemberNo">
+    SELECT
+      m_no
+    FROM
+      party_member
+    WHERE
+      p_member_no = #{partyMemberNo};
+  </select>
+
+  <insert id="insertSettlementDetail">
+    INSERT INTO party_settlement_detail (p_settle_no, point_history_no, p_settle_price)
+    VALUES
+      (#{partySettleNo}, #{pointHistoryNo}, #{partySettlePrice});
+  </insert>
+
+  <update id="updateSettlementState">
+    UPDATE party_settlement
+    SET
+      status_code = #{status}
+    WHERE
+      p_settle_no = #{settlementNo};
+  </update>
+
+  <select id="getPartySettlementNo">
+    SELECT
+      p_settle_no
+    FROM
+      party_settlement
+    WHERE
+      p_no = #{partyNo};
+  </select>
+
 
   <!--  테스트: 게시글 삽입 -->
   <insert id="testInsertBoard">

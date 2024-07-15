@@ -83,7 +83,8 @@
 
   <update id="updatePoint">
     UPDATE member_point
-    SET m_point = m_point + #{change}
+    SET
+      m_point = m_point + #{change}
     WHERE
       m_point_no = #{memberPointNo};
   </update>
@@ -97,8 +98,9 @@
 
   <update id="updateHistorySuccess">
     UPDATE point_history
-    SET point_history_after = #{pointHistoryAfter},
-      status_code           = 'S030101' -- 포인트 충전 성공
+    SET
+      point_history_after = #{pointHistoryAfter},
+      status_code         = 'S030101' -- 포인트 충전 성공
     WHERE
       point_history_no = #{historyNo};
   </update>
@@ -113,7 +115,7 @@
     WHERE
       m_no = #{memberNo}
   </select>
-
+  
   <!-- 예시 -->
   <select id="getPointByPointNo" parameterType="String" resultType="Point">
     SELECT
