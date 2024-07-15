@@ -21,7 +21,7 @@ public interface InteractionMapper {
     // 팔로우 target_no 카운팅
     int getMemberFollowCount(@Param("memberNo") String memberNo);
     // 전체 회원 수 카운팅
-    int getTotalMembers(@Param("memberNo") String memberNo);
+    int getTotalMembers();
     // 팔로우 및 언 팔로우
     void insertFollow(
             @Param("currentUserNo") String currentUserNo,

@@ -26,18 +26,19 @@ public class InteractionServiceImpl implements InteractionService{
         List<InteractionMember> members = interactionMapper.findAllMembers(currentUserNo, memberName, offset, size);
         for (InteractionMember member : members) {
             filterData(member, currentUserNo, member.getMemberNo());
+            System.out.println("[서비스] 회원 번호" + member.getMemberNo() + "인기유저여부" + member.isPopular());
         }
         return members;
     }
     @Override
     public InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo) {
-        System.out.println("[서비스] 회원 데이터 필터링: " + member.getMemberNo());
+        System.out.println("[서비스] 회원 데이터 필터링 현재회원번호: " + member.getCurrentUserNo());
         // 차단 10건 이상 유저 관리하기 위한 로직
         int warningCount = interactionMapper.getWarningCount(member.getMemberNo());
         boolean isWarning = warningCount > 10;
 
         // 상위 10%의 인기유저 관리하기 위한 로직
-        int totalMembers = interactionMapper.getTotalMembers(member.getMemberNo());
+        int totalMembers = interactionMapper.getTotalMembers();
         int popularCount = (int) (totalMembers * 0.1);
         int memberFollowCount = interactionMapper.getMemberFollowCount(member.getMemberNo());
         boolean isPopular = memberFollowCount > popularCount;
@@ -57,6 +58,10 @@ public class InteractionServiceImpl implements InteractionService{
                 .currentUserNo(currentUserNo)
                 .targetMemberNo(targetMemberNo)
                 .build();
+    }
+    @Override
+    public int getTotalMembers() {
+        return interactionMapper.getTotalMembers();
     }
 
     /**
