@@ -7,6 +7,7 @@ import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.service.PartyAfterService;
 import com.gongzone.central.point.domain.request.PointRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,8 +37,11 @@ public class PartyAfterController {
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
 	@PostMapping("/{partyNo}/purchase/{memberNo}")
-	public ResponseEntity<Result> postPartyPurchase(@PathVariable String partyNo,
+	public ResponseEntity<Result> postPartyPurchase(@Parameter(description = "파티 고유번호(Pxxxxxx)")
+													@PathVariable String partyNo,
+													@Parameter(description = "회원 고유번호(Mxxxxxx)")
 													@PathVariable String memberNo,
+													@Parameter(description = "파티 결제 요청 객체")
 													@RequestBody PointRequest<PartyPurchaseDetail> request) {
 		ResponseEntity<Result> response;
 
@@ -62,8 +66,11 @@ public class PartyAfterController {
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
 	@PatchMapping("/{partyNo}/shipping/{shippingNo}")
-	public ResponseEntity<Result> postPartyShipping(@PathVariable String partyNo,
+	public ResponseEntity<Result> postPartyShipping(@Parameter(description = "파티 고유번호(Pxxxxxx)")
+													@PathVariable String partyNo,
+													@Parameter(description = "배송현황 고유번호")
 													@PathVariable String shippingNo,
+													@Parameter(description = "배송현황 객체")
 													@RequestBody Shipping shipping) {
 		ResponseEntity<Result> response;
 
@@ -88,7 +95,9 @@ public class PartyAfterController {
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
 	@PostMapping("/{partyNo}/shipping/{shippingNo}/complete")
-	public ResponseEntity<Result> postPartyShippingComplete(@PathVariable String partyNo,
+	public ResponseEntity<Result> postPartyShippingComplete(@Parameter(description = "파티 고유번호(Mxxxxxx)")
+															@PathVariable String partyNo,
+															@Parameter(description = "배송현황 고유번호")
 															@PathVariable String shippingNo) {
 		ResponseEntity<Result> response;
 
@@ -113,8 +122,11 @@ public class PartyAfterController {
 						 description = "FAILED_INTERNAL_ERROR"),
 	})
 	@PatchMapping("/{partyNo}/reception/{receptionNo}")
-	public ResponseEntity<Result> patchPartyReception(@PathVariable String partyNo,
+	public ResponseEntity<Result> patchPartyReception(@Parameter(description = "파티 고유번호(Pxxxxxx)")
+													  @PathVariable String partyNo,
+													  @Parameter(description = "수취현황 고유번호(Rxxxxxx)")
 													  @PathVariable String receptionNo,
+													  @Parameter(description = "수취현황 객체")
 													  @RequestBody Reception reception) {
 		ResponseEntity<Result> response;
 
@@ -131,6 +143,7 @@ public class PartyAfterController {
 	}
 
 
+	// Below for test
 	@Operation(summary = "테스트: 활성 파티를 삽입한다.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200",
