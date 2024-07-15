@@ -29,8 +29,8 @@ public class LoginLogServiceImpl implements LoginLogService{
     }
 
     @Override
-    public int getLoginNoByMemberNo(String memberNo) {
-        return loginMapper.loginNoBymemberNo(memberNo);
+    public LoginLog getLoginNoByMemberNo(String memberNo, String userAgent) {
+        return loginMapper.loginNoBymemberNo(memberNo, userAgent);
     }
 
     @Override

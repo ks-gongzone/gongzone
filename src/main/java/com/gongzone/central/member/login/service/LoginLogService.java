@@ -7,7 +7,7 @@ public interface LoginLogService {
     void logLoginAttempt(LoginLog loginLog);
     void logLogout(int loginNo);
     void logLoginFailure(int loginNo);
-    int getLoginNoByMemberNo(String memberNo);
+    LoginLog getLoginNoByMemberNo(String memberNo, String userAgent);
 
     String getloginBrowserByCode(String userAgent);
 }

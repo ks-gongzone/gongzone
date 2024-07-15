@@ -153,8 +153,8 @@ public class KakaoService {
             }
             return result;
         } catch (Exception e) {
-            int loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo());
-            loginLogService.logLoginFailure(loginNumber);
+            LoginLog loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
+            loginLogService.logLoginFailure(loginNumber.getLoginNo());
             throw new Exception("카카오 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
             lock.unlock();

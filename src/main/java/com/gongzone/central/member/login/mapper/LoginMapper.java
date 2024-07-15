@@ -14,5 +14,5 @@ public interface LoginMapper {
     void loginLogInsert(LoginLog loginLog);
     int logoutLogUpdate(int loginNo);
     int loginFalseLogUpdate(int loginNo);
-    int loginNoBymemberNo(String memberNo);
+    LoginLog loginNoBymemberNo(String memberNo, String userAgent);
 }
