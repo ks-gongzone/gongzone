@@ -1,6 +1,8 @@
 package com.gongzone.central.member.socialLogin.naver.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gongzone.central.member.login.domain.LoginLog;
+import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.socialLogin.naver.domain.NaverRequest;
 import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
 import com.gongzone.central.member.socialLogin.naver.service.NaverService;
@@ -26,18 +28,16 @@ public class NaverController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
+            String userAgent = request.getHeader("User-Agent");
             NaverRequest naverRequest = objectMapper.readValue(requestBody, NaverRequest.class);
-
-            System.out.println("Received NaverRequest: " + naverRequest);
-            System.out.println("code = " + naverRequest.getCode());
-            System.out.println("state = " + naverRequest.getState());
+            naverRequest.setUserAgent(userAgent);
 
             if (naverRequest.getCode() == null || naverRequest.getState() == null) {
-                System.out.println("Code or state is null");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            SocialMember socialMember = naverService.naverToken(naverRequest.getCode());
+            SocialMember socialMember = naverService.naverToken(naverRequest.getCode(), naverRequest.getUserAgent());
+
             return new ResponseEntity<>(socialMember, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

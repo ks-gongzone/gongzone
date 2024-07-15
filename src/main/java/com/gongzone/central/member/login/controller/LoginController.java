@@ -49,8 +49,6 @@ public class LoginController {
         LoginLog loginLog = new LoginLog();
         String browser = loginLogService.getloginBrowserByCode(loginRequest.getUserAgent());
         loginLog.setLoginBrowser(browser);
-        System.out.println("로그인 사이트 유형 : " + loginRequest.getUserAgent());
-        System.out.println("로그인 사이트 유형 : " + browser);
         try {
             // 사용자 인증
             authenticationManager.authenticate(
@@ -64,17 +62,12 @@ public class LoginController {
             loginLog.setMemberNo(memberDetails.getMemberNo());
             loginLogService.logLoginAttempt(loginLog);
 
-            System.out.println("memberDetails : " + memberDetails);
-
             final String jwt = jwtUtil.generateToken(memberDetails);
             final long expiresIn = jwtUtil.extractExpiration(jwt).getTime();
             final String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
 
-            System.out.println("checkStatusCode : " + checkStatusCode);
             checkStatusCode.checkStatus(memberDetails.getMemberNo(), response);
-            System.out.println("checkStatusCode 실행");
-            System.out.println("시간 : " + new Date(expiresIn));
-            // 토큰을 포함한 응답 반환
+
             return ResponseEntity.ok(new LoginResponse("bearer", jwt, expiresIn, refreshToken, memberDetails.getMemberNo(), memberDetails.getPointNo(),null));
 
         } catch (UsernameNotFoundException e) {
@@ -83,7 +76,6 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("잘못된 사용자이거나 비밀번호가 일치하지 않습니다."));
         } catch (Exception e) {
             int loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo());
-            System.out.println("123123123 : " + loginNumber);
             loginLogService.logLoginFailure(loginNumber);
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginResponse("로그인 중 오류가 발생했습니다."));
@@ -92,27 +84,19 @@ public class LoginController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
-        //System.out.println("리프레시 작동");
         String refreshToken = request.getRefreshToken();
-        //System.out.println("refreshToken : " + refreshToken);
         try {
             if (jwtUtil.validateToken(refreshToken)) {
-                //System.out.println("if문 시작");
                 String memberNo = jwtUtil.extractMemberNo(refreshToken);
-                //System.out.println("memberNo : " + memberNo);
                 MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(memberNo);
-                //System.out.println("memberDetails : " + memberDetails);
                 String newAccessToken = jwtUtil.generateToken(memberDetails);
-                //System.out.println("newAccessToken : " + newAccessToken);
                 long expiresIn = jwtUtil.extractExpiration(newAccessToken).getTime();
-                //System.out.println("expiresIn : " + expiresIn);
+
                 return ResponseEntity.ok(new RefreshTokenResponse(newAccessToken, expiresIn, refreshToken));
             } else {
-                //System.out.println("111111111111");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰");
             }
         } catch (Exception e) {
-            //System.out.println("2222222222222222");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰");
         }
     }
@@ -122,7 +106,7 @@ public class LoginController {
         String token = request.getHeader("Authorization").substring(7);
         int loginNo = loginLogService.getLoginNoByMemberNo(jwtUtil.extractMemberNo(token));
         loginLogService.logLogout(loginNo);
-        // 추가적인 로그아웃 로직이 필요하면 여기서 처리
+
         return ResponseEntity.ok().body("로그아웃 성공");
     }
 }

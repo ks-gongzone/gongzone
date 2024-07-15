@@ -21,4 +21,5 @@ public class SocialMember {
     private String jwtToken;
     private String memberNo;
     private String pointNo;
+ private String userAgent;
 }
