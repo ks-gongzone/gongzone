@@ -2,6 +2,8 @@ package com.gongzone.central.party.after.mapper;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Settlement;
+import com.gongzone.central.party.after.domain.SettlementDetail;
 import com.gongzone.central.party.after.domain.Shipping;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -24,7 +26,19 @@ public interface PartyAfterMapper {
 
 	String getLastIdxReception();
 
-	void insertReception(String partyNo, List<Reception> receptions);
+	void insertReception(@Param("partyNo") String partyNo,
+						 @Param("receptions") List<Reception> receptions);
+
+	void updateReception(Reception reception);
+
+	boolean checkReceptionComplete(String partyNo);
+
+	int calculateSettlementPrice(String partyNo);
+
+	void insertPartySettlement(Settlement settlement);
+
+	void updateShippingStatus(@Param("partyNo") String partyNo,
+							  @Param("statusCode") String statusCode);
 
 
 	// Below for test
@@ -59,5 +73,17 @@ public interface PartyAfterMapper {
 	void testInsertPartyPurchase(@Param("partyNo") String partyNo,
 								 @Param("partyMemberNo") String partyMemberNo,
 								 @Param("purchasePrice") String purchasePrice);
+
+	void insertSettlementDetail(SettlementDetail settlementDetail);
+
+	int getSettlementPrice(String partyNo);
+
+	String getLeaderPartyMemberNo(String partyNo);
+
+	String getPartySettlementNo(String partyNo);
+
+	void updateSettlementState(String settlementNo, String status);
+
+	String getMemberNoByPartyMemberNo(String partyMemberNo);
 
 }

@@ -3,11 +3,15 @@ package com.gongzone.central.party.after.service;
 import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLETE;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
-import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_BEFORE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_COMPLETE;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_RECEPTION_WAITING;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SETTLEMENT_WAITING;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING;
+import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_SHIPPING_COMPLETE;
 
 import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
+import com.gongzone.central.party.after.domain.Settlement;
 import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.mapper.PartyAfterMapper;
 import com.gongzone.central.point.domain.request.PointRequest;
@@ -109,7 +113,37 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		partyAfterMapper.insertReception(partyNo, receptions);
 
 		// 3. 파티 상태 변경 -> (수취대기중)
-		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_BEFORE.getCode());
+		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_WAITING.getCode());
+
+		// 4. 파티 수취 상태 변경 -> (배송 완료)
+		partyAfterMapper.updateShippingStatus(partyNo, STATUS_PARTY_SHIPPING_COMPLETE.getCode());
+	}
+
+	/**
+	 * 파티원의 수취상태를 '수취완료'로 변경한다.
+	 *
+	 * @param partyNo     파티 고유번호
+	 * @param receptionNo 수취확인 고유번호
+	 * @param reception   수취확인 객체
+	 */
+	@Override
+	@Transactional
+	public void updateReceptionComplete(String partyNo, String receptionNo, Reception reception) {
+		// 1. 수취현황 변경(성공)
+		reception.setReceptionNo(receptionNo);
+		reception.setStatusCode(STATUS_PARTY_RECEPTION_COMPLETE.getCode());
+		partyAfterMapper.updateReception(reception);
+
+		// 2. 파티의 수취가 완료되었는지 확인
+		if (partyAfterMapper.checkReceptionComplete(partyNo)) {
+			// 2-1. 파티 상태 변경
+			partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_SETTLEMENT_WAITING.getCode());
+
+			// 2-2. 파티장 정산 테이블 초기값 삽입
+			int price = partyAfterMapper.calculateSettlementPrice(partyNo);
+			Settlement settlement = new Settlement(partyNo, price);
+			partyAfterMapper.insertPartySettlement(settlement);
+		}
 	}
 
 
@@ -131,14 +165,19 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		String partyNo = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxParty());
 		partyAfterMapper.testInsertParty(partyNo, boardNo);
 		// 파티원 삽입
+		String purchasePrice2 = "1000";
+		String partyMemberNo2 = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
+		partyAfterMapper.testInsertPartyMember(partyMemberNo2, partyNo, purchasePrice2);
+		// 파티원 삽입
 		String purchasePrice = "1000";
 		String partyMemberNo = MySqlUtil.generatePrimaryKey(partyAfterMapper.testGetLastIdxPartyMember());
 		partyAfterMapper.testInsertPartyMember(partyMemberNo, partyNo, purchasePrice);
 		// 게시글(모집완료), 파티(파티원 결제대기) 상태변경
 		partyAfterMapper.testChangeBoardStatus(boardNo, STATUS_BOARD_RECRUIT_COMPLETE.getCode());
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_PAYMENT_WAITING_MEMBER.getCode());
-		// 파티원 결제현황 삽입
+		// 파티장, 파티원 결제현황 삽입
 		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo, purchasePrice);
+		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo2, purchasePrice2);
 	}
 
 }

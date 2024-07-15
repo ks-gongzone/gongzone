@@ -2,13 +2,19 @@ package com.gongzone.central.party.accept.service;
 
 import com.gongzone.central.board.domain.BoardReply;
 import com.gongzone.central.board.mapper.BoardMapper;
+import com.gongzone.central.member.alertSSE.domain.AlertSSE;
+import com.gongzone.central.member.alertSSE.service.AlertSEEService;
 import com.gongzone.central.member.mapper.MemberMapper;
+import com.gongzone.central.member.question.mapper.QuestionMapper;
 import com.gongzone.central.party.accept.domain.*;
 import com.gongzone.central.party.accept.mapper.AcceptMapper;
 import com.gongzone.central.utils.MySqlUtil;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +26,7 @@ public class AcceptServiceImpl implements AcceptService {
     private final AcceptMapper acceptMapper;
     private final BoardMapper boardMapper;
     private final MemberMapper memberMapper;
+    private final AlertSEEService alertSEEService;
 
     @Override
     public PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo) {
@@ -101,7 +108,7 @@ public class AcceptServiceImpl implements AcceptService {
     }
 
     @Override
-    public void completeParty(String partyNo) {
+    public Mono<Void> completeParty(String partyNo) {
         AcceptDetail detail = acceptMapper.getPartyList(partyNo);
         String partyNos = detail.getPartyNo();
         List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
@@ -109,7 +116,7 @@ public class AcceptServiceImpl implements AcceptService {
         // 안전장치 추가: remainAmount가 0이 아닌 경우 메서드 종료
         if (Integer.parseInt(detail.getRemainAmount()) != 0) {
             System.out.println("remainAmount가 0이 아니므로 completeParty 메서드를 종료합니다.");
-            return;
+            return Mono.empty();
         }
         System.out.println("detail in complete" + detail);
         acceptMapper.completeBoardStatus(detail.getBoardNo());
@@ -118,23 +125,28 @@ public class AcceptServiceImpl implements AcceptService {
         for (AcceptMember member : participants) {
             acceptMapper.insertPartyPurchase(detail.getPartyNo(), member.getPartyMemberNo(), member.getRequestPrice());
         }
+
+        return Flux.fromIterable(participants)
+                .flatMap(participant -> completeAlert(participant.getMemberNo()))
+                .then();
     }
 
     @Override
-    public void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount) {
+    public Mono<Void> getPartyStatusByNo(String memberNo, String partyNo, StatusCode statusCode, int requestAmount) {
+        System.out.println("4444444444444444444444444444444444444444");
         if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL) {
             System.out.println("삭제 실행");
 
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
+            RequestParty requestParty = acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
             System.out.println("requestParty : " + requestParty);
 
-            acceptMapper.deletePartyRequest(partyId, partyNo);
+            acceptMapper.deletePartyRequest(memberNo, partyNo);
+            return Mono.empty();
         } else if (statusCode == StatusCode.ACCEPT) {
             System.out.println("업데이트 실행");
-            acceptMapper.updatePartyStatus(partyId, statusCode);
+            acceptMapper.updatePartyStatus(memberNo, statusCode);
 
-
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
+            RequestParty requestParty = acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
             System.out.println("requestParty : " + requestParty);
 
             String lastPartyMemberNo = acceptMapper.lastPartyMemberNo();
@@ -146,9 +158,12 @@ public class AcceptServiceImpl implements AcceptService {
             System.out.println("requestParty.getPartyNo() : " + requestParty.getPartyNo());
 
             acceptMapper.updateAmountMember(requestParty);
+
+            // 알림을 전송
+            return acceptAlert(memberNo);
         } else if (statusCode == StatusCode.KICK) {
             System.out.println("강퇴 실행");
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
+            RequestParty requestParty = acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
             System.out.println("requestParty : " + requestParty);
 
             int unitPrice = acceptMapper.getPartyUnitPrice(partyNo);
@@ -156,30 +171,114 @@ public class AcceptServiceImpl implements AcceptService {
 
             acceptMapper.kickPartyMember(requestParty);
 
-
-            acceptMapper.deletePartyRequest(partyId, partyNo);
-
+            acceptMapper.deletePartyRequest(memberNo, partyNo);
 
             acceptMapper.updateAmountAfterKick(requestParty);
+            return kickAlert(memberNo);
         } else if (statusCode == StatusCode.REQUEST) {
-
+            System.out.println("55555555555555555555");
             RequestParty requestParty = new RequestParty();
             requestParty.setPartyNo(partyNo);
-            requestParty.setMemberNo(partyId);
+            requestParty.setMemberNo(memberNo);
             requestParty.setRequestAmount(requestAmount);
             System.out.println("requestParty in request :" + requestParty);
 
             acceptMapper.requestJoin(requestParty);
 
+
+            String leaderNo = acceptMapper.getPartyLeaderByPartyNo(partyNo);
+            // memberNo 대신 leaderNo == 결국 memberNo
+            return requestAlert(leaderNo);
         }
+        return Mono.empty();
     }
 
+
     @Override
-    public RequestParty getRequestMemberByPartyId(String partyId, String partyNo) {
-        return acceptMapper.requestMemberByPartyId(partyId, partyNo);
+    public RequestParty getRequestMemberBymemberNo(String memberNo, String partyNo) {
+        return acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
+    }
+
+    private Mono<Void> acceptAlert(String memberNo) {
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("newLastPartyMemberNo : " + memberNo);
+        return Mono.fromCallable(() -> {
+                    AlertSSE alertSSE = new AlertSSE();
+                    alertSSE.setMemberNo(memberNo);
+                    alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+                    alertSSE.setAlertDetail("파티에 수락되었습니다.");
+                    return alertSSE;
+                })
+                .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(e -> {
+                    e.printStackTrace();
+                })
+                .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+    }
+
+    private Mono<Void> requestAlert(String memberNo) {
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("newLastPartyMemberNo : " + memberNo);
+        return Mono.fromCallable(() -> {
+                    AlertSSE alertSSE = new AlertSSE();
+                    alertSSE.setMemberNo(memberNo);
+                    alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+                    alertSSE.setAlertDetail("파티 신청이 있습니다.");
+                    return alertSSE;
+                })
+                .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(e -> {
+                    e.printStackTrace();
+                })
+                .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+    }
+    private Mono<Void> kickAlert(String memberNo) {
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("newLastPartyMemberNo : " + memberNo);
+        return Mono.fromCallable(() -> {
+                    AlertSSE alertSSE = new AlertSSE();
+                    alertSSE.setMemberNo(memberNo);
+                    alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+                    alertSSE.setAlertDetail("파티에서 강퇴되었습니다.");
+                    return alertSSE;
+                })
+                .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(e -> {
+                    e.printStackTrace();
+                })
+                .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+    }
+
+    private Mono<Void> completeAlert(String memberNo) {
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("2222222222222222222");
+        System.out.println("newLastPartyMemberNo : " + memberNo);
+        return Mono.fromCallable(() -> {
+                    AlertSSE alertSSE = new AlertSSE();
+                    alertSSE.setMemberNo(memberNo);
+                    alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+                    alertSSE.setAlertDetail("파티 모집이 완료되었습니다. 결제를 진행해주세요!");
+                    return alertSSE;
+                })
+                .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(e -> {
+                    e.printStackTrace();
+                })
+                .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
     }
 //    @Override
-//    public void deletePartyStatusByNo(String partyId) {
-//        acceptMapper.deletePartyStatus(partyId);
+//    public void deletePartyStatusByNo(String memberNo) {
+//        acceptMapper.deletePartyStatus(memberNo);
 //    }
 }
