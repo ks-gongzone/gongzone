@@ -33,13 +33,15 @@ public class GoogleController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
+            String userAgent = request.getHeader("User-Agent");
             GoogleRequest googleRequest = objectMapper.readValue(requestBody, GoogleRequest.class);
+            googleRequest.setUserAgent(userAgent);
 
             if (googleRequest.getCode() == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            Map<String, Object> googleResponse = googleService.googleToken(googleRequest.getCode());
+            Map<String, Object> googleResponse = googleService.googleToken(googleRequest.getCode(), googleRequest.getUserAgent());
             SocialMember socialMember = (SocialMember) googleResponse.get("socialMember");
             if ((Boolean) googleResponse.get("isNewMember")) {
                 result.put("success", true);

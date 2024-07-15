@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
     private String loginId;   // 아이디
     private String loginPw;     // 비번
+    private String userAgent;
 }

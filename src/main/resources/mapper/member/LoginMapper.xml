@@ -25,5 +25,44 @@
         WHERE m_no = #{memberNo};
     </select>
 
+    <insert id="loginLogInsert" parameterType="loginLog">
+        INSERT INTO login
+            (m_no, type_code, login_browser, login_in_time, status_code)
+        VALUES
+            (#{memberNo}, 'T010101', #{loginBrowser}, NOW(), 'S010202')
+    </insert>
+
+    <update id="logoutLogUpdate">
+        UPDATE
+            login
+        SET
+            login_out_time = NOW(),
+            status_code = 'S010203'
+        WHERE
+            login_no = #{loginNo}
+    </update>
+
+    <update id="loginFalseLogUpdate">
+        UPDATE
+            login
+        SET
+            login_out_time = NOW(),
+            status_code = 'S010201'
+        WHERE
+            login_no = #{loginNo}
+    </update>
+
+    <select id="loginNoBymemberNo">
+        SELECT
+            login_no AS loginNo
+        FROM
+            login
+        WHERE
+            m_no = #{memberNo}
+        AND
+            login_browser = #{userAgent}
+        ORDER BY
+            login_no DESC LIMIT 1;
+    </select>
 
 </mapper>
