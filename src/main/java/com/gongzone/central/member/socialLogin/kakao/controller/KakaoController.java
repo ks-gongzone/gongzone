@@ -31,13 +31,15 @@ public class KakaoController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            GoogleRequest kakaoRequest = objectMapper.readValue(requestBody, GoogleRequest.class);
+            String userAgent = request.getHeader("User-Agent");
+            KakaoRequest kakaoRequest = objectMapper.readValue(requestBody, KakaoRequest.class);
+            kakaoRequest.setUserAgent(userAgent);
 
             if (kakaoRequest.getCode() == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            Map<String, Object> kakaoResponse = kakaoService.kakaoToken(kakaoRequest.getCode());
+            Map<String, Object> kakaoResponse = kakaoService.kakaoToken(kakaoRequest.getCode(), kakaoRequest.getUserAgent());
             SocialMember socialMember = (SocialMember) kakaoResponse.get("socialMember");
             if ((Boolean) kakaoResponse.get("isNewMember")) {
                 result.put("success", true);

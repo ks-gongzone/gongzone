@@ -1,5 +1,6 @@
 package com.gongzone.central.member.login.security;
 
+import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
 import com.gongzone.central.member.service.MemberServiceImpl;
@@ -26,6 +27,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final MemberDetailsService memberDetailsService;
 
     private final JwtUtil jwtUtil;
+    private final LoginLogService loginLogService;
 
     private static final String[] EXCLUDED_PATHS = {
             "/api/login",
@@ -116,6 +118,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
         }
+
+        if (isLogoutRequest(request)) {
+            MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
+            System.out.println("memberDetails.getMemberNo(): " + memberDetails.getMemberNo());
+            loginLogService.logLogout(loginLogService.getLoginNoByMemberNo(memberDetails.getMemberNo()));
+        }
+
         chain.doFilter(request, httpResponse);
+    }
+
+    private boolean isLogoutRequest(HttpServletRequest request) {
+        return request.getRequestURI().equals("/api/logout") && request.getMethod().equals("POST");
     }
 }

@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class KakaoRequest {
     private String code;
     private String state;
+    private String userAgent;
 }

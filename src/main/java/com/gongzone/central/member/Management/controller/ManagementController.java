@@ -43,7 +43,6 @@ public class ManagementController {
 
     @PostMapping("/statusUpdate/{memberNo}")
     public ResponseEntity<String> statusUpdate(@PathVariable String memberNo, @RequestBody ManagementRequest request) {
-        System.out.println("11111111111111111111111111");
         StatusCode statusCode = StatusCode.fromCode(request.getStatusCode());
         managementService.getStatusUpdate(memberNo, statusCode);
         return ResponseEntity.ok(String.valueOf(statusCode));
@@ -51,7 +50,6 @@ public class ManagementController {
 
     @PostMapping("/punish/update/{memberNo}")
     public ResponseEntity<Boolean> punishUpdate(@PathVariable String memberNo, @RequestBody ResponseAdminMember responseAdminMember) {
-        System.out.println("1111111111111111111111111");
         MemberPunish memberPunish = MemberPunish.builder()
                         .memberNo(memberNo)
                         .punishType(responseAdminMember.getTypeCode())
@@ -63,7 +61,6 @@ public class ManagementController {
             managementService.getPeriodupdate(memberPunish);
             return ResponseEntity.ok(true);
         } catch (Exception e) {
-            System.out.println("실패 : " + e.getMessage());
             return ResponseEntity.ok(false);
         }
     }
@@ -88,7 +85,6 @@ public class ManagementController {
 
             return ResponseEntity.ok(true);
         } catch (Exception e) {
-            System.out.println("실패 : " + e.getMessage());
             return ResponseEntity.ok(false);
         }
     }
