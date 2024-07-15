@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.alertSSE.mapper.AlertSSEMapper">
+
+    <resultMap id="AlertSSEResultMap" type="AlertSSE">
+        <id property="alert_no" column="alertNo"/>
+        <result property="m_no" column="memberNo"/>
+        <result property="type_code" column="typeCode"/>
+        <result property="alert_detail" column="alertDetail"/>
+        <result property="alert_uptime" column="alertUpTime"/>
+        <result property="alert_readtime" column="alertReadTime"/>
+        <result property="status_code" column="statusCode"/>
+    </resultMap>
+
+    <select id="getAlertSSEByNo" resultMap="AlertSSEResultMap">
+        SELECT * FROM alert WHERE alert_no = #{alertNo}
+    </select>
+
+    <select id="alertSSEList" resultType="AlertSSE">
+        SELECT
+            alert_no AS alertNo,
+            m_no AS memberNo,
+            type_code AS typeCode,
+            alert_detail AS alertDetail,
+            alert_uptime AS alertUpTime,
+            alert_readtime AS alertReadTime,
+            status_code AS statusCode
+        FROM
+            alert
+        WHERE
+            m_no = #{memberNo}
+        AND
+            (status_code = 'S010401' OR status_code = 'S010402');
+    </select>
+
+    <insert id="insertAlertSSE" parameterType="AlertSSE">
+        INSERT INTO alert (m_no, type_code, alert_detail, status_code)
+        VALUES (#{memberNo}, #{typeCode}, #{alertDetail}, 'S010401');
+    </insert>
+
+    <update id="updateReadTimeAlertSSE">
+        UPDATE alert
+        SET
+            alert_readtime = NOW(),
+            status_code = 'S010402'
+        WHERE alert_no = #{alertNo}
+    </update>
+
+    <update id="updateDeleteAlertSSE">
+        UPDATE alert
+        SET
+            status_code = 'S010403'
+        WHERE alert_no = #{alertNo}
+    </update>
+
+    <select id="getAlertAllow" resultType="AlertAllow">
+        SELECT
+            allow_sms AS allowSms,
+            allow_email AS allowEmail,
+            allow_marketing AS allowMarketing,
+            allow_member AS allowMember,
+            allow_note AS allowNote,
+            allow_bulletin AS allowBulletin,
+            allow_party AS allowParty
+        FROM
+            alert_allow
+        WHERE m_no = #{memberNo}
+    </select>
+</mapper>

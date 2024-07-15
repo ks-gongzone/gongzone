@@ -12,4 +12,5 @@ public interface QuestionMapper {
     List<QuestionMember> findQuestionAll();
     void updateQuestionStatus(int memberQuestionNo, StatusCode statusCode);
     void insertQuestion(QuestionMember questionMember);
+    String getMemberNoByQuestionNo(int memberQuestionNo);
 }

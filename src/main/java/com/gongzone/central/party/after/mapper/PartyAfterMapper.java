@@ -33,6 +33,9 @@ public interface PartyAfterMapper {
 
 	void insertPartySettlement(String partyNo);
 
+	void updateShippingStatus(@Param("partyNo") String partyNo,
+							  @Param("status") String status);
+
 
 	// Below for test
 	void testInsertParty(@Param("partyNo") String partyNo,
