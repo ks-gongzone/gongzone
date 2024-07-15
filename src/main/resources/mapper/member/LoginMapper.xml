@@ -59,6 +59,8 @@
             login
         WHERE
             m_no = #{memberNo}
+        AND
+            login_browser = #{userAgent}
         ORDER BY
             login_no DESC LIMIT 1;
     </select>

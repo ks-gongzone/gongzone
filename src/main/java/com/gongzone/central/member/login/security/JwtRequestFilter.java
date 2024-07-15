@@ -1,5 +1,6 @@
 package com.gongzone.central.member.login.security;
 
+import com.gongzone.central.member.login.domain.LoginLog;
 import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
@@ -122,7 +123,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (isLogoutRequest(request)) {
             MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
             System.out.println("memberDetails.getMemberNo(): " + memberDetails.getMemberNo());
-            loginLogService.logLogout(loginLogService.getLoginNoByMemberNo(memberDetails.getMemberNo()));
+            String userAgent = request.getHeader("User-Agent");
+            String browser = loginLogService.getloginBrowserByCode(userAgent);
+            System.out.println("11111111111111111111111111111111111");
+            System.out.println("browser : " + browser);
+            LoginLog loginLog = loginLogService.getLoginNoByMemberNo(memberDetails.getMemberNo(), browser);
+            loginLogService.logLogout(loginLog.getLoginNo());
         }
 
         chain.doFilter(request, httpResponse);

@@ -145,8 +145,8 @@ public class GoogleService {
             }
             return result;
         } catch (Exception e) {
-            int loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo());
-            loginLogService.logLoginFailure(loginNumber);
+            LoginLog loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
+            loginLogService.logLoginFailure(loginNumber.getLoginNo());
             throw new Exception("구글 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
             lock.unlock();
