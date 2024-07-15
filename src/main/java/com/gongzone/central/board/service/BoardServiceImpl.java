@@ -29,6 +29,50 @@ public class BoardServiceImpl implements BoardService {
     private final FileUtil fileUtil;
 
     @Override
+    public void updateBoardNoImage(String boardNo, BoardResponse br){
+        System.out.println("222222222222222222222222222222222");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime endDateTime = LocalDateTime.parse(br.getEndDate(), formatter);
+        Board board = Board.builder()
+                .memberNo(br.getMemberNo())
+                .boardTitle(br.getTitle())
+                .category(br.getCategory())
+                .productUrl(br.getURL())
+                .totalPrice(br.getPrice())
+                .total(br.getTotal())
+                .amount(br.getAmount())
+                .boardBody(br.getContent())
+                .locationDo(br.getDoCity())
+                .locationSi(br.getSiGun())
+                .locationGu(br.getGu())
+                .locationDong(br.getDong())
+                .locationDetail(br.getDetailAddress())
+                .locationX(br.getLatitude())
+                .locationY(br.getLongitude())
+                .endDate(endDateTime)
+                .build();
+
+
+        board.setRemain(board.getTotal() - board.getAmount());
+        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+
+        board.setAmountPrice(unitPrice*board.getAmount());
+
+        boardMapper.updatePartyMember(boardNo, board);
+        boardMapper.updateParty(boardNo, board);
+        boardMapper.updateLocation(boardNo,board);
+        boardMapper.updateBoard(boardNo,board);
+    }
+
+    @Override
+    @Transactional
+    public void updateBoard(String boardNo, BoardResponse br, MultipartFile file) {
+        System.out.println("111111111111111111111111111111111");
+    }
+
+    @Override
     public List<Board> getBoardInfo(String boardNo) {
         System.out.println(boardNo);
         List<Board> response = boardMapper.getBoardInfo(boardNo);

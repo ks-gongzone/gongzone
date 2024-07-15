@@ -23,6 +23,28 @@ public class BoardController {
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
+
+    @PostMapping(value = "/update/{boardNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateBoard(
+            @PathVariable("boardNo") String boardNo,
+            BoardResponse br,
+            @RequestParam(value = "image", required = false) MultipartFile file) throws IOException {
+        try {
+            log.info("boardResponse: {}", br);
+            log.info("file: {}", file);
+
+            if (file != null && !file.isEmpty()) {
+                boardService.updateBoard(boardNo, br, file);
+            } else {
+                boardService.updateBoardNoImage(boardNo, br); // 이미지 없이 업데이트
+            }
+            return ResponseEntity.ok("Update Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok("Update Error");
+        }
+    }
+
     @PostMapping("/{boardNo}/info")
     public ResponseEntity<List<Board>> getBoardInfo(@PathVariable("boardNo") String boardNo) {
         try {
