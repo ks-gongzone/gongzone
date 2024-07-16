@@ -18,7 +18,9 @@ public class LocationSearch {
     private String latitude;
     private String longitude;
     private String address;
+    private String detailAddress;
     private String remainAmount;
     private String price;
+    private String partyNo;
     private Date endDate;
 }
