@@ -10,7 +10,7 @@ import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
-import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -37,7 +36,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
-@EnableScheduling
 @Transactional
 public class GoogleService {
 

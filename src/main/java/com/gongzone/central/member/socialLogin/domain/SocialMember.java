@@ -1,4 +1,4 @@
-package com.gongzone.central.member.socialLogin.naver.domain;
+package com.gongzone.central.member.socialLogin.domain;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Data
 public class SocialMember {
-   // private String socialId;            // 아이디
     private String provider;            // 소셜 타입
     private String name;                // 이름
     private String email;               // 이메일
@@ -21,5 +20,5 @@ public class SocialMember {
     private String jwtToken;
     private String memberNo;
     private String pointNo;
- private String userAgent;
+    private String userAgent;
 }
