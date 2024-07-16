@@ -9,6 +9,8 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+    void updateBoardPeriodStatus();
+
     void deleteParty(String partyNo);
     void deleteBoard(String boardNo);
     int countPartyMember(String partyNo);
