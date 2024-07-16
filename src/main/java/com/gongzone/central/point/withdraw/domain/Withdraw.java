@@ -1,4 +1,4 @@
-package com.gongzone.central.point.withdrawal.domain;
+package com.gongzone.central.point.withdraw.domain;
 
 import com.gongzone.central.utils.StatusCode;
 import lombok.Data;

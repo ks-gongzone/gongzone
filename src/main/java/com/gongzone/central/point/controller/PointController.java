@@ -6,7 +6,7 @@ import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
-import com.gongzone.central.point.withdrawal.domain.Withdraw;
+import com.gongzone.central.point.withdraw.domain.Withdraw;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

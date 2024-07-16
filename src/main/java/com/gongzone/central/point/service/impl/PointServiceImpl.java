@@ -7,8 +7,8 @@ import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.payment.service.PaymentHistoryService;
 import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
-import com.gongzone.central.point.withdrawal.domain.Withdraw;
-import com.gongzone.central.point.withdrawal.service.WithdrawHistoryService;
+import com.gongzone.central.point.withdraw.domain.Withdraw;
+import com.gongzone.central.point.withdraw.service.WithdrawService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class PointServiceImpl implements PointService {
 
 	private final PointHistoryService pointHistoryService;
 	private final PaymentHistoryService paymentHistoryService;
-	private final WithdrawHistoryService withdrawHistoryService;
+	private final WithdrawService withdrawService;
 
 	private final PointMapper pointMapper;
 
@@ -86,7 +86,7 @@ public class PointServiceImpl implements PointService {
 		withdraw.setPointHistoryNo(historyNo);
 
 		// 2. 인출 내역 삽입
-		withdrawHistoryService.insert(withdraw);
+		withdrawService.insert(withdraw);
 		// TODO: 관리자 인출 처리 필요(관리자 페이지에 구현)
 		// NOTE: 인출 상태코드 테이블 변경 필요 -> (인출 대기중, 인출 완료)
 
