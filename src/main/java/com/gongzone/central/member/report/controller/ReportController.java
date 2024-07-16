@@ -1,15 +1,11 @@
 package com.gongzone.central.member.report.controller;
 
 
-import com.gongzone.central.member.Management.domain.ManagementRequest;
 import com.gongzone.central.member.Management.domain.MemberPunish;
-import com.gongzone.central.member.Management.domain.ResponseInsert;
 import com.gongzone.central.member.Management.service.ManagementService;
-import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.report.domain.ReportMember;
 import com.gongzone.central.member.report.domain.RequestReportMember;
 import com.gongzone.central.member.report.service.ReportService;
-import com.gongzone.central.member.service.MemberService;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,5 @@
 package com.gongzone.central.member.report.service;
 
-import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.report.domain.ReportMember;
 import com.gongzone.central.member.report.mapper.ReportMapper;
 import com.gongzone.central.utils.StatusCode;
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReportServiceImpl implements ReportService{
+public class ReportServiceImpl implements ReportService {
 
     private final ReportMapper reportMapper;
 
