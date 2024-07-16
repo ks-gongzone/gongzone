@@ -1,12 +1,10 @@
 package com.gongzone.central.board.controller;
 
-import com.gongzone.central.board.domain.BoardReply;
 import com.gongzone.central.board.domain.BoardResponse;
 import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
