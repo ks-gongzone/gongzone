@@ -6,6 +6,7 @@ import com.gongzone.central.board.domain.BoardSearchRequest;
 import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,19 @@ public class BoardController {
 
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
+    }
+
+    @DeleteMapping("/delete/{boardNo}/{partyNo}")
+    public ResponseEntity<String> deleteBoard(
+            @PathVariable("boardNo") String boardNo,
+            @PathVariable("partyNo") String partyNo) {
+        try {
+            boardService.deleteBoard(boardNo, partyNo);
+            return ResponseEntity.ok("Delete Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping(value = "/update/{boardNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

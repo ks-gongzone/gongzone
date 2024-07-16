@@ -4,6 +4,32 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+    <update id="deleteBoard" parameterType="String">
+        UPDATE board
+        SET status_code = 'S040105'
+        WHERE b_no = #{boardNo}
+    </update>
+
+    <update id="deleteParty" parameterType="String">
+        UPDATE party
+        SET status_code = 'S060109'
+        WHERE p_no = #{partyNo}
+    </update>
+
+    <select id="countPartyMember" parameterType="String">
+        SELECT
+            COUNT(1)
+        FROM
+            party_member
+        WHERE
+            p_no = #{partyNo} AND member_is_leader = '파티원'
+    </select>
+
+    <select id="getFileNo" parameterType="String">
+        SELECT file_no FROM file_relation
+        WHERE file_usage = #{boardNo}
+    </select>
+
     <update id="updateBoard" parameterType="com.gongzone.central.board.domain.Board">
         UPDATE board
         SET b_title = #{boardTitle}, b_body = #{boardBody}, b_period = #{endDate}
@@ -147,7 +173,7 @@
         FROM
             reply AS r
         WHERE
-            r.b_no = #{boardNo}
+            r.b_no = #{boardNo} AND r.status_code IN ('S050101', 'S050102')
     </select>
 
 
