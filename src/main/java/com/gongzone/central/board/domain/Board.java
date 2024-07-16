@@ -2,13 +2,11 @@ package com.gongzone.central.board.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gongzone.central.file.domain.FileUpload;
-import com.gongzone.central.board.domain.BoardReply;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;

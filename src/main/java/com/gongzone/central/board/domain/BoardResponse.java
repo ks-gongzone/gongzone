@@ -1,13 +1,6 @@
 package com.gongzone.central.board.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 public class BoardResponse {
