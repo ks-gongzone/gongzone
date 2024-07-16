@@ -38,4 +38,5 @@ public class AcceptDetail {
     private List<BoardReply> boardReply;
     private String img;
     private int shippingNo;
+    private String settlementCode;
 }
