@@ -9,14 +9,29 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+    void deleteParty(String partyNo);
+    void deleteBoard(String boardNo);
+    int countPartyMember(String partyNo);
+    int getFileNo(String boardNo);
+    String getPartyNo(String boardNo);
+    void updatePartyMember(Board board);
+    void updateParty(Board board);
+    void updateLocation(Board board);
+    void updateBoard(Board board);
+
+    List<Board> getBoardInfo(String boardNo);
+
     void deleteWish(String boardNo, String memberNo);
     void insertWish(String boardNo, String memberNo);
+
     void updateViewCount(String boardNo);
+
     void insertBoard(Board board);
     void insertLocation(Board board);
     void insertFileRelation(Board board);
     void insertParty(Board board);
     void insertPartyMember(Board board);
+
     List<Board> getBoardList(BoardSearchRequest request);
     List<BoardReply> getBoardReplyList(String boardNo);
     int getBoardWish(String memberNo, String boardNo);

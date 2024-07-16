@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
+    void deleteBoard(String boardNo, String partyNo);
+    void updateBoardNoImage(String boardNo, BoardResponse br);
+    void updateBoard(String boardNo, BoardResponse br, MultipartFile file);
+    List<Board> getBoardInfo(String boardNo);
     void setWish(String boardNo, String memberNo);
     void updateViewCount(String boardNo);
     void setValue(BoardResponse br, MultipartFile file);

@@ -29,7 +29,120 @@ public class BoardServiceImpl implements BoardService {
     private final FileUtil fileUtil;
 
     @Override
-    public void setWish(String boardNo, String memberNo){
+    @Transactional
+    public void deleteBoard(String boardNo, String partyNo) {
+        int countPm = boardMapper.countPartyMember(partyNo);
+
+        if(countPm == 0) {
+            boardMapper.deleteParty(partyNo);
+            boardMapper.deleteBoard(boardNo);
+        } else{
+            throw new IllegalStateException("파티원이 있는 게시글은 삭제할 수 없습니다.");
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void updateBoardNoImage(String boardNo, BoardResponse br) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String endDateString = br.getEndDate().replace("T", " ");
+        LocalDateTime endDateTime = LocalDateTime.parse(endDateString, formatter);
+
+        Board board = Board.builder()
+                .memberNo(br.getMemberNo())
+                .boardNo(boardNo)
+                .boardTitle(br.getTitle())
+                .category(br.getCategory())
+                .productUrl(br.getURL())
+                .totalPrice(br.getPrice())
+                .total(br.getTotal())
+                .amount(br.getAmount())
+                .boardBody(br.getContent())
+                .locationDo(br.getDoCity())
+                .locationSi(br.getSiGun())
+                .locationGu(br.getGu())
+                .locationDong(br.getDong())
+                .locationDetail(br.getDetailAddress())
+                .locationX(br.getLatitude())
+                .locationY(br.getLongitude())
+                .endDate(endDateTime)
+                .build();
+
+
+        board.setRemain(board.getTotal() - board.getAmount());
+        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+
+        board.setAmountPrice(unitPrice*board.getAmount());
+
+        board.setPartyNo(boardMapper.getPartyNo(boardNo));
+
+        boardMapper.updatePartyMember(board);
+        boardMapper.updateParty(board);
+        boardMapper.updateLocation(board);
+        boardMapper.updateBoard(board);
+    }
+
+    @Override
+    @Transactional
+    public void updateBoard(String boardNo, BoardResponse br, MultipartFile file) {
+        System.out.println("111111111111111111111111111111111");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String endDateString = br.getEndDate().replace("T", " ");
+        LocalDateTime endDateTime = LocalDateTime.parse(endDateString, formatter);
+
+        Board board = Board.builder()
+                .memberNo(br.getMemberNo())
+                .boardNo(boardNo)
+                .boardTitle(br.getTitle())
+                .category(br.getCategory())
+                .productUrl(br.getURL())
+                .totalPrice(br.getPrice())
+                .total(br.getTotal())
+                .amount(br.getAmount())
+                .boardBody(br.getContent())
+                .locationDo(br.getDoCity())
+                .locationSi(br.getSiGun())
+                .locationGu(br.getGu())
+                .locationDong(br.getDong())
+                .locationDetail(br.getDetailAddress())
+                .locationX(br.getLatitude())
+                .locationY(br.getLongitude())
+                .endDate(endDateTime)
+                .build();
+
+
+        board.setRemain(board.getTotal() - board.getAmount());
+        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+
+        board.setAmountPrice(unitPrice*board.getAmount());
+
+        board.setPartyNo(boardMapper.getPartyNo(boardNo));
+
+        boardMapper.updatePartyMember(board);
+        boardMapper.updateParty(board);
+        boardMapper.updateLocation(board);
+
+        FileUpload fileUpload = fileUtil.parseFileInfo(file);
+        fileUpload.setFileIdx(boardMapper.getFileNo(boardNo));
+
+        fileMapper.updateFile(fileUpload);
+
+        boardMapper.updateBoard(board);
+    }
+
+    @Override
+    public List<Board> getBoardInfo(String boardNo) {
+        System.out.println(boardNo);
+        List<Board> response = boardMapper.getBoardInfo(boardNo);
+        return response;
+    }
+
+    @Override
+    public void setWish(String boardNo, String memberNo) {
         int wishInt = boardMapper.getBoardWish(memberNo, boardNo);
 
         if(wishInt == 1) {

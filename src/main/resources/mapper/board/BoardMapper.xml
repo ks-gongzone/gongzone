@@ -4,6 +4,125 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+    <update id="deleteBoard" parameterType="String">
+        UPDATE board
+        SET status_code = 'S040105'
+        WHERE b_no = #{boardNo}
+    </update>
+
+    <update id="deleteParty" parameterType="String">
+        UPDATE party
+        SET status_code = 'S060109'
+        WHERE p_no = #{partyNo}
+    </update>
+
+    <select id="countPartyMember" parameterType="String">
+        SELECT
+            COUNT(1)
+        FROM
+            party_member
+        WHERE
+            p_no = #{partyNo} AND member_is_leader = '파티원'
+    </select>
+
+    <select id="getFileNo" parameterType="String">
+        SELECT file_no FROM file_relation
+        WHERE file_usage = #{boardNo}
+    </select>
+
+    <update id="updateBoard" parameterType="com.gongzone.central.board.domain.Board">
+        UPDATE board
+        SET b_title = #{boardTitle}, b_body = #{boardBody}, b_period = #{endDate}
+        WHERE b_no = #{boardNo}
+    </update>
+
+    <update id="updateLocation" parameterType="com.gongzone.central.board.domain.Board">
+        UPDATE location
+        SET location_do = #{locationDo}, location_si = #{locationSi}, location_gu = #{locationGu}, location_dong = #{locationDong}, location_detail = #{locationDetail}, location_X = #{locationX}, location_Y = #{locationY}
+        WHERE b_no = #{boardNo}
+    </update>
+
+    <update id="updateParty" parameterType="com.gongzone.central.board.domain.Board">
+        UPDATE party
+        SET p_amount_remain = #{remain}, p_price_remain = #{remainPrice}
+        WHERE b_no = #{boardNo}
+    </update>
+    
+    <update id="updatePartyMember" parameterType="com.gongzone.central.board.domain.Board">
+        UPDATE party_member
+        SET pm_amount = #{amount}, pm_price = #{amountPrice}
+        WHERE p_no= #{partyNo} AND member_is_leader = '파티장';
+    </update>
+
+    <select id="getPartyNo" parameterType="String">
+        SELECT
+            p_no
+        FROM
+            party
+        WHERE
+            b_no = #{boardNo}
+    </select>
+
+    <resultMap id="BoardInfo" type="com.gongzone.central.board.domain.Board">
+        <id property="boardNo" column="b_no"/>
+        <result property="memberNo" column="m_no"/>
+        <result property="boardTitle" column="b_title"/>
+        <result property="boardBody" column="b_body"/>
+        <result property="endDate" column="b_period"/>
+        <result property="locationDo" column="location_do"/>
+        <result property="locationSi" column="location_si"/>
+        <result property="locationGu" column="location_gu"/>
+        <result property="locationDong" column="location_dong"/>
+        <result property="locationDetail" column="location_detail"/>
+        <result property="locationX" column="location_x"/>
+        <result property="locationY" column="location_y"/>
+        <result property="partyNo" column="p_no"/>
+        <result property="category" column="c_code"/>
+        <result property="productUrl" column="p_url"/>
+        <result property="total" column="p_amount"/>
+        <result property="remain" column="p_amount_remain"/>
+        <result property="totalPrice" column="p_price"/>
+        <result property="remainPrice" column="p_price_remain"/>
+        <result property="amount" column="pm_amount"/>
+        <result property="amountPrice" column="pm_price"/>
+        <result property="leader" column="member_is_leader"/>
+    </resultMap>
+
+    <select id="getBoardInfo" parameterType="String" resultMap="BoardInfo">
+        SELECT
+            b.b_no,
+            b.m_no,
+            b.b_title,
+            b.b_body,
+            b.b_period,
+            l.location_do,
+            l.location_si,
+            l.location_gu,
+            l.location_dong,
+            l.location_detail,
+            l.location_x,
+            l.location_y,
+            p.p_no,
+            p.c_code,
+            p.p_url,
+            p.p_amount,
+            p.p_amount_remain,
+            p.p_price,
+            p.p_price_remain,
+            pm.pm_amount,
+            pm.pm_price,
+            pm.member_is_leader
+        FROM
+            board AS b
+                LEFT JOIN location AS l ON b.b_no = l.b_no
+                LEFT JOIN party AS p ON b.b_no = p.b_no
+                LEFT JOIN party_member AS pm ON p.p_no = pm.p_no
+        WHERE
+            b.b_no = #{boardNo} AND pm.member_is_leader = '파티장'
+
+
+    </select>
+
     <delete id="deleteWish" parameterType="String">
         DELETE FROM wishlist
         WHERE b_no = #{boardNo} AND m_no = #{memberNo}
@@ -54,7 +173,7 @@
         FROM
             reply AS r
         WHERE
-            r.b_no = #{boardNo}
+            r.b_no = #{boardNo} AND r.status_code IN ('S050101', 'S050102')
     </select>
 
 
