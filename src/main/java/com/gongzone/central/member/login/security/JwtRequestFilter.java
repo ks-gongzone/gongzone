@@ -48,28 +48,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        System.out.println("가로채");
-        System.out.println("Filtering request: " + request.getRequestURI());
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = request.getRequestURI();
 
-        System.out.println("request.getParameterNames() " + request.getParameterNames());
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-            String paramName = parameterNames.nextElement();
-            System.out.println("Parameter: " + paramName + " = " + request.getParameter(paramName));
-        }
-
-        // 특정 경로는 필터링하지 않음
         for (String path : EXCLUDED_PATHS) {
             if (requestURI.startsWith(path)) {
                 if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token") || requestURI.startsWith("/api/google/token")) {
-                    System.out.println("필터 들어옴" + requestURI);
                     String requestBody = new String(request.getInputStream().readAllBytes());
                     httpRequest.setAttribute("requestBody", requestBody);
                 }
-                System.out.println("Skipping filter for path: " + path);
                 chain.doFilter(httpRequest, httpResponse);
                 return;
             }
@@ -80,14 +68,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // 토큰 추출후 검증
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwt = requestTokenHeader.substring(7);
             try {
                 username = jwtUtil.extractMemberNo(jwt);
             } catch (ExpiredJwtException e) {
-                //System.out.println("액세스토큰 만료");
-                //request.setAttribute("exceptionRefreshToken", e);
                 response.setHeader("token-expired", "true");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
                 return;
@@ -97,10 +82,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 받은 후 유효성 검사
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
-                // 토큰이 유효한지 검사
                 if (jwtUtil.validateToken(jwt, memberDetails)) {
                     memberDetails.setToken(jwt);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -111,7 +94,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     logger.info("필터인증 완료");
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 } else {
-                    // 추가된 부분: 토큰이 유효하지 않은 경우 처리
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is invalid");
                     return;
                 }
@@ -122,11 +104,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (isLogoutRequest(request)) {
             MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
-            System.out.println("memberDetails.getMemberNo(): " + memberDetails.getMemberNo());
             String userAgent = request.getHeader("User-Agent");
             String browser = loginLogService.getloginBrowserByCode(userAgent);
-            System.out.println("11111111111111111111111111111111111");
-            System.out.println("browser : " + browser);
             LoginLog loginLog = loginLogService.getLoginNoByMemberNo(memberDetails.getMemberNo(), browser);
             loginLogService.logLogout(loginLog.getLoginNo());
         }

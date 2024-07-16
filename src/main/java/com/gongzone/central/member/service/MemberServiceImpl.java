@@ -44,20 +44,10 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    /*private String giveMemberNo() {
-        int number = memberMapper.findMemberNo();
-        return "M" + (number + 1);
-    }*/
-
     @Override
     public List<Member> getAllMembers() {
         return memberMapper.findAll();
     }
-
-   /* @Override
-    public Member getMemberByNo(String memberNo) {
-        return memberMapper.findByNo(memberNo);
-    }*/
 
     @Override
     public Member getMemberByNo(String memberNo) {

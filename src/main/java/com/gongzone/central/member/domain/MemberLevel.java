@@ -15,7 +15,6 @@ public enum MemberLevel {
         this.level = level;
     }
 
-    // db에서 가져와 enum 클래스 이름으로 변환
     public static MemberLevel fromLevel(int level) {
         for (MemberLevel memberLevel : MemberLevel.values()) {
             if (memberLevel.getLevel() == level) {

@@ -34,17 +34,13 @@ public class MemberDetailsService implements UserDetailsService {
         }
 
         if (member == null) {
-            System.out.println("유저 못찾음 : " + identifier);
             throw new UsernameNotFoundException("User not found");
         }
-        System.out.println("member : " + member);
         int memberLevelValue = member.getMemberLevel();
         if (memberLevelValue == 0) {
-            System.out.println("레벨 : " + identifier);
             throw new IllegalArgumentException("Invalid member level: " + memberLevelValue);
         }
 
-        System.out.println("memberLevelValue " + memberLevelValue);
         MemberLevel level = MemberLevel.fromLevel(memberLevelValue);
 
         Point pointNo = pointMapper.getPointNoByMemberNo(member.getMemberNo());

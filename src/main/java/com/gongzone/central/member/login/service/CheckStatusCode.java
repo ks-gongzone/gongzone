@@ -16,14 +16,12 @@ public class CheckStatusCode {
     private final MemberService memberService;
 
     public void checkStatus(String memberNo, HttpServletResponse response) throws IOException {
-        System.out.println("55555555555555555555");
          Member member = memberService.getMemberByStatus(memberNo);
          StatusCode statusCode = StatusCode.fromCode(member.getMemberStatus());
-        System.out.println("666666666666666666666666");
             switch (statusCode) {
             case S010102:
                 System.out.println("휴면");
-                response.sendError(HttpServletResponse.SC_GONE, "휴면");      //휴먼 아직작동안함 (410 에러인데 403으로 덮어씌어짐)
+                response.sendError(HttpServletResponse.SC_GONE, "휴면");
                 return;
             case S010103:
                 System.out.println("제재");
