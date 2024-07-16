@@ -50,14 +50,11 @@ public class LoginController {
         String browser = loginLogService.getloginBrowserByCode(loginRequest.getUserAgent());
         loginLog.setLoginBrowser(browser);
         try {
-            // 사용자 인증
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getLoginPw())
             );
 
-            // 사용자 정보 로드
             final MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(loginRequest.getLoginId());
-            // JWT 토큰 생성
 
             loginLog.setMemberNo(memberDetails.getMemberNo());
             loginLogService.logLoginAttempt(loginLog);

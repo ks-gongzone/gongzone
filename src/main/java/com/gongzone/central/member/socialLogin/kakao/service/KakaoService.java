@@ -9,10 +9,9 @@ import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
-import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
-import com.gongzone.central.utils.MySqlUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -22,7 +21,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -32,13 +30,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
-@EnableScheduling
 @Transactional
 public class KakaoService {
 

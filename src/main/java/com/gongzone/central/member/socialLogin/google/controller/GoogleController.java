@@ -1,15 +1,14 @@
 package com.gongzone.central.member.socialLogin.google.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gongzone.central.member.socialLogin.google.domain.GoogleRequest;
+import com.gongzone.central.member.socialLogin.domain.SocialRequest;
 import com.gongzone.central.member.socialLogin.google.service.GoogleService;
-import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +33,7 @@ public class GoogleController {
             }
 
             String userAgent = request.getHeader("User-Agent");
-            GoogleRequest googleRequest = objectMapper.readValue(requestBody, GoogleRequest.class);
+            SocialRequest googleRequest = objectMapper.readValue(requestBody, SocialRequest.class);
             googleRequest.setUserAgent(userAgent);
 
             if (googleRequest.getCode() == null) {

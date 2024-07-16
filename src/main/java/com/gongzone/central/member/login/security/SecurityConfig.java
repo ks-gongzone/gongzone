@@ -64,7 +64,6 @@ public class SecurityConfig {
 		return http.build();
     }
 
-	// 인증 관리에 사용
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();

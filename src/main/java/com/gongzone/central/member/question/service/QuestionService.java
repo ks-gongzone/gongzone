@@ -11,5 +11,4 @@ public interface QuestionService {
     List<QuestionMember> getAllQuestionMembers();
     void getQuestionStatusUpdate(int memberQuestionNo, StatusCode statusCode);
     void getQuestionMemberInsert(QuestionMember questionMember);
-    /*Mono<Void> getQuestionStatusUpdate(int memberQuestionNo, StatusCode statusCode);*/
 }
