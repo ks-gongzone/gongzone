@@ -2,7 +2,7 @@ package com.gongzone.central.point.controller;
 
 import com.gongzone.central.common.Response.Result;
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.domain.request.PointDTO;
 import com.gongzone.central.point.payment.domain.Payment;
 import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
@@ -50,7 +50,7 @@ public class PointController {
 		ResponseEntity<Result> response;
 
 		try {
-			List<PointHistory> pointHistories = pointHistoryService.getHistories(memberNo, pageSize, pageNo);
+			List<PointHistory> pointHistories = pointHistoryService.getMany(memberNo, pageSize, pageNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
 			System.err.println("Exception during getAllMemberPointHistory: " + e.getClass().getName());
@@ -77,7 +77,7 @@ public class PointController {
 		ResponseEntity<Result> response;
 
 		try {
-			PointHistory pointHistory = pointHistoryService.getHistory(memberNo, pointHistoryNo);
+			PointHistory pointHistory = pointHistoryService.get(pointHistoryNo);
 			response = ResponseEntity.ok(new Result(pointHistory));
 		} catch (Exception e) {
 			System.err.println("Exception during getMemberPointHistory: " + e.getClass().getName());
@@ -125,7 +125,7 @@ public class PointController {
 	public ResponseEntity<Result> postMemberPointCharge(@Parameter(description = "회원 번호(Mxxxxxx)")
 														@PathVariable String memberNo,
 														@Parameter(description = "포인트 충전 요청 객체(json)")
-														@RequestBody PointRequest<Payment> request) {
+														@RequestBody PointDTO<Payment> request) {
 		ResponseEntity<Result> response;
 
 		try {
@@ -152,7 +152,7 @@ public class PointController {
 	public ResponseEntity<Result> postMemberPointWithdraw(@Parameter(description = "회원 번호(Mxxxxxx)")
 														  @PathVariable String memberNo,
 														  @Parameter(description = "포인트 인출 요청 객체(json)")
-														  @RequestBody PointRequest<Withdraw> request) {
+														  @RequestBody PointDTO<Withdraw> request) {
 		ResponseEntity<Result> response;
 
 		try {

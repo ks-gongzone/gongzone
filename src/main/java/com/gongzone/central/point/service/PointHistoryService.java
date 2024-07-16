@@ -1,23 +1,17 @@
 package com.gongzone.central.point.service;
 
 import com.gongzone.central.point.domain.PointHistory;
-import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.domain.request.PointDTO;
 import java.util.List;
 
 public interface PointHistoryService {
 
-	String insert(String memberPointNo, PointRequest request);
+	String insert(String memberPointNo, PointDTO request);
 
-	void calculatePointUpdate(String memberPointNo, PointRequest request);
+	PointHistory get(String pointHistoryNo);
 
-	void updateSuccess(String historyNo, PointRequest pointCharge);
+	List<PointHistory> getMany(String memberNo, int size, int page);
 
-	List<PointHistory> getHistories(String memberNo, int size, int page);
-
-	PointHistory getHistory(String memberNo, String pointHistoryNo);
-
-	String insertHistory(String memberNo, PointRequest request);
-
-	void updateHistorySuccess(String historyNo, PointRequest request);
+	void updateSuccess(String historyNo, PointDTO request);
 
 }

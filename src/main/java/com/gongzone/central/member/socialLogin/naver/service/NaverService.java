@@ -130,8 +130,8 @@ public class NaverService {
                 updateTokens(member.getMemberNo(), socialMember);
             }
 
-            Point point = pointMapper.getPointNoByMemberNo(member.getMemberNo());
-            MemberDetails memberDetails = new MemberDetails(member, point);
+			Point point = pointMapper.getPoint(member.getMemberNo());
+			MemberDetails memberDetails = new MemberDetails(member, point);
 
             String siteToken = jwtUtil.generateToken(memberDetails);
 
@@ -166,8 +166,8 @@ public class NaverService {
 
         memberMapper.insert(member);
 
-        String lastPointNo = pointMapper.getLastMemberPointNo();
-        String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
+		String lastPointNo = pointMapper.getLastIndex();
+		String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
 
         Point point = Point.builder()
                 .memberPointNo(newPointNo)
@@ -175,7 +175,7 @@ public class NaverService {
                 .memberPoint("0")
                 .build();
 
-        pointMapper.insertPoint(point);
+		pointMapper.insert(point);
 
         Token token = new Token();
 

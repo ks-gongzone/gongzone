@@ -39,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public List<Payment> getMany(String memberNo, int size, int page) {
-		String memberPointNo = pointMapper.getPointNo(memberNo);
+		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
 		return paymentMapper.getMany(memberPointNo, size, page - 1);
 	}
 

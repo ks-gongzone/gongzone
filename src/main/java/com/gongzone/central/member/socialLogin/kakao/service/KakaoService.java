@@ -133,9 +133,9 @@ public class KakaoService {
                 updateTokens(member.getMemberNo(), socialMember);
                 checkStatusCode.checkStatus(member.getMemberNo(), response);
 
-                Point point = pointMapper.getPointNoByMemberNo(member.getMemberNo());
-                MemberDetails memberDetails = new MemberDetails(member, point);
-                String siteToken = jwtUtil.generateToken(memberDetails);
+				Point point = pointMapper.getPoint(member.getMemberNo());
+				MemberDetails memberDetails = new MemberDetails(member, point);
+				String siteToken = jwtUtil.generateToken(memberDetails);
 
                 socialMember.setJwtToken(siteToken);
                 socialMember.setMemberNo(member.getMemberNo());

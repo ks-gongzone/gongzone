@@ -1,17 +1,17 @@
 package com.gongzone.central.point.service;
 
-import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.domain.request.PointDTO;
 
 public interface PointService {
 
 	Integer getCurrentPoint(String memberNo);
 
-	void charge(String memberNo, PointRequest request);
+	void charge(String memberNo, PointDTO request);
 
-	void withdraw(String memberNo, PointRequest request);
+	void withdraw(String memberNo, PointDTO request);
 
-	void update(String memberNo, PointRequest request);
+	void updatePoint(String memberNo, PointDTO request);
 
-	String getPointNo(String memberNo);
+	String getMemberPointNo(String memberNo);
 
 }

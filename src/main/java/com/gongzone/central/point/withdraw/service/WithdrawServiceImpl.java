@@ -14,7 +14,7 @@ public class WithdrawServiceImpl implements WithdrawService {
 	private final PointMapper pointMapper;
 	private final WithdrawMapper withdrawMapper;
 
-	
+
 	@Override
 	public void insert(Withdraw withdraw) {
 		try {
@@ -32,7 +32,7 @@ public class WithdrawServiceImpl implements WithdrawService {
 
 	@Override
 	public List<Withdraw> getMany(String memberNo, int size, int page) {
-		String memberPointNo = pointMapper.getPointNo(memberNo);
+		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
 		return withdrawMapper.getMany(memberPointNo, size, page - 1);
 	}
 

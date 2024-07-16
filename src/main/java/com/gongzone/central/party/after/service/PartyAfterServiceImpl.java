@@ -14,7 +14,7 @@ import com.gongzone.central.party.after.domain.Reception;
 import com.gongzone.central.party.after.domain.Settlement;
 import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.mapper.PartyAfterMapper;
-import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.domain.request.PointDTO;
 import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.utils.MySqlUtil;
@@ -36,9 +36,9 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 
 	@Override
 	@Transactional
-	public void purchase(String partyNo, String memberNo, PointRequest request) {
+	public void purchase(String partyNo, String memberNo, PointDTO request) {
 		// 1. 포인트 내역 삽입한다.
-		String historyNo = pointHistoryService.insertHistory(memberNo, request);
+		String historyNo = pointHistoryService.insert(memberNo, request);
 
 		// 1-1. 결제 내역 상세 생성
 		// TODO: 보유 포인트 확인
@@ -54,10 +54,10 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		partyAfterMapper.updatePurchaseComplete(purchaseNo);
 
 		// 3. 포인트 삭감한다.
-		pointService.update(memberNo, request);
+		pointService.updatePoint(memberNo, request);
 
 		// 4. 포인트 내역 업데이트(성공)
-		pointHistoryService.updateHistorySuccess(historyNo, request);
+		pointHistoryService.updateSuccess(historyNo, request);
 
 		// 5. 파티 결제현황 확인
 		if (partyAfterMapper.checkPurchaseComplete(partyNo)) {

@@ -43,10 +43,10 @@ public class MemberDetailsService implements UserDetailsService {
 
         MemberLevel level = MemberLevel.fromLevel(memberLevelValue);
 
-        Point pointNo = pointMapper.getPointNoByMemberNo(member.getMemberNo());
-        if (pointNo == null) {
-            throw new IllegalArgumentException("Point information not found for memberNo: " + member.getMemberNo());
-        }
+		Point pointNo = pointMapper.getPoint(member.getMemberNo());
+		if (pointNo == null) {
+			throw new IllegalArgumentException("Point information not found for memberNo: " + member.getMemberNo());
+		}
 
         return new MemberDetails(member, pointNo);
     }
