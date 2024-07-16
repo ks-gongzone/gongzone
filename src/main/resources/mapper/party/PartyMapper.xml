@@ -22,7 +22,9 @@
             f.file_path AS img,
             b.b_no AS boardNo,
             b.status_code AS boardStatus,
-            ps.shipping_no AS shippingNo
+            ps.shipping_no AS shippingNo,
+            pts.status_code AS settlementCode
+
         FROM
             party AS p
                 INNER JOIN
@@ -49,6 +51,10 @@
             party_shipping AS ps
             ON
                 p.p_no = ps.p_no
+                LEFT JOIN
+            party_settlement AS pts
+            ON
+                p.p_no = pts.p_no
         WHERE
             p.p_no = #{partyNo};
     </select>
@@ -96,18 +102,25 @@
     <!-- 파티 번호 찾기 -->
     <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
         (SELECT DISTINCT p.p_no AS partyNo
-         FROM party AS p
-                  INNER JOIN party_member AS pm
-                             ON p.p_no = pm.p_no
-         WHERE pm.m_no = #{memberNo})
-
+        FROM party AS p
+        INNER JOIN party_member AS pm ON p.p_no = pm.p_no
+        <where>
+            <if test="memberNo != '_admin'">
+                pm.m_no = #{memberNo}
+            </if>
+        </where>
+        )
         UNION
-
         (SELECT DISTINCT p.p_no AS partyNo
-         FROM party AS p
-                  INNER JOIN party_request AS pr
-                             ON p.p_no = pr.p_no
-         WHERE pr.m_no = #{memberNo});
+        FROM party AS p
+        INNER JOIN party_request AS pr ON p.p_no = pr.p_no
+        <where>
+            <if test="memberNo != '_admin'">
+                pr.m_no = #{memberNo}
+            </if>
+        </where>
+        )
+
     </select>
 
     <update id="updatePartyStatus">
@@ -238,7 +251,8 @@
             b.m_no AS partyLeader,
             f.file_path AS img,
             b.b_no AS boardNo,
-            ps.shipping_no AS shippingNo
+            ps.shipping_no AS shippingNo,
+            pts.status_code AS settlementCode
 
         FROM
             party AS p
@@ -266,8 +280,12 @@
             party_shipping AS ps
             ON
                 p.p_no = ps.p_no
+                LEFT JOIN
+            party_settlement AS pts
+            ON
+                p.p_no = pts.p_no
         WHERE
-            p.p_no = #{partyNo};
+                p.p_no = #{partyNo};
     </select>
 
 
