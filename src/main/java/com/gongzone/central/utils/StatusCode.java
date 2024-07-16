@@ -34,6 +34,7 @@ public enum StatusCode {
 	STATUS_POINT_CHARGE_FAILURE_4("S030205", "포인트", "충전 내역", "네트워크 오류"),
 	STATUS_POINT_CHARGE_FAILURE_5("S030206", "포인트", "충전 내역", "서비스 오류"),
 	STATUS_POINT_WITHDRAW_SUCCESS("S030301", "포인트", "인출 내역", "성공"),
+	// TODO: 포인트 인출 상태코드 수정 필요(인출대기(기본값), 인출완료)
 	STATUS_POINT_WITHDRAW_FAILURE_1("S030302", "포인트", "인출 내역", "포인트 부족"),
 	STATUS_POINT_WITHDRAW_FAILURE_2("S030303", "포인트", "인출 내역", "결제 취소"),
 	STATUS_POINT_WITHDRAW_FAILURE_3("S030304", "포인트", "인출 내역", "은행 점검"),

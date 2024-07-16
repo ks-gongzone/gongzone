@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class Withdraw {
-	private String withdrawNo;
+
+	private int withdrawNo;
 	private String pointHistoryNo;
 	private String withdrawBank;
 	private String withdrawAccount;
