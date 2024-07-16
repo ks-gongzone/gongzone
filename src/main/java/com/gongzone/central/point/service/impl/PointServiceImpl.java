@@ -4,7 +4,7 @@ package com.gongzone.central.point.service.impl;
 import com.gongzone.central.point.domain.request.PointRequest;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.point.payment.domain.Payment;
-import com.gongzone.central.point.payment.service.PaymentHistoryService;
+import com.gongzone.central.point.payment.service.PaymentService;
 import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.point.withdraw.domain.Withdraw;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class PointServiceImpl implements PointService {
 
 	private final PointHistoryService pointHistoryService;
-	private final PaymentHistoryService paymentHistoryService;
+	private final PaymentService paymentService;
 	private final WithdrawService withdrawService;
 
 	private final PointMapper pointMapper;
@@ -56,7 +56,7 @@ public class PointServiceImpl implements PointService {
 
 		// 충전 정보 유효할 시
 		// 2. 충전 내역 삽입
-		paymentHistoryService.insert(payment);
+		paymentService.insert(payment);
 
 		// 3. 포인트 증가
 		updatePoint(memberPointNo, request);

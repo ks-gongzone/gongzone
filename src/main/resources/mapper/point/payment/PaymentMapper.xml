@@ -1,17 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.point.payment.mapper.PaymentMapper">
 
+  <!-- Result Map -->
+  <resultMap id="PaymentResultMap" type="Payment">
+    <id property="paymentNo" column="pay_no" />
+    <result property="pointHistoryNo" column="point_history_no" />
+    <result property="type" column="pay_type" />
+    <result property="transactionType" column="pay_tx_type" />
+    <result property="txId" column="pay_tx_id" />
+    <result property="paymentId" column="pay_id" />
+    <result property="code" column="pay_code" />
+    <result property="message" column="pay_message" />
+    <result property="status" column="pay_date" />
+  </resultMap>
+
   <!-- Query -->
-  <insert id="insertPaymentHistory">
-    -- insertPaymentHistory: 포인트 충전 정보를 삽입한다.
+  <insert id="insert">
+    -- insert: 포인트 충전 정보를 삽입한다.
     INSERT INTO point_payment
       (point_history_no, pay_type, pay_tx_type, pay_tx_id, pay_id, pay_code, pay_message, status_code)
     VALUES
       (#{pointHistoryNo}, #{type}, #{transactionType}, #{txId}, #{paymentId}, #{code}, #{message}, #{status});
   </insert>
 
+  <select id="get" parameterType="String" resultMap="PaymentResultMap">
+    -- getMany: 특정 포인트 충전 내역을 반환한다.
+    SELECT
+      pay_no,
+      point_history_no,
+      pay_type,
+      pay_tx_type,
+      pay_tx_id,
+      pay_id,
+      pay_code,
+      pay_message,
+      pay_date,
+      status_code
+    FROM
+      point_payment
+    WHERE
+      pay_no = #{paymentNo};
+  </select>
+
+  <select id="getMany" resultMap="PaymentResultMap">
+    -- getMany: 회원의 포인트 충전 내역을 반환한다.
+    SELECT
+      p.pay_no,
+      p.point_history_no,
+      p.pay_type,
+      p.pay_tx_type,
+      p.pay_tx_id,
+      p.pay_id,
+      p.pay_code,
+      p.pay_message,
+      p.pay_date,
+      p.status_code
+    FROM
+      point_payment AS p
+      LEFT JOIN
+        point_history AS h
+        ON p.point_history_no = h.point_history_no
+    WHERE
+      m_point_no = #{memberPointNo}
+    ORDER BY
+      pay_no DESC
+    LIMIT #{size} OFFSET #{page};
+  </select>
+
+  <select id="getTransactionId" parameterType="String" resultMap="PaymentResultMap">
+    -- getTransactionId: 특정 결제건의 결제 서버 id를 반환한다.
+    SELECT
+      pay_tx_id
+    FROM
+      point_payment
+    WHERE
+      pay_no = #{payNo};
+  </select>
 </mapper>
