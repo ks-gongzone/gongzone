@@ -1,6 +1,7 @@
 package com.gongzone.central.member.report.service;
 
 import com.gongzone.central.member.report.domain.ReportMember;
+import com.gongzone.central.member.report.domain.ReportStatistical;
 import com.gongzone.central.member.report.mapper.ReportMapper;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,10 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void getReportMemberInsert(ReportMember reportMember) {
         reportMapper.insertReport(reportMember);
+    }
+
+    @Override
+    public List<ReportStatistical> getReportStatisticalDate() {
+        return reportMapper.reportInTimeDay();
     }
 }
