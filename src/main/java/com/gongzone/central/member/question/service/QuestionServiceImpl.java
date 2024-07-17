@@ -1,14 +1,11 @@
 package com.gongzone.central.member.question.service;
 
-import com.gongzone.central.member.alertSSE.domain.AlertSSE;
 import com.gongzone.central.member.alertSSE.service.AlertSEEService;
 import com.gongzone.central.member.question.domain.QuestionMember;
 import com.gongzone.central.member.question.mapper.QuestionMapper;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 

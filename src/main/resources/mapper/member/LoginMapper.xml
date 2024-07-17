@@ -6,20 +6,20 @@
 <mapper namespace="com.gongzone.central.member.login.mapper.LoginMapper">
 
     <select id="getMemberById" resultType="Member">
-        SELECT m_no AS 'memberNo',
-               m_level AS 'memberLevel',
-               m_id AS 'memberId',
-               m_pw AS 'memberPw',
+        SELECT m_no        AS 'memberNo',
+               m_level     AS 'memberLevel',
+               m_id        AS 'memberId',
+               m_pw        AS 'memberPw',
                status_code AS memberStatus
         FROM member
         WHERE m_id = #{loginId};
     </select>
 
     <select id="getMemberByNo" resultType="Member">
-        SELECT m_no AS 'memberNo',
-                m_level AS 'memberLevel',
-                m_id AS 'memberId',
-                m_email AS 'memberEmail',
+        SELECT m_no        AS 'memberNo',
+               m_level     AS 'memberLevel',
+               m_id        AS 'memberId',
+               m_email     AS 'memberEmail',
                status_code AS memberStatus
         FROM member
         WHERE m_no = #{memberNo};
@@ -28,41 +28,42 @@
     <insert id="loginLogInsert" parameterType="loginLog">
         INSERT INTO login
             (m_no, type_code, login_browser, login_in_time, status_code)
-        VALUES
-            (#{memberNo}, 'T010101', #{loginBrowser}, NOW(), 'S010202')
+        VALUES (#{memberNo}, 'T010101', #{loginBrowser}, NOW(), 'S010202')
     </insert>
 
     <update id="logoutLogUpdate">
         UPDATE
             login
-        SET
-            login_out_time = NOW(),
-            status_code = 'S010203'
-        WHERE
-            login_no = #{loginNo}
+        SET login_out_time = NOW(),
+            status_code    = 'S010203'
+        WHERE login_no = #{loginNo}
     </update>
 
     <update id="loginFalseLogUpdate">
         UPDATE
             login
-        SET
-            login_out_time = NOW(),
-            status_code = 'S010201'
-        WHERE
-            login_no = #{loginNo}
+        SET login_out_time = NOW(),
+            status_code    = 'S010201'
+        WHERE login_no = #{loginNo}
     </update>
 
     <select id="loginNoBymemberNo">
-        SELECT
-            login_no AS loginNo
-        FROM
-            login
-        WHERE
-            m_no = #{memberNo}
-        AND
-            login_browser = #{userAgent}
-        ORDER BY
-            login_no DESC LIMIT 1;
+        SELECT login_no AS loginNo
+        FROM login
+        WHERE m_no = #{memberNo}
+          AND login_browser = #{userAgent}
+        ORDER BY login_no DESC
+        LIMIT 1;
+    </select>
+
+    <!-- 기간별 접속 통계 -->
+    <select id="loginInTimeDay" resultType="LoginStatistical">
+        SELECT DATE_FORMAT(login_in_time, '%Y-%m-%d')                                          AS loginInTimeDateFormat,
+               COUNT(login_no)                                                                 AS total,
+               SUM(CASE WHEN type_code = 'T010101' THEN 1 ELSE 0 END)                          AS direct,
+               SUM(CASE WHEN type_code IN ('T010102', 'T010103', 'T010104') THEN 1 ELSE 0 END) AS social
+        FROM login
+        GROUP BY DATE_FORMAT(login_in_time, '%Y-%m-%d')
     </select>
 
 </mapper>
