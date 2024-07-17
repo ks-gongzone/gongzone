@@ -28,7 +28,7 @@ public class AdminPartyAfterServiceImpl implements AdminPartyAfterService {
 	@Transactional
 	public void settlement(String partyNo) {
 		// 1. (관리자) 포인트 차감 내역 삽입
-		String adminHistoryPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastHistoryPk());
+		String adminHistoryPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastIndex());
 		int adminCurrentPoint = pointMapper.getCurrentPoint(ADMIN_POINT_NO.toString());
 		int pointChange = partyAfterMapper.getSettlementPrice(partyNo);
 		PointHistory adminHistory = PointHistory.builder()
@@ -39,13 +39,13 @@ public class AdminPartyAfterServiceImpl implements AdminPartyAfterService {
 												.pointHistoryAfter(adminCurrentPoint)
 												.type(TYPE_POINT_DECREASE_ADMIN_PARTY_SETTLEMENT.getCode())
 												.build();
-		pointHistoryMapper.insertPointHistory(adminHistory);
+		pointHistoryMapper.insert(adminHistory);
 
 		// 1-1. (관리자) 포인트 차감
 		pointMapper.update(ADMIN_POINT_NO.toString(), -pointChange);
 
 		// 2. (사용자) 포인트 증가 내역 삽입
-		String memberHistoryPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastHistoryPk());
+		String memberHistoryPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastIndex());
 		String partyMemberNo = partyAfterMapper.getLeaderPartyMemberNo(partyNo);
 		String memberNo = partyAfterMapper.getMemberNoByPartyMemberNo(partyMemberNo);
 		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
@@ -58,7 +58,7 @@ public class AdminPartyAfterServiceImpl implements AdminPartyAfterService {
 												 .pointHistoryAfter(memberCurrentPoint)
 												 .type(TYPE_POINT_INCREASE_SETTLEMENT.getCode())
 												 .build();
-		pointHistoryMapper.insertPointHistory(memberHistory);
+		pointHistoryMapper.insert(memberHistory);
 
 		// 2-1. (사용자) 정산내역 삽입
 		String settlementNo = partyAfterMapper.getPartySettlementNo(partyNo);
