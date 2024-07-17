@@ -8,17 +8,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+/**
+ * 포트원 서버와 통신하는 클라이언트 클래스
+ */
 @Component
-public class IamportClient {
+public class PortOneClient {
+
 	private static final String BASE_URL = "https://api.portone.io/";
-	private final String secretKey;
 	private final String auth;
 	private final WebClient webClient;
 	private final ObjectMapper objectMapper;
 
 
-	public IamportClient(String secretKey, WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
-		this.secretKey = secretKey;
+	public PortOneClient(String secretKey, WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
 		this.auth = "PortOne " + secretKey;
 		this.webClient = webClientBuilder.baseUrl(BASE_URL).build();
 		this.objectMapper = objectMapper;

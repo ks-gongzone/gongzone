@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PointRequest<T> {
+public class PointDTO<T> {
 
 	private int pointBefore;
 	private int pointChange;

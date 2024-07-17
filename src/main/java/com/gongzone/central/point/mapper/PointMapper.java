@@ -7,17 +7,17 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface PointMapper {
 
-	Integer getCurrentPoint(String memberPointNo);
+	void insert(Point point);
 
-	void updatePoint(@Param("memberPointNo") String memberPointNo,
-					 @Param("change") int change);
+	String getLastIndex();
 
-	Point getPointNoByMemberNo(String memberNo);
+	Point getPoint(String memberNo);
 
-	String getPointNo(String memberNo);
+	int getCurrentPoint(String memberPointNo);
 
-	void insertPoint(Point point);
+	String getMemberPointNo(String memberNo);
 
-	String getLastMemberPointNo();
+	void update(@Param("memberPointNo") String memberPointNo,
+				@Param("change") int charge);
 
 }

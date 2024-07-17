@@ -27,8 +27,8 @@ public class MemberServiceImpl implements MemberService {
         try {
             memberMapper.insert(member);
 
-            String lastPointNo = pointMapper.getLastMemberPointNo();
-            String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
+			String lastPointNo = pointMapper.getLastIndex();
+			String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
 
             Point point = Point.builder()
                     .memberPointNo(newPointNo)
@@ -36,13 +36,13 @@ public class MemberServiceImpl implements MemberService {
                     .memberPoint("0")
                     .build();
 
-            pointMapper.insertPoint(point);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+			pointMapper.insert(point);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
     @Override
     public List<Member> getAllMembers() {

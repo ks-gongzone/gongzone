@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gongzone.central.point.withdrawal.mapper.WithdrawMapper">
+<mapper namespace="com.gongzone.central.point.withdraw.mapper.WithdrawMapper">
 
   <!-- Result Mapping -->
-  <resultMap id="PointResultMap" type="Point">
+  <resultMap id="WithdrawResultMap" type="Withdraw">
     <id property="withdrawNo" column="withdraw_no" />
     <result property="pointHistoryNo" column="point_history_no" />
     <result property="withdrawBank" column="withdraw_bank" />
@@ -18,12 +18,54 @@
   </resultMap>
 
   <!-- Query -->
-  <insert id="insertPointWithdraw">
-    -- insertPointWithdraw: 포인트 인출 정보를 삽입한다.
+  <insert id="insert">
+    -- WithdrawMapper.insert: 포인트 인출 정보를 삽입한다.
     INSERT INTO point_withdraw
       (point_history_no, withdraw_bank, withdraw_account, withdraw_name, withdraw_amount, status_code)
     VALUES
       (#{pointHistoryNo}, #{withdrawBank}, #{withdrawAccount}, #{withdrawName}, #{withdrawAmount}, #{status});
   </insert>
+
+  <select id="get" parameterType="String" resultMap="WithdrawResultMap">
+    -- WithdrawMapper.get: 특정 포인트 인출 정보를 반환한다.
+    SELECT
+      withdraw_no,
+      point_history_no,
+      withdraw_bank,
+      withdraw_account,
+      withdraw_name,
+      withdraw_amount,
+      withdraw_date,
+      status_code
+    FROM
+      point_withdraw
+    WHERE
+      withdraw_no = #{withdrawNo};
+  </select>
+
+  <select id="getMany" resultMap="WithdrawResultMap">
+    -- WithdrawMapper.getMany: 회원의 포인트 인출 정보를 반환한다.
+    SELECT
+      w.withdraw_no,
+      w.point_history_no,
+      w.withdraw_bank,
+      w.withdraw_account,
+      w.withdraw_name,
+      w.withdraw_amount,
+      w.withdraw_date,
+      w.status_code
+    FROM
+      point_withdraw AS w
+      LEFT JOIN
+        point_history AS h
+        ON w.point_history_no = h.point_history_no
+    WHERE
+      h.m_point_no = #{memberPointNo}
+    ORDER BY
+      w.withdraw_no
+        DESC
+    LIMIT #{size} OFFSET #{page};
+  </select>
+
 
 </mapper>

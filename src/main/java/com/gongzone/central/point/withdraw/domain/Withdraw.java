@@ -1,11 +1,12 @@
-package com.gongzone.central.point.withdrawal.domain;
+package com.gongzone.central.point.withdraw.domain;
 
 import com.gongzone.central.utils.StatusCode;
 import lombok.Data;
 
 @Data
 public class Withdraw {
-	private String withdrawNo;
+
+	private int withdrawNo;
 	private String pointHistoryNo;
 	private String withdrawBank;
 	private String withdrawAccount;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.point.mapper.PointMapper">
 
@@ -14,6 +14,34 @@
 
 
   <!-- Query -->
+  <insert id="insertPoint" parameterType="Point">
+    -- insertPoint: 포인트 테이블에 초기 값을 삽입한다.
+    INSERT INTO member_point
+      (m_point_no, m_no, m_point)
+    VALUES
+      (#{memberPointNo}, #{memberNo}, #{memberPoint})
+  </insert>
+
+  <select id="getLastIndex" resultType="String">
+    -- getLastIndex: 포인트 테이블의 마지막 키 값을 반환한다.
+    SELECT
+      max(m_point_no)
+    FROM
+      member_point
+  </select>
+
+  <select id="getPoint" parameterType="String" resultType="Point">
+    -- getPoint: 회원 번호를 통해 포인트 객체를 얻는다.
+    SELECT
+      m_point_no AS memberPointNo,
+      m_no       AS memberNo,
+      m_point    AS memberPoint
+    FROM
+      member_point
+    WHERE
+      m_point_no = #{memberPointNo};
+  </select>
+
   <select id="getCurrentPoint" parameterType="String" resultType="int">
     -- getCurrentPoint: 회원의 현재 포인트를 반환한다.
     SELECT
@@ -24,39 +52,7 @@
       m_point_no = #{memberPointNo};
   </select>
 
-  <update id="updatePoint">
-    -- updatePoint: 현재 포인트를 증가 또는 감소시킨다.
-    UPDATE member_point
-    SET
-      m_point = m_point + #{change}
-    WHERE
-      m_point_no = #{memberPointNo};
-  </update>
-
-  <select id="getPointNoByMemberNo" parameterType="String" resultType="Point">
-    -- getPointNoByMemberNo: 회원 번호를 통해 포인트 객체를 얻는다.
-    SELECT
-      m_point_no AS memberPointNo,
-      m_no       AS memberNo,
-      m_point    AS memberPoint
-    FROM
-      member_point
-    WHERE
-      m_no = #{memberNo}
-  </select>
-
-  <!-- 예시 -->
-  <select id="getPointByPointNo" parameterType="String" resultType="Point">
-    -- getPointByPointNo: 포인트 번호를 통해 현재 포인트를 얻는다.
-    SELECT
-      m_point AS memberPoint
-    FROM
-      member_point
-    WHERE
-      m_point_no = #{memberPointNo};
-  </select>
-
-  <select id="getPointNo" resultType="String">
+  <select id="getMemberPointNo" resultType="String">
     -- getMemberPointNo: 회원 번호를 이용해 회원 포인트 번호를 얻는다.
     SELECT
       m_point_no
@@ -66,20 +62,13 @@
       m_no = #{memberNo};
   </select>
 
-  <insert id="insertPoint" parameterType="Point">
-    -- insertPoint: 포인트 테이블에 초기 값을 삽입한다.
-    INSERT INTO member_point
-      (m_point_no, m_no, m_point)
-    VALUES
-      (#{memberPointNo}, #{memberNo}, #{memberPoint})
-  </insert>
-
-  <select id="getLastMemberPointNo" resultType="String">
-    -- getLastMemberPointNo: 포인트 테이블의 마지막 키 값을 반환한다.
-    SELECT
-      max(m_point_no)
-    FROM
-      member_point
-  </select>
+  <update id="update">
+    -- update: 현재 포인트를 증가 또는 감소시킨다.
+    UPDATE member_point
+    SET
+      m_point = m_point + #{change}
+    WHERE
+      m_point_no = #{memberPointNo};
+  </update>
 
 </mapper>
