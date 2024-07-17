@@ -37,7 +37,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 												.pointHistoryBefore(request.getPointBefore())
 												.pointHistoryChange(request.getPointChange())
 												.pointHistoryAfter(request.getPointBefore())  // 처음 insert 시 실패를 가정한다. 따라서 before 값 삽입
-												.type(request.getChangeType().getCode())
+												.type(request.getChangeType())
 												.build();
 		pointHistoryMapper.insert(pointHistory);
 
