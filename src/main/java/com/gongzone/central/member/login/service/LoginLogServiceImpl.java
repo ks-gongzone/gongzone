@@ -1,13 +1,16 @@
 package com.gongzone.central.member.login.service;
 
 import com.gongzone.central.member.login.domain.LoginLog;
+import com.gongzone.central.member.login.domain.LoginStatistical;
 import com.gongzone.central.member.login.mapper.LoginMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class LoginLogServiceImpl implements LoginLogService{
+public class LoginLogServiceImpl implements LoginLogService {
 
     private final LoginMapper loginMapper;
 
@@ -46,5 +49,11 @@ public class LoginLogServiceImpl implements LoginLogService{
         } else {
             return "Unknown";
         }
+    }
+
+    @Override
+    public List<LoginStatistical> getLoginStatisticalDate() {
+        System.out.println("getLoginstatisticalDate : " + loginMapper.loginInTimeDay());
+        return loginMapper.loginInTimeDay();
     }
 }
