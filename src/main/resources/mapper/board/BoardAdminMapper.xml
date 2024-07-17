@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gongzone.central.board.admin.mapper.BoardAdminMapper">
+    <resultMap id="BoardWriteDate" type="com.gongzone.central.board.admin.domain.BoardWriteDate">
+        <id property="writeDate" column="write_date" />
+        <result property="boardCount" column="board_count" />
+    </resultMap>
+
+    <select id="getBoardWriteDate" resultMap="BoardWriteDate">
+        SELECT
+            DATE_FORMAT(b.b_date, '%Y-%m-%d') AS write_date,
+            COUNT(1) AS board_count
+        FROM
+            board AS b
+        GROUP BY
+            write_date
+        ORDER BY
+            write_date;
+    </select>
+
+    <resultMap id="BoardWriteMember" type="com.gongzone.central.board.admin.domain.BoardWriteMember">
+        <id property="memberNo" column="m_no" />
+        <result property="boardWrite" column="BoardCount" />
+    </resultMap>
+
+    <select id="getBoardWriteMember" resultMap="BoardWriteMember">
+        SELECT
+            b.m_no,
+            COUNT(b_no) AS BoardCount
+        FROM
+            board AS b
+        GROUP BY
+            b.m_no
+        ORDER BY
+            BoardCount DESC
+            LIMIT 5;
+    </select>
+
+    <resultMap id="BoardProgress" type="com.gongzone.central.board.admin.domain.BoardProgress">
+        <id property="boardNo" column="b_no" />
+        <result property="partyNo" column="p_no" />
+        <result property="partyStatus" column="status_code" />
+        <result property="totalPartyMember" column="member_count" />
+        <result property="purchaseCompleteMember" column="purchase_count" />
+        <result property="receptionCompleteMember" column="reception_count" />
+    </resultMap>
+
+    <select id="getBoardProgress" resultMap="BoardProgress">
+        SELECT
+            b.b_no,
+            p.p_no,
+            p.status_code,
+            COUNT(DISTINCT pm.p_member_no) AS member_count,
+            COUNT(DISTINCT CASE WHEN pp.status_code = 'S060302' THEN pp.purchase_no ELSE NULL END) AS purchase_count,
+            COUNT(DISTINCT CASE WHEN pr.status_code = 'S060502' THEN pr.r_no ELSE NULL END) AS reception_count
+        FROM
+            board AS b
+                LEFT JOIN party AS p ON b.b_no = p.b_no
+                LEFT JOIN party_member AS pm ON p.p_no = pm.p_no
+                LEFT JOIN party_purchase AS pp ON p.p_no = pp.p_no
+                LEFT JOIN party_reception AS pr ON p.p_no = pr.p_no
+        WHERE
+            p.status_code IN ('S060102', 'S060103', 'S060104', 'S060105', 'S060106', 'S060107')
+        GROUP BY
+            p.p_no
+        ORDER BY
+            p.p_no;
+    </select>
+</mapper>

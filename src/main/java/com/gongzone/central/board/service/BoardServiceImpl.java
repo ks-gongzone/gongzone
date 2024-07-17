@@ -84,7 +84,6 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void updateBoard(String boardNo, BoardResponse br, MultipartFile file) {
-        System.out.println("111111111111111111111111111111111");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String endDateString = br.getEndDate().replace("T", " ");
