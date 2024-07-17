@@ -59,6 +59,8 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		// 4. 포인트 내역 업데이트(성공)
 		pointHistoryService.updateSuccess(historyNo, request);
 
+		// TODO: 관리자 포인트 증가
+
 		// 5. 파티 결제현황 확인
 		if (partyAfterMapper.checkPurchaseComplete(partyNo)) {
 			// 5-1. 파티 상태 업데이트(파티장 결제대기)

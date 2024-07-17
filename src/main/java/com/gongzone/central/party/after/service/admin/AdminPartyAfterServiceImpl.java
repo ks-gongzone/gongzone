@@ -81,6 +81,8 @@ public class AdminPartyAfterServiceImpl implements AdminPartyAfterService {
 
 		// 4-2. 파티 상태 변경(파티완료)
 		partyAfterMapper.updatePartyComplete(partyNo);
+
+		// TODO: 4-3. 게시글 상태 변경(파티완료)
 	}
 
 }
