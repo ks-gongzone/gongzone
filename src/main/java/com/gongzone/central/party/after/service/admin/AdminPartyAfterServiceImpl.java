@@ -1,13 +1,10 @@
 package com.gongzone.central.party.after.service.admin;
 
 import static com.gongzone.central.common.constants.ConstantsString.ADMIN_POINT_NO;
-import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_SETTLEMENT_COMPLETE;
 import static com.gongzone.central.utils.StatusCode.STATUS_SETTLEMENT_COMPLETE;
 import static com.gongzone.central.utils.TypeCode.TYPE_POINT_DECREASE_ADMIN_PARTY_SETTLEMENT;
 import static com.gongzone.central.utils.TypeCode.TYPE_POINT_INCREASE_SETTLEMENT;
-import static com.gongzone.central.utils.TypeCode.party;
 
-import com.gongzone.central.member.alertSSE.domain.AlertSSE;
 import com.gongzone.central.member.alertSSE.mapper.AlertSSEMapper;
 import com.gongzone.central.member.alertSSE.service.AlertSEEService;
 import com.gongzone.central.party.after.domain.SettlementDetail;
