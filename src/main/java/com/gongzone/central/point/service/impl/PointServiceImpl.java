@@ -1,6 +1,7 @@
 package com.gongzone.central.point.service.impl;
 
 
+import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.domain.request.PointDTO;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.point.service.PointService;
@@ -16,7 +17,14 @@ public class PointServiceImpl implements PointService {
 
 	@Override
 	public Integer getCurrentPoint(String memberNo) {
-		return pointMapper.getCurrentPoint(getMemberPointNo(memberNo));
+		String memberPointNo = getMemberPointNo(memberNo);
+		return pointMapper.getCurrentPoint(memberPointNo);
+	}
+
+	@Override
+	public Point getPoint(String memberNo) {
+		String memberPointNo = getMemberPointNo(memberNo);
+		return pointMapper.getPoint(memberPointNo);
 	}
 
 	@Override

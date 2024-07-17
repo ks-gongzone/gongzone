@@ -9,15 +9,15 @@ public interface PointMapper {
 
 	void insert(Point point);
 
-	int getCurrentPoint(String memberPointNo);
+	String getLastIndex();
 
 	Point getPoint(String memberNo);
+
+	int getCurrentPoint(String memberPointNo);
+
+	String getMemberPointNo(String memberNo);
 
 	void update(@Param("memberPointNo") String memberPointNo,
 				@Param("change") int charge);
 
-	String getLastIndex();
-
-	String getMemberPointNo(String memberNo);
-	
 }

@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface PointHistoryMapper {
 
-	void insertPointHistory(PointHistory pointHistory);
+	void insert(PointHistory pointHistory);
 
 	PointHistory get(String pointHistoryNo);
 
@@ -19,6 +19,6 @@ public interface PointHistoryMapper {
 	void updateHistorySuccess(@Param("historyNo") String historyNo,
 							  @Param("pointHistoryAfter") int pointHistoryAfter);
 
-	String getLastHistoryPk();
+	String getLastIndex();
 
 }

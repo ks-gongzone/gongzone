@@ -30,7 +30,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
 		calculatePointUpdate(memberPointNo, request);
 
-		String historyPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastHistoryPk());
+		String historyPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastIndex());
 		PointHistory pointHistory = PointHistory.builder()
 												.pointHistoryNo(historyPk)
 												.memberPointNo(memberPointNo)
@@ -39,7 +39,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 												.pointHistoryAfter(request.getPointBefore())  // 처음 insert 시 실패를 가정한다. 따라서 before 값 삽입
 												.type(request.getChangeType().getCode())
 												.build();
-		pointHistoryMapper.insertPointHistory(pointHistory);
+		pointHistoryMapper.insert(pointHistory);
 
 		return historyPk;
 	}
