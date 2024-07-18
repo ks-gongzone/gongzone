@@ -1,8 +1,9 @@
 package com.gongzone.central.board.controller;
 
+import com.gongzone.central.board.domain.Board;
+import com.gongzone.central.board.domain.BoardMyPage;
 import com.gongzone.central.board.domain.BoardResponse;
 import com.gongzone.central.board.domain.BoardSearchRequest;
-import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -69,8 +70,8 @@ public class BoardController {
     }
 
     @PostMapping("/wish/{boardNo}/{memberNo}")
-    public ResponseEntity<String> setWish(@PathVariable("boardNo") String boardNo,@PathVariable("memberNo") String memberNo) {
-        try{
+    public ResponseEntity<String> setWish(@PathVariable("boardNo") String boardNo, @PathVariable("memberNo") String memberNo) {
+        try {
             boardService.setWish(boardNo, memberNo);
             return ResponseEntity.ok("WishList Success");
         } catch (Exception e) {
@@ -81,7 +82,7 @@ public class BoardController {
 
     @PostMapping("/addView/{boardNo}")
     public ResponseEntity<String> addView(@PathVariable("boardNo") String boardNo) {
-        try{
+        try {
             boardService.updateViewCount(boardNo);
             return ResponseEntity.ok("Update ViewCount Success");
         } catch (Exception e) {
@@ -117,5 +118,10 @@ public class BoardController {
             e.printStackTrace();
             return ResponseEntity.ok("Insert Error");
         }
+    }
+
+    @GetMapping("/myPage/wishList/{memberNo}")
+    public List<BoardMyPage> getMyWishList(@PathVariable String memberNo) {
+        return boardService.getWishListMypage(memberNo);
     }
 }
