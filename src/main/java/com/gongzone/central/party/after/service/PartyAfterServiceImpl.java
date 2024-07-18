@@ -14,7 +14,8 @@ import com.gongzone.central.party.after.domain.Reception;
 import com.gongzone.central.party.after.domain.Settlement;
 import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.mapper.PartyAfterMapper;
-import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.domain.request.PointDTO;
+import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.utils.MySqlUtil;
 import java.util.List;
@@ -28,15 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class PartyAfterServiceImpl implements PartyAfterService {
 
 	private final PointService pointService;
+	private final PointHistoryService pointHistoryService;
 
 	private final PartyAfterMapper partyAfterMapper;
 
 
 	@Override
 	@Transactional
-	public void purchase(String partyNo, String memberNo, PointRequest request) {
+	public void purchase(String partyNo, String memberNo, PointDTO request) {
 		// 1. 포인트 내역 삽입한다.
-		String historyNo = pointService.insertHistory(memberNo, request);
+		String historyNo = pointHistoryService.insert(memberNo, request);
 
 		// 1-1. 결제 내역 상세 생성
 		// TODO: 보유 포인트 확인
@@ -52,10 +54,12 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		partyAfterMapper.updatePurchaseComplete(purchaseNo);
 
 		// 3. 포인트 삭감한다.
-		pointService.update(memberNo, request);
+		pointService.updatePoint(memberNo, request);
 
 		// 4. 포인트 내역 업데이트(성공)
-		pointService.updateHistorySuccess(historyNo, request);
+		pointHistoryService.updateSuccess(historyNo, request);
+
+		// TODO: 관리자 포인트 증가
 
 		// 5. 파티 결제현황 확인
 		if (partyAfterMapper.checkPurchaseComplete(partyNo)) {
@@ -175,8 +179,7 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		// 게시글(모집완료), 파티(파티원 결제대기) 상태변경
 		partyAfterMapper.testChangeBoardStatus(boardNo, STATUS_BOARD_RECRUIT_COMPLETE.getCode());
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_PAYMENT_WAITING_MEMBER.getCode());
-		// 파티장, 파티원 결제현황 삽입
-		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo, purchasePrice);
+		// 파티원 결제현황 삽입
 		partyAfterMapper.testInsertPartyPurchase(partyNo, partyMemberNo2, purchasePrice2);
 	}
 

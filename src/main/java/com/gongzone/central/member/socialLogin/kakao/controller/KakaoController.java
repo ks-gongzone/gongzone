@@ -1,10 +1,9 @@
 package com.gongzone.central.member.socialLogin.kakao.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gongzone.central.member.socialLogin.google.domain.GoogleRequest;
-import com.gongzone.central.member.socialLogin.kakao.domain.KakaoRequest;
+import com.gongzone.central.member.socialLogin.domain.SocialRequest;
 import com.gongzone.central.member.socialLogin.kakao.service.KakaoService;
-import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,7 @@ public class KakaoController {
             }
 
             String userAgent = request.getHeader("User-Agent");
-            KakaoRequest kakaoRequest = objectMapper.readValue(requestBody, KakaoRequest.class);
+            SocialRequest kakaoRequest = objectMapper.readValue(requestBody, SocialRequest.class);
             kakaoRequest.setUserAgent(userAgent);
 
             if (kakaoRequest.getCode() == null) {

@@ -70,9 +70,6 @@ public class AlertSEEServiceImpl implements AlertSEEService {
     }
 
     private boolean shouldSendAlert(AlertAllow alertAllow, TypeCode alertType) {
-        System.out.println("shouldSendAlert 실행");
-        System.out.println("alertAllow: " + alertAllow);
-        System.out.println("alertType: " + alertType);
         if ("공지".equalsIgnoreCase(alertType.toString())) {
             return true;
         }

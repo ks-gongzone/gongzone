@@ -7,6 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface FileMapper {
+    void updateFile(FileUpload fileUpload);
     void addFile(FileUpload fileUpload);
     List<FileUpload> getBoardFileList(int fileNo);
 }

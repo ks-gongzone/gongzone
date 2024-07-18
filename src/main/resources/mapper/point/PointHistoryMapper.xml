@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.point.mapper.PointHistoryMapper">
+
+  <!-- Result Mapping -->
+  <resultMap id="PointHistoryResultMap" type="PointHistory">
+    <id property="pointHistoryNo" column="point_history_no" />
+    <result property="memberPointNo" column="m_point_no" />
+    <result property="type" column="type_code" />
+    <result property="pointHistoryBefore" column="point_history_before" />
+    <result property="pointHistoryChange" column="point_history_change" />
+    <result property="pointHistoryAfter" column="point_history_after" />
+    <result property="pointHistoryDate" column="point_history_date" />
+    <result property="status" column="status_code" />
+  </resultMap>
+
+
+  <!-- Query -->
+  <insert id="insert" parameterType="PointHistory">
+    -- insert: 새로운 포인트 내역을 삽입한다.
+    INSERT INTO point_history
+      (point_history_no, m_point_no, type_code, point_history_before, point_history_change, point_history_after)
+    VALUES
+      (#{pointHistoryNo}, #{memberPointNo}, #{type}, #{pointHistoryBefore}, #{pointHistoryChange}, #{pointHistoryAfter});
+  </insert>
+
+  <select id="getLastIndex" resultType="String">
+    -- getLastIndex: point_history 테이블의 마지막 키를 반환한다.
+    SELECT
+      point_history_no
+    FROM
+      point_history
+    ORDER BY
+      point_history_no DESC
+    LIMIT 1;
+  </select>
+
+  <select id="get" parameterType="String" resultMap="PointHistoryResultMap">
+    -- get: 특정 포인트 내역을 반환한다.
+    SELECT
+      point_history_no,
+      m_point_no,
+      type_code,
+      point_history_before,
+      point_history_change,
+      point_history_after,
+      point_history_date,
+      status_code
+    FROM
+      point_history
+    WHERE
+      m_point_no = #{memberPointNo}
+      AND point_history_no = #{pointHistoryNo};
+  </select>
+
+  <select id="getMany" resultMap="PointHistoryResultMap">
+    -- getMany: 특정 회원의 포인트 내역을 반환한다.
+    SELECT
+      point_history_no,
+      m_point_no,
+      type_code,
+      point_history_before,
+      point_history_change,
+      point_history_after,
+      point_history_date,
+      status_code
+    FROM
+      point_history
+    WHERE
+      m_point_no = #{memberPointNo}
+    ORDER BY
+      point_history_no DESC
+    LIMIT #{size} OFFSET #{page};
+  </select>
+
+  <update id="updateHistorySuccess">
+    -- updateHistorySuccess: 특정 포인트 내역의 상태코드를 변경한다.
+    UPDATE point_history
+    SET
+      point_history_after = #{pointHistoryAfter},
+      status_code         = 'S030101' -- S030101: 충전 성공
+    WHERE
+      point_history_no = #{historyNo};
+  </update>
+
+</mapper>

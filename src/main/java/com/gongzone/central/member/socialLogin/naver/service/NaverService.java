@@ -9,8 +9,7 @@ import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.member.mapper.TokenMapper;
-import com.gongzone.central.member.socialLogin.naver.domain.NaverRequest;
-import com.gongzone.central.member.socialLogin.naver.domain.SocialMember;
+import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
 import com.gongzone.central.utils.MySqlUtil;
@@ -23,7 +22,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,9 +34,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
-@RequiredArgsConstructor
-@EnableScheduling
 @Transactional
+@RequiredArgsConstructor
 public class NaverService {
 
     private final MemberMapper memberMapper;
@@ -133,8 +130,8 @@ public class NaverService {
                 updateTokens(member.getMemberNo(), socialMember);
             }
 
-            Point point = pointMapper.getPointNoByMemberNo(member.getMemberNo());
-            MemberDetails memberDetails = new MemberDetails(member, point);
+			Point point = pointMapper.getPoint(member.getMemberNo());
+			MemberDetails memberDetails = new MemberDetails(member, point);
 
             String siteToken = jwtUtil.generateToken(memberDetails);
 
@@ -148,7 +145,7 @@ public class NaverService {
 
             return socialMember;
         } catch (Exception e) {
-            LoginLog loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
+            LoginLog loginNumber = loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
             loginLogService.logLoginFailure(loginNumber.getLoginNo());
             throw new Exception("네이버 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
@@ -159,7 +156,7 @@ public class NaverService {
     private Member saveMember(SocialMember socialMember) {
         String randomMemberId = UUID.randomUUID().toString();
         Member member = Member.builder()
-                .memberNo("")  // 마지막값에 추가예정
+                .memberNo("")
                 .memberId(randomMemberId)
                 .memberName(socialMember.getName())
                 .memberEmail(socialMember.getEmail())
@@ -169,8 +166,8 @@ public class NaverService {
 
         memberMapper.insert(member);
 
-        String lastPointNo = pointMapper.getLastMemberPointNo();
-        String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
+		String lastPointNo = pointMapper.getLastIndex();
+		String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
 
         Point point = Point.builder()
                 .memberPointNo(newPointNo)
@@ -178,7 +175,7 @@ public class NaverService {
                 .memberPoint("0")
                 .build();
 
-        pointMapper.insertPoint(point);
+		pointMapper.insert(point);
 
         Token token = new Token();
 
@@ -220,16 +217,5 @@ public class NaverService {
 
             tokenMapper.update(token);
         }
-    }
-
-    private MultiValueMap<String, String> accessTokenParams(String grantType, String clientSecret, String clientId, String code, String redirect_uri) {
-        MultiValueMap<String, String> accessTokenParams = new LinkedMultiValueMap<>();
-        accessTokenParams.add("grant_type", grantType);
-        accessTokenParams.add("client_id", clientId);
-        accessTokenParams.add("client_secret", clientSecret);
-        accessTokenParams.add("code", code);
-        accessTokenParams.add("redirect_uri", redirect_uri);
-
-        return accessTokenParams;
     }
 }

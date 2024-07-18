@@ -4,9 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.board.reply.mapper.BoardReplyMapper">
-    <delete id="deleteReply" parameterType="com.gongzone.central.board.domain.BoardReply">
-        DELETE FROM reply WHERE reply_no = #{replyNo} AND b_no = #{boardNo} AND m_no = #{memberNo}
-    </delete>
+    <update id="deleteReply" parameterType="com.gongzone.central.board.domain.BoardReply">
+        UPDATE reply
+        SET status_code = 'S050104'
+        WHERE reply_no = #{replyNo} AND b_no = #{boardNo} AND m_no = #{memberNo}
+    </update>
 
     <update id="updateReply" parameterType="com.gongzone.central.board.domain.BoardReply">
         UPDATE reply

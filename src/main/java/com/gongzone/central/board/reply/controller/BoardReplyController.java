@@ -1,10 +1,8 @@
 package com.gongzone.central.board.reply.controller;
 
-import com.gongzone.central.board.domain.Board;
 import com.gongzone.central.board.domain.BoardReply;
 import com.gongzone.central.board.reply.service.BoardReplyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

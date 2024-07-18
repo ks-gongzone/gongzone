@@ -5,7 +5,7 @@ import com.gongzone.central.party.after.domain.PartyPurchaseDetail;
 import com.gongzone.central.party.after.domain.Reception;
 import com.gongzone.central.party.after.domain.Shipping;
 import com.gongzone.central.party.after.service.PartyAfterService;
-import com.gongzone.central.point.domain.request.PointRequest;
+import com.gongzone.central.point.domain.request.PointDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,7 +42,7 @@ public class PartyAfterController {
 													@Parameter(description = "회원 고유번호(Mxxxxxx)")
 													@PathVariable String memberNo,
 													@Parameter(description = "파티 결제 요청 객체")
-													@RequestBody PointRequest<PartyPurchaseDetail> request) {
+													@RequestBody PointDTO<PartyPurchaseDetail> request) {
 		ResponseEntity<Result> response;
 
 		try {

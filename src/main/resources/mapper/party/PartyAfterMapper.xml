@@ -205,6 +205,15 @@
       p_no = #{partyNo};
   </select>
 
+  <update id="updatePartyComplete">
+    UPDATE party
+    SET
+      p_end_date  = current_timestamp,
+      status_code = 'S060108' -- 파티 정산 완료
+    WHERE
+      p_no = #{partyNo};
+  </update>
+
 
   <!--  테스트: 게시글 삽입 -->
   <insert id="testInsertBoard">
