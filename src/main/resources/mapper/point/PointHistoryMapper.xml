@@ -38,6 +38,16 @@
     LIMIT 1;
   </select>
 
+  <select id="getTotalCount" parameterType="String" resultType="int">
+    -- getTotalCount: 총 요소 수를 반환한다.
+    SELECT
+      count(1)
+    FROM
+      point_history
+    WHERE
+      m_point_no = #{memberPointNo};
+  </select>
+
   <select id="get" parameterType="String" resultMap="PointHistoryResultMap">
     -- get: 특정 포인트 내역을 반환한다.
     SELECT
