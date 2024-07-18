@@ -1,5 +1,6 @@
 package com.gongzone.central.point.service.impl;
 
+import com.gongzone.central.common.pagination.Pagination;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.domain.request.PointDTO;
 import com.gongzone.central.point.mapper.PointHistoryMapper;
@@ -58,9 +59,18 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 	}
 
 	@Override
-	public List<PointHistory> getMany(String memberNo, int size, int page) {
+	public Pagination getMany(String memberNo, int size, int page) {
 		String pointNo = pointMapper.getMemberPointNo(memberNo);
-		return pointHistoryMapper.getMany(pointNo, size, page - 1);
+
+		Pagination<PointHistory> pages = new Pagination();
+		int maxPage = pointHistoryMapper.getTotalCount(pointNo) / size;
+		pages.setMax(maxPage);
+
+		page = (page - 1) * size;
+		List<PointHistory> histories = pointHistoryMapper.getMany(pointNo, size, page);
+		pages.setElements(histories);
+
+		return pages;
 	}
 
 	@Override

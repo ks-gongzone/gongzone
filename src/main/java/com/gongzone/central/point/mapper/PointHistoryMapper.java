@@ -21,4 +21,6 @@ public interface PointHistoryMapper {
 
 	String getLastIndex();
 
+	int getTotalCount(String memberNo);
+
 }
