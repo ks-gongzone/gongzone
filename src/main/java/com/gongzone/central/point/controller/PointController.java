@@ -1,6 +1,7 @@
 package com.gongzone.central.point.controller;
 
 import com.gongzone.central.common.Response.Result;
+import com.gongzone.central.common.pagination.Pagination;
 import com.gongzone.central.point.domain.PointHistory;
 import com.gongzone.central.point.service.PointHistoryService;
 import com.gongzone.central.point.service.PointService;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +70,7 @@ public class PointController {
 		ResponseEntity<Result> response;
 
 		try {
-			List<PointHistory> pointHistories = pointHistoryService.getMany(memberNo, pageSize, pageNo);
+			Pagination<PointHistory> pointHistories = pointHistoryService.getMany(memberNo, pageSize, pageNo);
 			response = ResponseEntity.ok(new Result(pointHistories));
 		} catch (Exception e) {
 			System.err.println("Exception during getAllMemberPointHistory: " + e.getClass().getName());
