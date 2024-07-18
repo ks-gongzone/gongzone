@@ -11,4 +11,7 @@ public class BoardReply {
     private String memberNo;
     private String replyBody;
     private Date replyDate;
+    private int replyReportCount;
+    private String statusCode;
+    private String memberId;
 }

@@ -9,8 +9,10 @@
             b.b_title AS boardTitle,
             l.location_x AS latitude,
             l.location_y AS longitude,
-            l.location_detail AS address,
+            l.location_detail AS detailAddress,
             b.b_period AS endDate,
+            p.p_no AS partyNo,
+            CONCAT(l.location_do, " ", l.location_si, " ", l.location_gu, " ", l.location_dong) AS address,
             p.p_amount_remain AS remainAmount,
             FORMAT(p.p_price / p.p_amount, 0) AS price,
             (6371 * acos(

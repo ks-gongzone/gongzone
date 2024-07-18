@@ -46,13 +46,8 @@ public class JwtUtil {
         claims.put("memberId", memberDetails.getMemberId());
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs); // jwtExpirationMs = 30000 (30초)
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
-//        System.out.println("토큰생성");
-//        System.out.println("발행 시간: " + now);
-//        System.out.println("만료 시간: " + expiryDate);
-
-//        System.out.println("토큰생성");
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(memberDetails.getMemberNo())
@@ -106,10 +101,8 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            //System.out.println("검증 성공");
             return true;
         } catch (Exception e) {
-            //System.out.println("검증 실패");
             e.printStackTrace();
             return false;
         }

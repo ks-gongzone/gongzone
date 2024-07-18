@@ -1,5 +1,6 @@
 package com.gongzone.central.member.question.service;
 
+import com.gongzone.central.member.alertSSE.service.AlertSEEService;
 import com.gongzone.central.member.question.domain.QuestionMember;
 import com.gongzone.central.member.question.mapper.QuestionMapper;
 import com.gongzone.central.utils.StatusCode;
@@ -13,6 +14,7 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionMapper questionMapper;
+    private final AlertSEEService alertSEEService;
 
     @Override
     public List<QuestionMember> getAllQuestionMembers() {

@@ -23,6 +23,51 @@ public class BoardController {
         this.boardService = boardService;
     }
 
+    @DeleteMapping("/delete/{boardNo}/{partyNo}")
+    public ResponseEntity<String> deleteBoard(
+            @PathVariable("boardNo") String boardNo,
+            @PathVariable("partyNo") String partyNo) {
+        try {
+            boardService.deleteBoard(boardNo, partyNo);
+            return ResponseEntity.ok("Delete Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/update/{boardNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateBoard(
+            @PathVariable("boardNo") String boardNo,
+            BoardResponse br,
+            @RequestParam(value = "image", required = false) MultipartFile file) throws IOException {
+        try {
+            log.info("boardResponse: {}", br);
+            log.info("file: {}", file);
+
+            if (file != null && !file.isEmpty()) {
+                boardService.updateBoard(boardNo, br, file);
+            } else {
+                boardService.updateBoardNoImage(boardNo, br); // 이미지 없이 업데이트
+            }
+            return ResponseEntity.ok("Update Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok("Update Error");
+        }
+    }
+
+    @PostMapping("/{boardNo}/info")
+    public ResponseEntity<List<Board>> getBoardInfo(@PathVariable("boardNo") String boardNo) {
+        try {
+            List<Board> response = boardService.getBoardInfo(boardNo);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(null);
+        }
+    }
+
     @PostMapping("/wish/{boardNo}/{memberNo}")
     public ResponseEntity<String> setWish(@PathVariable("boardNo") String boardNo,@PathVariable("memberNo") String memberNo) {
         try{

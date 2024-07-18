@@ -1,167 +1,295 @@
 package com.gongzone.central.party.accept.service;
 
-import com.gongzone.central.party.accept.domain.*;
+import com.gongzone.central.board.domain.BoardReply;
+import com.gongzone.central.board.mapper.BoardMapper;
+import com.gongzone.central.member.alertSSE.domain.AlertSSE;
+import com.gongzone.central.member.alertSSE.service.AlertSEEService;
+import com.gongzone.central.member.mapper.MemberMapper;
+import com.gongzone.central.party.accept.domain.AcceptDetail;
+import com.gongzone.central.party.accept.domain.AcceptMember;
+import com.gongzone.central.party.accept.domain.PartyMemberPurchase;
+import com.gongzone.central.party.accept.domain.RequestMember;
+import com.gongzone.central.party.accept.domain.RequestParty;
 import com.gongzone.central.party.accept.mapper.AcceptMapper;
 import com.gongzone.central.utils.MySqlUtil;
 import com.gongzone.central.utils.StatusCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
 public class AcceptServiceImpl implements AcceptService {
 
-    private final AcceptMapper acceptMapper;
+	private final AcceptMapper acceptMapper;
+	private final BoardMapper boardMapper;
+	private final MemberMapper memberMapper;
+	private final AlertSEEService alertSEEService;
 
-    @Override
-    public List<AcceptDetail> getPartyList(String partyNo) {
-        AcceptDetail detail = acceptMapper.getPartyList(partyNo);
-        System.out.println("detail1266  : " + detail);
+	@Override
+	public PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo) {
+		return acceptMapper.getPartyMemberPurchase(memberNo, partyNo);
+	}
 
-        String partyNos = detail.getPartyNo();
-        List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
-        System.out.println("participants : " + participants);
-        detail.setParticipants(participants);
+	@Override
+	public List<AcceptDetail> getPartyList(String partyNo) {
+		AcceptDetail detail = acceptMapper.getPartyList(partyNo);
+		System.out.println("detail1266  : " + detail);
 
-        List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
-        System.out.println("requestMember : " + requestMember);
-        detail.setRequestMember(requestMember);
+		String partyNos = detail.getPartyNo();
+		List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
+		System.out.println("participants : " + participants);
+		detail.setParticipants(participants);
 
-        List<AcceptDetail> details = new ArrayList<>();
-        details.add(detail);
-        return details;
-    }
+		List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
+		System.out.println("requestMember : " + requestMember);
+		detail.setRequestMember(requestMember);
 
-    @Override
-    public AcceptDetail getPartyDetailByPartyNo(String partyNo) {
-        AcceptDetail detail = acceptMapper.getPartyDetail(partyNo);
-        System.out.println("detail1266  : " + detail);
+		List<AcceptDetail> details = new ArrayList<>();
+		details.add(detail);
+		return details;
+	}
 
-        String partyNos = detail.getPartyNo();
-        List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
-        System.out.println("participants : " + participants);
-        detail.setParticipants(participants);
+	@Override
+	public AcceptDetail getPartyDetailByPartyNo(String partyNo) {
+		AcceptDetail detail = acceptMapper.getPartyDetail(partyNo);
+		System.out.println("detail1266  : " + detail);
 
-        List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
-        System.out.println("requestMember : " + requestMember);
-        detail.setRequestMember(requestMember);
+		String partyNos = detail.getPartyNo();
+		List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
+		System.out.println("participants : " + participants);
+		detail.setParticipants(participants);
 
-        return detail;
-    }
+		List<RequestMember> requestMember = acceptMapper.getRequestMember(partyNos);
+		System.out.println("requestMember : " + requestMember);
+		detail.setRequestMember(requestMember);
 
-    @Override
-    public List<AcceptMember> getParticipants(String partyNo) {
-        return acceptMapper.getParticipants(partyNo);
-    }
+		String boardNos = detail.getBoardNo();
+		List<BoardReply> boardReply = boardMapper.getBoardReplyList(boardNos);
+		for (int i = 0; i < boardReply.size(); i++) {
+			String memberId = (memberMapper.info(boardReply.get(i).getMemberNo())).getMemberId();
+			boardReply.get(i).setMemberId(memberId);
+		}
+		detail.setBoardReply(boardReply);
 
-    @Override
-    public List<String> getPartyNo(String memberNo) {
-        return acceptMapper.findPointNoByMemberNo(memberNo);
-    }
+		return detail;
+	}
 
-    @Override
-    public List<RequestMember> getRequestMember(String partyNo) {
-        return acceptMapper.getRequestMember(partyNo);
-    }
+	@Override
+	public List<AcceptMember> getParticipants(String partyNo) {
+		return acceptMapper.getParticipants(partyNo);
+	}
 
-    @Override
-    public List<AcceptDetail> getListParty(String memberNo) {
-        List<String> partyNos = getPartyNo(memberNo);
-        System.out.println("partyNos :" + partyNos);
-        List<AcceptDetail> details = new ArrayList<>();
+	@Override
+	public List<String> getPartyNo(String memberNo) {
+		return acceptMapper.findPointNoByMemberNo(memberNo);
+	}
 
-        for (String partyNo : partyNos) {
-            List<AcceptDetail> detail = getPartyList(partyNo);
-            details.addAll(detail);
-        }
-        System.out.println("details on array : " + details);
+	@Override
+	public List<RequestMember> getRequestMember(String partyNo) {
+		return acceptMapper.getRequestMember(partyNo);
+	}
 
-        return details;
-    }
+	@Override
+	public List<AcceptDetail> getListParty(String memberNo) {
+		List<String> partyNos = getPartyNo(memberNo);
+		System.out.println("partyNos :" + partyNos);
+		List<AcceptDetail> details = new ArrayList<>();
 
-    @Override
-    public void completeParty(String partyNo) {
-        AcceptDetail detail = acceptMapper.getPartyList(partyNo);
-        String partyNos = detail.getPartyNo();
-        List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
+		for (String partyNo : partyNos) {
+			List<AcceptDetail> detail = getPartyList(partyNo);
+			details.addAll(detail);
+		}
+		System.out.println("details on array : " + details);
 
-        // 안전장치 추가: remainAmount가 0이 아닌 경우 메서드 종료
-        if (Integer.parseInt(detail.getRemainAmount()) != 0) {
-            System.out.println("remainAmount가 0이 아니므로 completeParty 메서드를 종료합니다.");
-            return;
-        }
-        System.out.println("detail in complete" + detail);
-        acceptMapper.completeBoardStatus(detail.getBoardNo());
-        acceptMapper.completePartyStatus(detail.getPartyNo());
-        System.out.println("participants" + participants);
-        for (AcceptMember member : participants) {
-            acceptMapper.insertPartyPurchase(detail.getPartyNo(), member.getPartyMemberNo(), member.getRequestPrice());
-        }
-    }
+		return details;
+	}
 
-    @Override
-    public void getPartyStatusByNo(String partyId, String partyNo, StatusCode statusCode, int requestAmount) {
-        if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL) {
-            System.out.println("삭제 실행");
+	@Override
+	public Mono<Void> completeParty(String partyNo) {
+		AcceptDetail detail = acceptMapper.getPartyList(partyNo);
+		String partyNos = detail.getPartyNo();
+		List<AcceptMember> participants = acceptMapper.getParticipants(partyNos);
 
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
-            System.out.println("requestParty : " + requestParty);
+		// 안전장치 추가: remainAmount가 0이 아닌 경우 메서드 종료
+		if (Integer.parseInt(detail.getRemainAmount()) != 0) {
+			System.out.println("remainAmount가 0이 아니므로 completeParty 메서드를 종료합니다.");
+			return Mono.empty();
+		}
+		System.out.println("detail in complete" + detail);
+		acceptMapper.completeBoardStatus(detail.getBoardNo());
+		acceptMapper.completePartyStatus(detail.getPartyNo());
+		System.out.println("participants" + participants);
+		String leaderNo = detail.getPartyLeader();
+		for (AcceptMember member : participants) {
 
-            acceptMapper.deletePartyRequest(partyId, partyNo);
-        } else if (statusCode == StatusCode.ACCEPT) {
-            System.out.println("업데이트 실행");
-            acceptMapper.updatePartyStatus(partyId, statusCode);
+			// 확인후 주석 제거해주세요; 0716 우석
+			// 파티장 결제완료 상태로 넣는 것에서 -> 파티장은 결제현황에 넣지 않도록 수정
+			if (member.getMemberNo().equals(leaderNo)) {
+				continue;
+			}
+
+			acceptMapper.insertPartyPurchase(detail.getPartyNo(), member.getPartyMemberNo(), member.getRequestPrice());
+		}
+
+		return Flux.fromIterable(participants)
+				   .flatMap(participant -> completeAlert(participant.getMemberNo()))
+				   .then();
+	}
+
+	@Override
+	public Mono<Void> getPartyStatusByNo(String memberNo, String partyNo, StatusCode statusCode, int requestAmount) {
+		System.out.println("4444444444444444444444444444444444444444");
+		if (statusCode == StatusCode.REFUSE || statusCode == StatusCode.CANCEL) {
+			System.out.println("삭제 실행");
+
+			RequestParty requestParty = acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
+			System.out.println("requestParty : " + requestParty);
+
+			acceptMapper.deletePartyRequest(memberNo, partyNo);
+			return Mono.empty();
+		} else if (statusCode == StatusCode.ACCEPT) {
+			System.out.println("업데이트 실행");
+			acceptMapper.updatePartyStatus(memberNo, statusCode);
+
+			RequestParty requestParty = acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
+			System.out.println("requestParty : " + requestParty);
+
+			String lastPartyMemberNo = acceptMapper.lastPartyMemberNo();
+			String newLastPartyMemberNo = MySqlUtil.generatePrimaryKey(lastPartyMemberNo);
+			System.out.println(newLastPartyMemberNo);
+			requestParty.setPartyMemberNo(newLastPartyMemberNo);
+
+			acceptMapper.insertPartyMember(requestParty);
+			System.out.println("requestParty.getPartyNo() : " + requestParty.getPartyNo());
+
+			acceptMapper.updateAmountMember(requestParty);
+
+			// 알림을 전송
+			return acceptAlert(memberNo);
+		} else if (statusCode == StatusCode.KICK) {
+			System.out.println("강퇴 실행");
+			RequestParty requestParty = acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
+			System.out.println("requestParty : " + requestParty);
+
+			int unitPrice = acceptMapper.getPartyUnitPrice(partyNo);
+			requestParty.setRequestPrice(requestParty.getRequestAmount() * unitPrice);
+
+			acceptMapper.kickPartyMember(requestParty);
+
+			acceptMapper.deletePartyRequest(memberNo, partyNo);
+
+			acceptMapper.updateAmountAfterKick(requestParty);
+			return kickAlert(memberNo);
+		} else if (statusCode == StatusCode.REQUEST) {
+			System.out.println("55555555555555555555");
+			RequestParty requestParty = new RequestParty();
+			requestParty.setPartyNo(partyNo);
+			requestParty.setMemberNo(memberNo);
+			requestParty.setRequestAmount(requestAmount);
+			System.out.println("requestParty in request :" + requestParty);
+
+			acceptMapper.requestJoin(requestParty);
 
 
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
-            System.out.println("requestParty : " + requestParty);
-
-            String lastPartyMemberNo = acceptMapper.lastPartyMemberNo();
-            String newLastPartyMemberNo = MySqlUtil.generatePrimaryKey(lastPartyMemberNo);
-            System.out.println(newLastPartyMemberNo);
-            requestParty.setPartyMemberNo(newLastPartyMemberNo);
-
-            acceptMapper.insertPartyMember(requestParty);
-            System.out.println("requestParty.getPartyNo() : " + requestParty.getPartyNo());
-
-            acceptMapper.updateAmountMember(requestParty);
-        } else if (statusCode == StatusCode.KICK) {
-            System.out.println("강퇴 실행");
-            RequestParty requestParty = acceptMapper.requestMemberByPartyId(partyId, partyNo);
-            System.out.println("requestParty : " + requestParty);
-
-            int unitPrice = acceptMapper.getPartyUnitPrice(partyNo);
-            requestParty.setRequestPrice(requestParty.getRequestAmount() * unitPrice);
-
-            acceptMapper.kickPartyMember(requestParty);
+			String leaderNo = acceptMapper.getPartyLeaderByPartyNo(partyNo);
+			// memberNo 대신 leaderNo == 결국 memberNo
+			return requestAlert(leaderNo);
+		}
+		return Mono.empty();
+	}
 
 
-            acceptMapper.deletePartyRequest(partyId, partyNo);
+	@Override
+	public RequestParty getRequestMemberBymemberNo(String memberNo, String partyNo) {
+		return acceptMapper.requestMemberBymemberNo(memberNo, partyNo);
+	}
 
+	private Mono<Void> acceptAlert(String memberNo) {
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("newLastPartyMemberNo : " + memberNo);
+		return Mono.fromCallable(() -> {
+					   AlertSSE alertSSE = new AlertSSE();
+					   alertSSE.setMemberNo(memberNo);
+					   alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+					   alertSSE.setAlertDetail("파티에 수락되었습니다.");
+					   return alertSSE;
+				   })
+				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .subscribeOn(Schedulers.boundedElastic())
+				   .doOnError(e -> {
+					   e.printStackTrace();
+				   })
+				   .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+	}
 
-            acceptMapper.updateAmountAfterKick(requestParty);
-        } else if (statusCode == StatusCode.REQUEST) {
+	private Mono<Void> requestAlert(String memberNo) {
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("newLastPartyMemberNo : " + memberNo);
+		return Mono.fromCallable(() -> {
+					   AlertSSE alertSSE = new AlertSSE();
+					   alertSSE.setMemberNo(memberNo);
+					   alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+					   alertSSE.setAlertDetail("파티 신청이 있습니다.");
+					   return alertSSE;
+				   })
+				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .subscribeOn(Schedulers.boundedElastic())
+				   .doOnError(e -> {
+					   e.printStackTrace();
+				   })
+				   .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+	}
 
-            RequestParty requestParty = new RequestParty();
-            requestParty.setPartyNo(partyNo);
-            requestParty.setMemberNo(partyId);
-            requestParty.setRequestAmount(requestAmount);
-            System.out.println("requestParty in request :" + requestParty);
+	private Mono<Void> kickAlert(String memberNo) {
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("newLastPartyMemberNo : " + memberNo);
+		return Mono.fromCallable(() -> {
+					   AlertSSE alertSSE = new AlertSSE();
+					   alertSSE.setMemberNo(memberNo);
+					   alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+					   alertSSE.setAlertDetail("파티에서 강퇴되었습니다.");
+					   return alertSSE;
+				   })
+				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .subscribeOn(Schedulers.boundedElastic())
+				   .doOnError(e -> {
+					   e.printStackTrace();
+				   })
+				   .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+	}
 
-            acceptMapper.requestJoin(requestParty);
-
-        }
-    }
-
-    @Override
-    public RequestParty getRequestMemberByPartyId(String partyId, String partyNo) {
-        return acceptMapper.requestMemberByPartyId(partyId, partyNo);
-    }
-//    @Override
-//    public void deletePartyStatusByNo(String partyId) {
-//        acceptMapper.deletePartyStatus(partyId);
-//    }
+	private Mono<Void> completeAlert(String memberNo) {
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("2222222222222222222");
+		System.out.println("newLastPartyMemberNo : " + memberNo);
+		return Mono.fromCallable(() -> {
+					   AlertSSE alertSSE = new AlertSSE();
+					   alertSSE.setMemberNo(memberNo);
+					   alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+					   alertSSE.setAlertDetail("파티 모집이 완료되었습니다. 결제를 진행해주세요!");
+					   return alertSSE;
+				   })
+				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .subscribeOn(Schedulers.boundedElastic())
+				   .doOnError(e -> {
+					   e.printStackTrace();
+				   })
+				   .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+	}
+	//    @Override
+	//    public void deletePartyStatusByNo(String memberNo) {
+	//        acceptMapper.deletePartyStatus(memberNo);
+	//    }
 }

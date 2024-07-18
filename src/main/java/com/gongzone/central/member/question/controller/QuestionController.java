@@ -2,8 +2,6 @@ package com.gongzone.central.member.question.controller;
 
 import com.gongzone.central.member.question.domain.QuestionMember;
 import com.gongzone.central.member.question.service.QuestionService;
-import com.gongzone.central.member.report.domain.ReportMember;
-import com.gongzone.central.member.report.domain.RequestReportMember;
 import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +35,6 @@ public class QuestionController {
             questionService.getQuestionMemberInsert(questionMember);
             return ResponseEntity.ok(true);
         } catch (Exception e) {
-            System.out.println("실패 : " + e.getMessage());
             return ResponseEntity.ok(false);
         }
     }

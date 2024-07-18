@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.myInfo.dropdown.mapper.DropDownMapper">
+    <resultMap id="dropDownResultMap" type="com.gongzone.central.member.myInfo.dropdown.domain.DropDownInfo">
+        <id property="memberNo" column="m_no" />
+        <result property="memberName" column="m_name" />
+        <result property="pointNo" column="m_point_no" />
+        <result property="memberPoint" column="m_point" />
+    </resultMap>
+    <!-- read -->
+    <!-- 드롭다운 메뉴 조회 -->
+    <select id="findByData" resultMap="dropDownResultMap">
+        SELECT
+            m.m_no,
+            m.m_name,
+            p.m_point_no,
+            p.m_point
+        FROM
+            member AS m
+            INNER JOIN
+            member_point AS p
+            ON
+            m.m_no = p.m_no
+        WHERE
+            m.m_no = #{memberNo}
+    </select>
+
+</mapper>

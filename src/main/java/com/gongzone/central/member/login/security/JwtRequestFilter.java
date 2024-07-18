@@ -1,5 +1,7 @@
 package com.gongzone.central.member.login.security;
 
+import com.gongzone.central.member.login.domain.LoginLog;
+import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
 import com.gongzone.central.member.service.MemberServiceImpl;
@@ -26,6 +28,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final MemberDetailsService memberDetailsService;
 
     private final JwtUtil jwtUtil;
+    private final LoginLogService loginLogService;
 
     private static final String[] EXCLUDED_PATHS = {
             "/api/login",
@@ -37,35 +40,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/naver/token",
             "/api/google/token",
             "/api/kakao/token",
-            "/api/attachement"
+            "/api/attachement",
+            "/api/alertSSE/**"
     };
     private final MemberServiceImpl memberServiceImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        System.out.println("가로채");
-        System.out.println("Filtering request: " + request.getRequestURI());
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = request.getRequestURI();
 
-        System.out.println("request.getParameterNames() " + request.getParameterNames());
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-            String paramName = parameterNames.nextElement();
-            System.out.println("Parameter: " + paramName + " = " + request.getParameter(paramName));
-        }
-
-        // 특정 경로는 필터링하지 않음
         for (String path : EXCLUDED_PATHS) {
             if (requestURI.startsWith(path)) {
                 if (requestURI.startsWith("/api/naver/token") || requestURI.startsWith("/api/kakao/token") || requestURI.startsWith("/api/google/token")) {
-                    System.out.println("필터 들어옴" + requestURI);
                     String requestBody = new String(request.getInputStream().readAllBytes());
                     httpRequest.setAttribute("requestBody", requestBody);
                 }
-                System.out.println("Skipping filter for path: " + path);
                 chain.doFilter(httpRequest, httpResponse);
                 return;
             }
@@ -76,14 +68,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // 토큰 추출후 검증
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwt = requestTokenHeader.substring(7);
             try {
                 username = jwtUtil.extractMemberNo(jwt);
             } catch (ExpiredJwtException e) {
-                //System.out.println("액세스토큰 만료");
-                //request.setAttribute("exceptionRefreshToken", e);
                 response.setHeader("token-expired", "true");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
                 return;
@@ -93,10 +82,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 받은 후 유효성 검사
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
-                // 토큰이 유효한지 검사
                 if (jwtUtil.validateToken(jwt, memberDetails)) {
                     memberDetails.setToken(jwt);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -107,7 +94,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     logger.info("필터인증 완료");
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 } else {
-                    // 추가된 부분: 토큰이 유효하지 않은 경우 처리
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is invalid");
                     return;
                 }
@@ -115,6 +101,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
         }
+
+        if (isLogoutRequest(request)) {
+            MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
+            String userAgent = request.getHeader("User-Agent");
+            String browser = loginLogService.getloginBrowserByCode(userAgent);
+            LoginLog loginLog = loginLogService.getLoginNoByMemberNo(memberDetails.getMemberNo(), browser);
+            loginLogService.logLogout(loginLog.getLoginNo());
+        }
+
         chain.doFilter(request, httpResponse);
+    }
+
+    private boolean isLogoutRequest(HttpServletRequest request) {
+        return request.getRequestURI().equals("/api/logout") && request.getMethod().equals("POST");
     }
 }

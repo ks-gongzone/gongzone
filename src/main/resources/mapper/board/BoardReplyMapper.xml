@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.board.reply.mapper.BoardReplyMapper">
+    <update id="deleteReply" parameterType="com.gongzone.central.board.domain.BoardReply">
+        UPDATE reply
+        SET status_code = 'S050104'
+        WHERE reply_no = #{replyNo} AND b_no = #{boardNo} AND m_no = #{memberNo}
+    </update>
+
+    <update id="updateReply" parameterType="com.gongzone.central.board.domain.BoardReply">
+        UPDATE reply
+        SET
+            reply_body=#{replyBody},
+            reply_date=NOW(),
+            status_code='S050102'
+        WHERE reply_no = #{replyNo} AND b_no = #{boardNo} AND m_no = #{memberNo}
+    </update>
+
+    <insert id="insertReply" parameterType="com.gongzone.central.board.domain.BoardReply">
+        INSERT INTO reply
+            (b_no, m_no, reply_body, reply_date, reply_report_count, status_code)
+        VALUES (#{boardNo}, #{memberNo}, #{replyBody}, NOW(), 0, 'S050101')
+    </insert>
+</mapper>

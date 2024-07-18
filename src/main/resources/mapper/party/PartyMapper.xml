@@ -21,31 +21,42 @@
             b.m_no AS partyLeader,
             f.file_path AS img,
             b.b_no AS boardNo,
-            b.status_code AS boardStatus
+            b.status_code AS boardStatus,
+            ps.shipping_no AS shippingNo,
+            pts.status_code AS settlementCode
+
         FROM
             party AS p
-            INNER JOIN
+                INNER JOIN
             board AS b
             ON
-            p.b_no = b.b_no
-            INNER JOIN
+                p.b_no = b.b_no
+                INNER JOIN
             location AS l
             ON
-            b.b_no = l.b_no
-            INNER JOIN
+                b.b_no = l.b_no
+                INNER JOIN
             category AS c
             ON
-            c.c_code = p.c_code
-            INNER JOIN
+                c.c_code = p.c_code
+                INNER JOIN
             file_relation AS fr
             ON
-            b.b_no = fr.file_usage
-            INNER JOIN
+                b.b_no = fr.file_usage
+                INNER JOIN
             file AS f
             ON
-            f.file_no = fr.file_no
+                f.file_no = fr.file_no
+                LEFT JOIN
+            party_shipping AS ps
+            ON
+                p.p_no = ps.p_no
+                LEFT JOIN
+            party_settlement AS pts
+            ON
+                p.p_no = pts.p_no
         WHERE
-            p_no = #{partyNo};
+            p.p_no = #{partyNo};
     </select>
     <select id="getParticipants" resultType="com.gongzone.central.party.accept.domain.AcceptMember">
         SELECT
@@ -55,13 +66,18 @@
             m.m_no AS memberNo,
             pm.p_no AS partyNo,
             pm.pm_price AS requestPrice,
-            pm.p_member_no AS partyMemberNo
+            pm.p_member_no AS partyMemberNo,
+            pr.r_no AS receptionNo
         FROM
             party_member AS pm
                 INNER JOIN
             member AS m
             ON
                 pm.m_no = m.m_no
+                LEFT JOIN
+            party_reception AS pr
+            ON
+                pm.p_member_no = pr.p_member_no
         WHERE
             pm.p_no = #{partyNo};
     </select>
@@ -86,18 +102,25 @@
     <!-- 파티 번호 찾기 -->
     <select id="findPointNoByMemberNo" parameterType="String" resultType="String">
         (SELECT DISTINCT p.p_no AS partyNo
-         FROM party AS p
-                  INNER JOIN party_member AS pm
-                             ON p.p_no = pm.p_no
-         WHERE pm.m_no = #{memberNo})
-
+        FROM party AS p
+        INNER JOIN party_member AS pm ON p.p_no = pm.p_no
+        <where>
+            <if test="memberNo != '_admin'">
+                pm.m_no = #{memberNo}
+            </if>
+        </where>
+        )
         UNION
-
         (SELECT DISTINCT p.p_no AS partyNo
-         FROM party AS p
-                  INNER JOIN party_request AS pr
-                             ON p.p_no = pr.p_no
-         WHERE pr.m_no = #{memberNo});
+        FROM party AS p
+        INNER JOIN party_request AS pr ON p.p_no = pr.p_no
+        <where>
+            <if test="memberNo != '_admin'">
+                pr.m_no = #{memberNo}
+            </if>
+        </where>
+        )
+
     </select>
 
     <update id="updatePartyStatus">
@@ -106,7 +129,7 @@
         SET
             status_code = #{statusCode.code}
         WHERE
-            m_no = #{partyId};
+            m_no = #{memberNo};
     </update>
 
 
@@ -146,10 +169,10 @@
         SET
             status_code = #{statusCode.code}
         WHERE
-            m_no = #{partyId};
+            m_no = #{memberNo};
     </delete>
 
-    <select id="requestMemberByPartyId" resultType="com.gongzone.central.party.accept.domain.RequestParty">
+    <select id="requestMemberBymemberNo" resultType="com.gongzone.central.party.accept.domain.RequestParty">
         SELECT
             p_request_no AS requestNo,
             p_no AS partyNo,
@@ -160,7 +183,7 @@
         FROM
             party_request
         WHERE
-            m_no = #{partyId} AND p_no = #{partyNo};
+            m_no = #{memberNo} AND p_no = #{partyNo};
     </select>
 
 
@@ -181,7 +204,7 @@
     <delete id="deletePartyRequest">
         DELETE FROM party_request
         WHERE
-            p_no = #{partyNo} AND m_no = #{partyId};
+            p_no = #{partyNo} AND m_no = #{memberNo};
     </delete>
 
     <select id="getPartyUnitPrice" parameterType="String" resultType="int">
@@ -227,7 +250,10 @@
             p.p_no AS partyNo,
             b.m_no AS partyLeader,
             f.file_path AS img,
-            b.b_no AS boardNo
+            b.b_no AS boardNo,
+            ps.shipping_no AS shippingNo,
+            pts.status_code AS settlementCode
+
         FROM
             party AS p
                 INNER JOIN
@@ -250,9 +276,18 @@
             file AS f
             ON
                 f.file_no = fr.file_no
+                LEFT JOIN
+            party_shipping AS ps
+            ON
+                p.p_no = ps.p_no
+                LEFT JOIN
+            party_settlement AS pts
+            ON
+                p.p_no = pts.p_no
         WHERE
-            p_no = #{partyNo};
+                p.p_no = #{partyNo};
     </select>
+
 
     <update id="completeBoardStatus">
         UPDATE board
@@ -276,5 +311,47 @@
         VALUES
             (#{partyNo}, #{partyMemberNo}, #{requestPrice}, 'S060301')
     </insert>
+
+    <insert id="updatePartyLeaderPurchase">
+
+            UPDATE
+                party_purchase
+            SET
+                status_code = 'S060302'
+            WHERE
+                m_no = #{memberNo};
+
+    </insert>
+
+    <select id="getPartyMemberPurchase" resultType="PartyMemberPurchase">
+        SELECT
+            pp.purchase_no AS purchaseNo,
+            pp.purchase_price AS purchasePrice,
+            mp.m_point AS memberPoint
+        FROM
+            party_purchase AS pp
+                INNER JOIN
+            party_member AS pm
+            ON
+                pp.p_member_no = pm.p_member_no
+                INNER JOIN
+            member_point AS mp
+            ON
+                pm.m_no = mp.m_no
+        WHERE
+            pm.m_no = #{memberNo} AND pm.p_no = #{partyNo}
+    </select>
+
+    <select id="getPartyLeaderByPartyNo">
+        SELECT
+            m_no AS memberNo
+        FROM
+            party_member
+        WHERE
+            p_no = #{partyNo}
+          AND
+            member_is_leader = '파티장'
+    </select>
+
 
 </mapper>
