@@ -24,6 +24,8 @@ public interface PartyAfterMapper {
 
 	List<String> getPartyMembers(String partyNo);
 
+	List<String> getPartyMembersExcludeLeader(String partyNo);
+
 	String getLastIdxReception();
 
 	void insertReception(@Param("partyNo") String partyNo,
