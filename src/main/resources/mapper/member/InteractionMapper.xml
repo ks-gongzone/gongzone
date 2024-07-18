@@ -20,27 +20,35 @@
             m.m_no,
             m.m_name,
             m.m_gender,
-        CASE
-            WHEN f.m_no IS NOT NULL THEN TRUE
-            ELSE FALSE
-        END AS isFollowing,
-        CASE
-            WHEN b.m_no IS NOT NULL THEN TRUE
-            ELSE FALSE
-        END AS isBlocked,
-        CASE
-            WHEN (SELECT COUNT(*) FROM follow WHERE m_target_no = m.m_no) > (SELECT COUNT(*) * 0.1 FROM member) THEN TRUE
-            ELSE FALSE
-        END AS isPopular,
-        CASE
-            WHEN (SELECT COUNT(*) FROM block WHERE m_target_no = m.m_no) > 10 THEN TRUE
-            ELSE FALSE
-        END AS isWarning
+            CASE
+                WHEN f.m_no IS NOT NULL THEN TRUE
+                ELSE FALSE
+            END AS isFollowing,
+            CASE
+                WHEN b.m_no IS NOT NULL THEN TRUE
+                ELSE FALSE
+            END AS isBlocked,
+            CASE
+                WHEN (SELECT COUNT(*)
+                      FROM follow
+                      WHERE m_target_no = m.m_no) >
+                      (SELECT COUNT(*) * 0.1
+                      FROM member)
+            THEN TRUE
+                ELSE FALSE
+            END AS isPopular,
+            CASE
+                WHEN (SELECT COUNT(*)
+                      FROM block
+                      WHERE m_target_no = m.m_no) > 10
+            THEN TRUE
+                ELSE FALSE
+            END AS isWarning
         FROM member AS m
-        LEFT JOIN
-            follow AS f ON m.m_no = f.m_target_no AND f.m_no = #{currentUserNo}
-        LEFT JOIN
-            block AS b ON m.m_no = b.m_target_no AND b.m_no = #{currentUserNo}
+            LEFT JOIN
+                follow AS f ON m.m_no = f.m_target_no AND f.m_no = #{currentUserNo}
+            LEFT JOIN
+                block AS b ON m.m_no = b.m_target_no AND b.m_no = #{currentUserNo}
         WHERE
             m.m_name LIKE CONCAT('%', #{memberName}, '%')
         LIMIT #{size} OFFSET #{offset}
@@ -54,8 +62,10 @@
         SELECT COUNT(*) FROM follow WHERE m_target_no = #{memberNo}
     </select>
     <!-- 전체 유저 수 조회 -->
-    <select id="getTotalMembers" resultType="int">
-        SELECT COUNT(m_no) FROM member
+    <select id="getTotalMembers" parameterType="map" resultType="int">
+        SELECT COUNT(m_no)
+        FROM member
+        WHERE m_name LIKE CONCAT('%', #{memberName}, '%')
     </select>
 
     <!-- insert -->

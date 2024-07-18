@@ -20,32 +20,34 @@ public class InteractionServiceImpl implements InteractionService{
      */
     @Override
     @Transactional(readOnly = true)
-    public List<InteractionMember> findAllMembers(String currentUserNo, String memberName, int page, int size) {
+    public List<InteractionMember> findAllMembers(
+            String currentUserNo,
+            String memberName,
+            String searchQuery,
+            int page,
+            int size) {
         System.out.println("[서비스] findAllMembers 메서드: " + currentUserNo);
         int offset = (page - 1) * size;
         List<InteractionMember> members = interactionMapper.findAllMembers(currentUserNo, memberName, offset, size);
         for (InteractionMember member : members) {
-            filterData(member, currentUserNo, member.getMemberNo());
-            System.out.println("[서비스] 회원 번호" + member.getMemberNo() + "인기유저여부" + member.isPopular());
+            filterData(member, currentUserNo, member.getMemberNo(), searchQuery);
+            System.out.println("[서비스] 회원 번호 " + member.getMemberNo() + " 인기유저 여부 " + member.isPopular());
         }
         return members;
     }
     @Override
-    public InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo) {
+    public InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo, String searchQuery) {
         System.out.println("[서비스] 회원 데이터 필터링 현재회원번호: " + member.getCurrentUserNo());
-        // 차단 10건 이상 유저 관리하기 위한 로직
         int warningCount = interactionMapper.getWarningCount(member.getMemberNo());
         boolean isWarning = warningCount > 10;
 
+        System.out.println("검색어: " + searchQuery);
+
         // 상위 10%의 인기유저 관리하기 위한 로직
-        int totalMembers = interactionMapper.getTotalMembers();
+        int totalMembers = interactionMapper.getTotalMembers(member.getMemberName());
         int popularCount = (int) (totalMembers * 0.1);
         int memberFollowCount = interactionMapper.getMemberFollowCount(member.getMemberNo());
         boolean isPopular = memberFollowCount > popularCount;
-
-        System.out.println("[서비스] 회원 번호: " + member.getMemberNo() +
-                ", 팔로우 수: " + memberFollowCount + ", 전체 회원 수: " +
-                totalMembers + ", 인기 유저 여부: " + isPopular);
 
         return InteractionMember.builder()
                 .memberNo(member.getMemberNo())
@@ -57,11 +59,12 @@ public class InteractionServiceImpl implements InteractionService{
                 .isPopular(isPopular)
                 .currentUserNo(currentUserNo)
                 .targetMemberNo(targetMemberNo)
+                .searchQuery(searchQuery)
                 .build();
     }
     @Override
-    public int getTotalMembers() {
-        return interactionMapper.getTotalMembers();
+    public int getTotalMembers(String memberName) {
+        return interactionMapper.getTotalMembers(memberName);
     }
 
     /**
