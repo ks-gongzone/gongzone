@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.party.after.mapper.PartyAfterMapper">
 
@@ -72,6 +72,17 @@
   </update>
 
   <select id="getPartyMembers" resultType="String">
+    -- getPartyMembers: 모든 파티원 목록을 반환한다.
+    SELECT
+      p_member_no
+    FROM
+      party_member
+    WHERE
+      p_no = #{partyNo}
+  </select>
+
+  <select id="getPartyMembersExcludeLeader" resultType="String">
+    -- getPartyMembersExcludeLeader: 파티장을 제외한 파티원 목록을 반환한다.
     <![CDATA[
     SELECT
       p_member_no
