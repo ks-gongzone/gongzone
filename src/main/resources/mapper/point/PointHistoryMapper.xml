@@ -52,8 +52,7 @@
     FROM
       point_history
     WHERE
-      m_point_no = #{memberPointNo}
-      AND point_history_no = #{pointHistoryNo};
+      point_history_no = #{pointHistoryNo};
   </select>
 
   <select id="getMany" resultMap="PointHistoryResultMap">
