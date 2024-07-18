@@ -4,12 +4,12 @@ import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.myInfo.interaction.domain.InteractionMember;
 import com.gongzone.central.member.myInfo.interaction.service.InteractionService;
-import com.gongzone.central.member.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +29,7 @@ public class InteractionController {
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getAllPublicMembers(
             @RequestParam(required = false, defaultValue = "") String memberName,
+            @RequestParam(defaultValue = "") String searchQuery,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size,
             Authentication authentication) {
@@ -43,26 +44,49 @@ public class InteractionController {
             return ResponseEntity.status(403).body(null);
         }
 
-        List<InteractionMember> members = interactionService.findAllMembers(currentUserNo, memberName, page, size);
-        int totalMembers = interactionService.getTotalMembers();
-        if (members.isEmpty()) {
-            System.out.println("[컨트롤러] 조회된 회원 정보 없음");
-            return ResponseEntity.status(404).body(null); // 조회된 회원 정보가 없는 경우 404 반환
+        // 검색어가 없거나 데이터가 없을 때
+        if (searchQuery == null || searchQuery.trim().isEmpty()) {
+            searchQuery = "";
+        }
+
+        List<InteractionMember> members;
+        int totalMembers;
+
+        // 검색 조건에 해당하는 회원 조회
+        if (searchQuery.isEmpty()) {
+            System.out.println("[컨트롤러] 전체 회원 조회");
+            members = interactionService.findAllMembers(currentUserNo, memberName, searchQuery, page, size);
+            totalMembers = interactionService.getTotalMembers(memberName);
+        } else {
+            System.out.println("[컨트롤러] 검색어 수신: " + searchQuery);
+            members = interactionService.findAllMembers(currentUserNo, "", searchQuery, page, size);
+            totalMembers = interactionService.getTotalMembers(searchQuery);
         }
 
         Map<String, Object> response = new HashMap<>();
+        // 해당 메세지를 받으면 프론트에서 검색 첫페이지로 돌아가게함
+        if (members.isEmpty()) {
+            System.out.println("[컨트롤러] 조회된 회원 정보 없음");
+            response.put("message", "회원정보 없음");
+            response.put("memberList", Collections.emptyList());
+            response.put("currentPage", 1);
+            response.put("totalCount", 0);
+            response.put("query", searchQuery);
+            return ResponseEntity.ok(response);
+        }
         response.put("memberList", members);
         response.put("currentPage", page);
         response.put("totalCount", totalMembers);
+        response.put("query", searchQuery);
         return ResponseEntity.ok(response);
     }
-
     /**
      * @내용: 특정 회원 팔로우 및 차단 목록 조회
      */
     @GetMapping("/{memberNo}/follow")
     public ResponseEntity<Map<String, Object>> getFollowMembers(
             @RequestParam(required = false, defaultValue = "") String memberName,
+            @RequestParam(defaultValue = "") String searchQuery,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size,
             Authentication authentication) {
@@ -77,7 +101,7 @@ public class InteractionController {
             return ResponseEntity.status(403).body(null);
         }
 
-        List<InteractionMember> members = interactionService.findAllMembers(currentUserNo, memberName, page, size);
+        List<InteractionMember> members = interactionService.findAllMembers(currentUserNo, memberName, searchQuery, page, size);
 
         List<InteractionMember> followMembers = members.stream()
                 .filter(InteractionMember::isFollowing)
@@ -100,6 +124,7 @@ public class InteractionController {
     @GetMapping("/{memberNo}/block")
     public ResponseEntity<Map<String, Object>> getBlockMembers(
             @RequestParam(required = false, defaultValue = "") String memberName,
+            @RequestParam(defaultValue = "") String searchQuery,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size,
             Authentication authentication) {
@@ -114,7 +139,7 @@ public class InteractionController {
             return ResponseEntity.status(403).body(null);
         }
 
-        List<InteractionMember> members = interactionService.findAllMembers(currentUserNo, memberName, page, size);
+        List<InteractionMember> members = interactionService.findAllMembers(currentUserNo, memberName, searchQuery, page, size);
 
         List<InteractionMember> blockMembers = members.stream()
                 .filter(InteractionMember::isBlocked)
@@ -133,11 +158,7 @@ public class InteractionController {
         response.put("totalCount", totalMembers);
         return ResponseEntity.ok(response);
     }
-    /**
-     * @작성일: 2024-07-12
-     * @수정일: 2024-07-12
-     * @내용: 팔로잉 컨트롤러
-     */
+
     @PostMapping("/follow")
     public ResponseEntity<Void> followMember(
             @RequestBody Map<String, String> request,
@@ -153,15 +174,14 @@ public class InteractionController {
             System.out.println("[컨틀롤러] 팔로잉: 로그인 오류");
             return ResponseEntity.status(403).build();
         }
-        // currentUser와 targetMember가 같이 있는 행이 존재하는지 판별 후 존재 시 에러로직 추가
         interactionService.followMember(currentUserNo, targetMemberNo);
         return ResponseEntity.ok().build();
     }
+
     @DeleteMapping("/follow")
     public ResponseEntity<Void> unfollowMember(
             @RequestBody Map<String, String> request,
             Authentication authentication) {
-
         String token = ((MemberDetails) authentication.getPrincipal()).getToken();
         String currentUserNo = jwtUtil.extractMemberNo(token);
         String targetMemberNo = request.get("targetMemberNo");
@@ -175,11 +195,7 @@ public class InteractionController {
         interactionService.unFollowMember(currentUserNo, targetMemberNo);
         return ResponseEntity.ok().build();
     }
-    /**
-     * @작성일: 2024-07-12
-     * @수정일: 2024-07-12
-     * @내용: 차단 컨트롤러
-     */
+
     @PostMapping("/block")
     public ResponseEntity<Void> blockMember(
             @RequestBody Map<String, String> request,
@@ -210,6 +226,7 @@ public class InteractionController {
         System.out.println("[컨트롤러] 차단 해제 타겟" + targetMemberNo);
 
         if (currentUserNo == null) {
+
             return ResponseEntity.status(403).build();
         }
         interactionService.unBlockMember(currentUserNo, targetMemberNo);
