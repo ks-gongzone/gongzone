@@ -40,11 +40,14 @@ public class MySqlUtil {
 	 * @return 인덱스
 	 */
 	public static int getNextIdx(String pk) {
-		// 코드 파싱
-		String code = pk.replaceAll("\\d", "");
-
-		// 숫자 부분 추출, 1 증가
-		return Integer.parseInt(pk.substring(code.length())) + 1;
+		if (pk == null) {
+			return 1;
+		} else {
+			// 코드 파싱
+			String code = pk.replaceAll("\\d", "");
+			// 숫자 부분 추출, 1 증가
+			return Integer.parseInt(pk.substring(code.length())) + 1;
+		}
 	}
 
 }
