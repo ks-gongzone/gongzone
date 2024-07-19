@@ -74,6 +74,11 @@ public class InteractionController {
             response.put("query", searchQuery);
             return ResponseEntity.ok(response);
         }
+
+        for (InteractionMember member : members) {
+            System.out.println("[컨트롤러] 회원 번호 " + member.getMemberNo() + " 위험유저 여부 " + member.isWarning());
+        }
+
         response.put("memberList", members);
         response.put("currentPage", page);
         response.put("totalCount", totalMembers);

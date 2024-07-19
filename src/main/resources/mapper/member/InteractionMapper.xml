@@ -12,10 +12,23 @@
         <result property="isFollowing"  column="isFollowing"/>
         <result property="isBlocked"    column="isBlocked"/>
         <result property="isPopular"    column="isPopular"/>
+        <result property="isWarning"    column="isWarning"/>
     </resultMap>
     <!-- read -->
     <!-- 전체 회원 이름 검색 -->
     <select id="findAllMembers" resultMap="interactionMemberResultMap">
+        WITH follow_counts AS (
+        SELECT
+            member.m_no,
+            COUNT(f.m_target_no) AS follow_count,
+            NTILE(10) OVER (ORDER BY COUNT(f.m_target_no) DESC) AS popularity_rank
+        FROM
+            member
+        LEFT JOIN
+            follow AS f ON member.m_no = f.m_target_no
+        GROUP BY
+            member.m_no
+        )
         SELECT
             m.m_no,
             m.m_name,
@@ -23,32 +36,29 @@
             CASE
                 WHEN f.m_no IS NOT NULL THEN TRUE
                 ELSE FALSE
-            END AS isFollowing,
+                END AS isFollowing,
             CASE
                 WHEN b.m_no IS NOT NULL THEN TRUE
                 ELSE FALSE
-            END AS isBlocked,
+                END AS isBlocked,
+            CASE
+                WHEN fc.popularity_rank = 1 THEN TRUE
+                ELSE FALSE
+                END AS isPopular,
             CASE
                 WHEN (SELECT COUNT(*)
-                      FROM follow
-                      WHERE m_target_no = m.m_no) >
-                      (SELECT COUNT(*) * 0.1
-                      FROM member)
-            THEN TRUE
+                FROM block
+                WHERE m_target_no = m.m_no) > 10
+                THEN TRUE
                 ELSE FALSE
-            END AS isPopular,
-            CASE
-                WHEN (SELECT COUNT(*)
-                      FROM block
-                      WHERE m_target_no = m.m_no) > 10
-            THEN TRUE
-                ELSE FALSE
-            END AS isWarning
+                END AS isWarning
         FROM member AS m
             LEFT JOIN
                 follow AS f ON m.m_no = f.m_target_no AND f.m_no = #{currentUserNo}
             LEFT JOIN
                 block AS b ON m.m_no = b.m_target_no AND b.m_no = #{currentUserNo}
+            LEFT JOIN
+                follow_counts AS fc ON m.m_no = fc.m_no
         WHERE
             m.m_name LIKE CONCAT('%', #{memberName}, '%')
         LIMIT #{size} OFFSET #{offset}
@@ -74,9 +84,9 @@
         INSERT INTO follow (m_no, m_target_no)
         SELECT #{currentUserNo}, #{targetMemberNo}
         WHERE NOT EXISTS (
-            SELECT 1
-            FROM follow
-            WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
+        SELECT 1
+        FROM follow
+        WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
         )
     </insert>
     <!-- 차단 추가 -->
@@ -84,9 +94,9 @@
         INSERT INTO block (m_no, m_target_no)
         SELECT #{currentUserNo}, #{targetMemberNo}
         WHERE NOT EXISTS (
-        SELECT 1
-        FROM block
-        WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
+            SELECT 1
+            FROM block
+            WHERE m_no = #{currentUserNo} AND m_target_no = #{targetMemberNo}
         )
     </insert>
 
