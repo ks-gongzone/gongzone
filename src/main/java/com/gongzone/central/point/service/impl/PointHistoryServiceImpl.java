@@ -30,8 +30,9 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 	public String insert(String memberNo, PointDTO request) {
 		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
 		calculatePointUpdate(memberPointNo, request);
-
-		String historyPk = MySqlUtil.generatePrimaryKey(pointHistoryMapper.getLastIndex());
+		
+		int index = MySqlUtil.getNextIdx(pointHistoryMapper.getLastIndex());
+		String historyPk = MySqlUtil.generatePrimaryKey("PH", index);
 		PointHistory pointHistory = PointHistory.builder()
 												.pointHistoryNo(historyPk)
 												.memberPointNo(memberPointNo)
