@@ -1,13 +1,10 @@
 package com.gongzone.central.board.service;
 
-import com.gongzone.central.board.domain.Board;
-import com.gongzone.central.board.domain.BoardReply;
-import com.gongzone.central.board.domain.BoardResponse;
-import com.gongzone.central.board.domain.BoardSearchRequest;
+import com.gongzone.central.board.domain.*;
 import com.gongzone.central.board.mapper.BoardMapper;
+import com.gongzone.central.file.domain.FileUpload;
 import com.gongzone.central.file.mapper.FileMapper;
 import com.gongzone.central.file.util.FileUtil;
-import com.gongzone.central.file.domain.FileUpload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +27,10 @@ public class BoardServiceImpl implements BoardService {
     public void deleteBoard(String boardNo, String partyNo) {
         int countPm = boardMapper.countPartyMember(partyNo);
 
-        if(countPm == 0) {
+        if (countPm == 0) {
             boardMapper.deleteParty(partyNo);
             boardMapper.deleteBoard(boardNo);
-        } else{
+        } else {
             throw new IllegalStateException("파티원이 있는 게시글은 삭제할 수 없습니다.");
         }
 
@@ -68,10 +65,10 @@ public class BoardServiceImpl implements BoardService {
 
 
         board.setRemain(board.getTotal() - board.getAmount());
-        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
-        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+        int unitPrice = (int) Math.ceil((double) board.getTotalPrice() / board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice * board.getAmount()));
 
-        board.setAmountPrice(unitPrice*board.getAmount());
+        board.setAmountPrice(unitPrice * board.getAmount());
 
         board.setPartyNo(boardMapper.getPartyNo(boardNo));
 
@@ -111,10 +108,10 @@ public class BoardServiceImpl implements BoardService {
 
 
         board.setRemain(board.getTotal() - board.getAmount());
-        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
-        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+        int unitPrice = (int) Math.ceil((double) board.getTotalPrice() / board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice * board.getAmount()));
 
-        board.setAmountPrice(unitPrice*board.getAmount());
+        board.setAmountPrice(unitPrice * board.getAmount());
 
         board.setPartyNo(boardMapper.getPartyNo(boardNo));
 
@@ -141,15 +138,15 @@ public class BoardServiceImpl implements BoardService {
     public void setWish(String boardNo, String memberNo) {
         int wishInt = boardMapper.getBoardWish(memberNo, boardNo);
 
-        if(wishInt == 1) {
+        if (wishInt == 1) {
             boardMapper.deleteWish(boardNo, memberNo);
-        } else{
+        } else {
             boardMapper.insertWish(boardNo, memberNo);
         }
     }
 
     @Override
-    public void updateViewCount(String boardNo){
+    public void updateViewCount(String boardNo) {
         boardMapper.updateViewCount(boardNo);
     }
 
@@ -172,10 +169,10 @@ public class BoardServiceImpl implements BoardService {
 
         lists.forEach(board -> {
             int wishInt = boardMapper.getBoardWish(memberNo, board.getBoardNo());
-            if(wishInt == 1) {
+            if (wishInt == 1) {
                 boolean wish = true;
                 board.setWish(wish);
-            } else{
+            } else {
                 boolean wish = false;
                 board.setWish(wish);
             }
@@ -185,28 +182,44 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public List<BoardMyPage> getWishListMypage(String memberNo) {
+        List<BoardMyPage> boardMyPages = boardMapper.wishListMyPage(memberNo);
+        boardMyPages.forEach(boardMyPage -> {
+            String boardNo = boardMyPage.getBoardNo();
+            String filePath = getfilePathByboardNo(boardNo);
+            boardMyPage.setFilePath(filePath);
+        });
+        return boardMyPages;
+    }
+
+    @Override
+    public String getfilePathByboardNo(String boardNo) {
+        return boardMapper.filePathByboardNo(boardNo);
+    }
+
+    @Override
     @Transactional
     public void setValue(BoardResponse br, MultipartFile file) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime endDateTime = LocalDateTime.parse(br.getEndDate(), formatter);
         Board board = Board.builder()
-                            .memberNo(br.getMemberNo())
-                            .boardTitle(br.getTitle())
-                            .category(br.getCategory())
-                            .productUrl(br.getURL())
-                            .totalPrice(br.getPrice())
-                            .total(br.getTotal())
-                            .amount(br.getAmount())
-                            .boardBody(br.getContent())
-                            .locationDo(br.getDoCity())
-                            .locationSi(br.getSiGun())
-                            .locationGu(br.getGu())
-                            .locationDong(br.getDong())
-                            .locationDetail(br.getDetailAddress())
-                            .locationX(br.getLatitude())
-                            .locationY(br.getLongitude())
-                            .endDate(endDateTime)
-                            .build();
+                .memberNo(br.getMemberNo())
+                .boardTitle(br.getTitle())
+                .category(br.getCategory())
+                .productUrl(br.getURL())
+                .totalPrice(br.getPrice())
+                .total(br.getTotal())
+                .amount(br.getAmount())
+                .boardBody(br.getContent())
+                .locationDo(br.getDoCity())
+                .locationSi(br.getSiGun())
+                .locationGu(br.getGu())
+                .locationDong(br.getDong())
+                .locationDetail(br.getDetailAddress())
+                .locationX(br.getLatitude())
+                .locationY(br.getLongitude())
+                .endDate(endDateTime)
+                .build();
 
         boardMapper.insertBoard(board);
 
@@ -220,11 +233,11 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.insertLocation(board);
 
         board.setRemain(board.getTotal() - board.getAmount());
-        int unitPrice = (int)Math.ceil((double) board.getTotalPrice() /board.getTotal());
-        board.setRemainPrice(board.getTotalPrice() - (unitPrice*board.getAmount()));
+        int unitPrice = (int) Math.ceil((double) board.getTotalPrice() / board.getTotal());
+        board.setRemainPrice(board.getTotalPrice() - (unitPrice * board.getAmount()));
         boardMapper.insertParty(board);
 
-        board.setAmountPrice(unitPrice*board.getAmount());
+        board.setAmountPrice(unitPrice * board.getAmount());
         boardMapper.insertPartyMember(board);
 
     }
