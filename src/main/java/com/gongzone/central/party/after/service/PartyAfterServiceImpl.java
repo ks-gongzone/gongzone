@@ -190,8 +190,9 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 
 		// 1-1. 수취확인 알림 발송(파티장)
 		AlertSSE alert = new AlertSSE();
-		String partyLeaderNo = partyAfterMapper.getLeaderPartyMemberNo(partyNo);
-		alert.setMemberNo(partyLeaderNo);
+		String leaderNo = partyAfterMapper.getLeaderPartyMemberNo(partyNo);
+		String leaderMemberNo = partyAfterMapper.getMemberNoByPartyMemberNo(leaderNo);
+		alert.setMemberNo(leaderMemberNo);
 		alert.setTypeCode(party.getCode());
 		alert.setAlertDetail(MESSAGE_ALERT_PARTY_RECEPTION.toString());
 		alertSSEMapper.insertAlertSSE(alert);
@@ -210,7 +211,7 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 
 			// 1-1. 수취확인 알림 발송(파티장)
 			AlertSSE alertSettlement = new AlertSSE();
-			String partyLeaderMemberNo = partyAfterMapper.getMemberNoByPartyMemberNo(partyLeaderNo);
+			String partyLeaderMemberNo = partyAfterMapper.getMemberNoByPartyMemberNo(leaderNo);
 			alertSettlement.setMemberNo(partyLeaderMemberNo);
 			alertSettlement.setTypeCode(party.getCode());
 			alertSettlement.setAlertDetail(MESSAGE_ALERT_PARTY_RECEPTION_COMPLETE.toString());
