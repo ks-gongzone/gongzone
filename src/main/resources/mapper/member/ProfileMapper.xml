@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gongzone.central.member.myInfo.profile.mapper.ProfileMapper">
+
+    <!-- resultMap -->
+    <resultMap id="ProfileResultMap" type="com.gongzone.central.member.myInfo.profile.domain.Profile">
+        <id     property="fileRelationNo"   column="file_relation_no"/>
+        <result property="fileNo"           column="file_no"/>
+        <result property="fileUsage"        column="file_usage"/>
+        <result property="memberNo"         column="user_id"/>
+        <result property="memberName"       column="member_name"/>
+        <result property="gender"           column="m_gender"/>
+        <result property="follower"         column="follower"/>
+        <collection property="files" ofType="com.gongzone.central.file.domain.FileUpload">
+            <id     property="fileIdx"          column="file_no"/>
+            <result property="fileOriginalName" column="file_original_name"/>
+            <result property="fileNewName"      column="file_new_name"/>
+            <result property="filePath"         column="file_path"/>
+            <result property="fileSize"         column="file_size"/>
+            <result property="fileDate"         column="file_date"/>
+        </collection>
+    </resultMap>
+
+    <!-- insert -->
+    <insert id="addFileRelation" parameterType="com.gongzone.central.member.myInfo.profile.domain.Profile" useGeneratedKeys="true" keyProperty="fileRelationNo" keyColumn="file_relation_no">
+        INSERT INTO file_relation (file_no, file_usage, user_id)
+        VALUES (#{fileNo}, #{fileUsage}, #{memberNo});
+    </insert>
+
+    <insert id="addFile" parameterType="com.gongzone.central.file.domain.FileUpload">
+        INSERT INTO file (file_original_name, file_new_name, file_path, file_size, file_date)
+        VALUES (#{fileOriginalName}, #{fileNewName}, #{filePath}, #{fileSize}, NOW());
+    </insert>
+
+    <update id="updateFileRelation" parameterType="com.gongzone.central.member.myInfo.profile.domain.Profile">
+        UPDATE file_relation
+        SET file_no = #{fileNo}
+        WHERE user_id = #{memberNo};
+    </update>
+
+    <select id="getProfile" parameterType="String" resultMap="ProfileResultMap">
+        SELECT
+            m.m_no AS memberNo,
+            m.m_name AS memberName,
+            m.m_gender AS gender,
+            (SELECT COUNT(*) FROM follow WHERE m_no_target = #{memberNo}) AS follower,
+            (SELECT COUNT(*) FROM follow WHERE m_no = #{memberNo}) AS following,
+            (SELECT COUNT(*) FROM board WHERE m_no = #{memberNo}) AS boardCount,
+            fr.file_relation_no,
+            fr.file_no,
+            fr.file_usage,
+            f.file_no AS fileIdx,
+            f.file_original_name,
+            f.file_new_name,
+            f.file_path,
+            f.file_size,
+            f.file_date
+        FROM
+        member m
+        LEFT JOIN file_relation fr
+        ON m.m_no = fr.user_id
+        LEFT JOIN file f
+        ON fr.file_no = f.file_no
+        WHERE
+            m.m_no = #{memberNo}
+    </select>
+
+</mapper>
