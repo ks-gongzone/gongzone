@@ -59,7 +59,7 @@ public class PaymentServiceImpl implements PaymentService {
 		String memberPointNo = pointService.getMemberPointNo(memberNo);
 
 		// 1. 포인트 내역 삽입
-		String historyNo = pointHistoryService.insert(memberPointNo, request);
+		String historyNo = pointHistoryService.insert(memberNo, request);
 
 		// 1-1. 충전 내역 생성
 		// TODO: 포트원 서버에 충전 정보 확인
