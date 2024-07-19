@@ -24,4 +24,6 @@ public interface LoginMapper {
     LoginLog loginNoBymemberNo(String memberNo, String userAgent);
 
     List<LoginStatistical> loginInTimeDay();
+    
+    int loginNoByuserAgent(String userAgent);
 }

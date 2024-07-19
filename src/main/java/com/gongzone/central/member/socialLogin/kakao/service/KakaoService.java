@@ -3,6 +3,7 @@ package com.gongzone.central.member.socialLogin.kakao.service;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.login.domain.LoginLog;
+import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.CheckStatusCode;
 import com.gongzone.central.member.login.service.LoginLogService;
@@ -12,6 +13,7 @@ import com.gongzone.central.member.mapper.TokenMapper;
 import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.point.service.PointService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -41,12 +43,14 @@ public class KakaoService {
     private final MemberMapper memberMapper;
     private final TokenMapper tokenMapper;
     private final PointMapper pointMapper;
+    private final PointService pointService;
     private final JwtUtil jwtUtil;
     private final Lock lock = new ReentrantLock();
 
     private final CheckStatusCode checkStatusCode;
     private final HttpServletResponse response;
     private final LoginLogService loginLogService;
+    private final LoginMapper loginMapper;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String KAKAO_CLIENT_ID;
@@ -133,9 +137,9 @@ public class KakaoService {
                 updateTokens(member.getMemberNo(), socialMember);
                 checkStatusCode.checkStatus(member.getMemberNo(), response);
 
-				Point point = pointMapper.getPoint(member.getMemberNo());
-				MemberDetails memberDetails = new MemberDetails(member, point);
-				String siteToken = jwtUtil.generateToken(memberDetails);
+                Point point = pointService.getPoint(member.getMemberNo());
+                MemberDetails memberDetails = new MemberDetails(member, point);
+                String siteToken = jwtUtil.generateToken(memberDetails);
 
                 socialMember.setJwtToken(siteToken);
                 socialMember.setMemberNo(member.getMemberNo());
@@ -149,8 +153,8 @@ public class KakaoService {
             }
             return result;
         } catch (Exception e) {
-            LoginLog loginNumber =  loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
-            loginLogService.logLoginFailure(loginNumber.getLoginNo());
+            int loginNo = loginMapper.loginNoByuserAgent(browser);
+            loginLogService.logLoginFailure(loginNo);
             throw new Exception("카카오 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
             lock.unlock();
