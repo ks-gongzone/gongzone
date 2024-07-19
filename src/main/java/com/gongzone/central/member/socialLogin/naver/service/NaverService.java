@@ -3,6 +3,7 @@ package com.gongzone.central.member.socialLogin.naver.service;
 import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.domain.Token;
 import com.gongzone.central.member.login.domain.LoginLog;
+import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.CheckStatusCode;
 import com.gongzone.central.member.login.service.LoginLogService;
@@ -12,6 +13,7 @@ import com.gongzone.central.member.mapper.TokenMapper;
 import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import com.gongzone.central.point.domain.Point;
 import com.gongzone.central.point.mapper.PointMapper;
+import com.gongzone.central.point.service.PointService;
 import com.gongzone.central.utils.MySqlUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,8 @@ public class NaverService {
     private final CheckStatusCode checkStatusCode;
     private final HttpServletResponse response;
     private final LoginLogService loginLogService;
+    private final PointService pointService;
+    private final LoginMapper loginMapper;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String NAVER_CLIENT_ID;
@@ -66,7 +70,9 @@ public class NaverService {
         lock.lock();
         LoginLog loginLog = new LoginLog();
         String browser = loginLogService.getloginBrowserByCode(userAgent);
+        System.out.println("browser = " + browser);
         loginLog.setLoginBrowser(browser);
+        System.out.println("loginLog.getLoginBrowser() : " + loginLog.getLoginBrowser());
 
         try {
             RestTemplate rt = new RestTemplate();
@@ -130,8 +136,8 @@ public class NaverService {
                 updateTokens(member.getMemberNo(), socialMember);
             }
 
-			Point point = pointMapper.getPoint(member.getMemberNo());
-			MemberDetails memberDetails = new MemberDetails(member, point);
+            Point point = pointService.getPoint(member.getMemberNo());
+            MemberDetails memberDetails = new MemberDetails(member, point);
 
             String siteToken = jwtUtil.generateToken(memberDetails);
 
@@ -139,14 +145,13 @@ public class NaverService {
             socialMember.setMemberNo(member.getMemberNo());
             socialMember.setPointNo(point.getMemberPointNo());
 
-
             loginLog.setMemberNo(socialMember.getMemberNo());
             loginLogService.logLoginAttempt(loginLog);
 
             return socialMember;
         } catch (Exception e) {
-            LoginLog loginNumber = loginLogService.getLoginNoByMemberNo(loginLog.getMemberNo(), loginLog.getUserAgent());
-            loginLogService.logLoginFailure(loginNumber.getLoginNo());
+            int loginNo = loginMapper.loginNoByuserAgent(browser);
+            loginLogService.logLoginFailure(loginNo);
             throw new Exception("네이버 로그인 중 오류 발생 : " + e.getMessage(), e);
         } finally {
             lock.unlock();
@@ -166,8 +171,8 @@ public class NaverService {
 
         memberMapper.insert(member);
 
-		String lastPointNo = pointMapper.getLastIndex();
-		String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
+        String lastPointNo = pointMapper.getLastIndex();
+        String newPointNo = MySqlUtil.generatePrimaryKey(lastPointNo);
 
         Point point = Point.builder()
                 .memberPointNo(newPointNo)
@@ -175,7 +180,7 @@ public class NaverService {
                 .memberPoint("0")
                 .build();
 
-		pointMapper.insert(point);
+        pointMapper.insert(point);
 
         Token token = new Token();
 
