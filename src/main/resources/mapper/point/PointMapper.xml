@@ -14,7 +14,7 @@
 
 
   <!-- Query -->
-  <insert id="insertPoint" parameterType="Point">
+  <insert id="insert" parameterType="Point">
     -- insertPoint: 포인트 테이블에 초기 값을 삽입한다.
     INSERT INTO member_point
       (m_point_no, m_no, m_point)
