@@ -4,7 +4,8 @@ import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALER
 import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_RECEPTION;
 import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_RECEPTION_COMPLETE;
 import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_SHIPPING;
-import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_SHIPPING_COMPLETE;
+import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_SHIPPING_COMPLETE_LEADER;
+import static com.gongzone.central.common.constants.ConstantsString.MESSAGE_ALERT_PARTY_SHIPPING_COMPLETE_MEMBER;
 import static com.gongzone.central.utils.StatusCode.STATUS_BOARD_RECRUIT_COMPLETE;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_LEADER;
 import static com.gongzone.central.utils.StatusCode.STATUS_PARTY_PAYMENT_WAITING_MEMBER;
@@ -151,16 +152,25 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 		// 4. 파티 상태 변경 -> (수취대기중)
 		partyAfterMapper.testChangePartyStatus(partyNo, STATUS_PARTY_RECEPTION_WAITING.getCode());
 
-		// 5. 배송 완료 알림 발송(파티원)
+		// 5-1. 배송 완료 알림 발송(파티원)
 		partyMembers.forEach(
 				partyMemberNo -> {
 					AlertSSE alert = new AlertSSE();
 					String memberNo = partyAfterMapper.getMemberNoByPartyMemberNo(partyMemberNo);
 					alert.setMemberNo(memberNo);
 					alert.setTypeCode(party.getCode());
-					alert.setAlertDetail(MESSAGE_ALERT_PARTY_SHIPPING_COMPLETE.toString());
+					alert.setAlertDetail(MESSAGE_ALERT_PARTY_SHIPPING_COMPLETE_MEMBER.toString());
 					alertSSEMapper.insertAlertSSE(alert);
 				});
+
+		// 5-2. 배송 완료 알림 발송(파티장)
+		AlertSSE alertLeader = new AlertSSE();
+		String leaderNo = partyAfterMapper.getLeaderPartyMemberNo(partyNo);
+		String leaderMemberNo = partyAfterMapper.getMemberNoByPartyMemberNo(leaderNo);
+		alertLeader.setMemberNo(leaderMemberNo);
+		alertLeader.setTypeCode(party.getCode());
+		alertLeader.setAlertDetail(MESSAGE_ALERT_PARTY_SHIPPING_COMPLETE_LEADER.toString());
+		alertSSEMapper.insertAlertSSE(alertLeader);
 	}
 
 	/**
@@ -200,7 +210,8 @@ public class PartyAfterServiceImpl implements PartyAfterService {
 
 			// 1-1. 수취확인 알림 발송(파티장)
 			AlertSSE alertSettlement = new AlertSSE();
-			alertSettlement.setMemberNo(partyLeaderNo);
+			String partyLeaderMemberNo = partyAfterMapper.getMemberNoByPartyMemberNo(partyLeaderNo);
+			alertSettlement.setMemberNo(partyLeaderMemberNo);
 			alertSettlement.setTypeCode(party.getCode());
 			alertSettlement.setAlertDetail(MESSAGE_ALERT_PARTY_RECEPTION_COMPLETE.toString());
 			alertSSEMapper.insertAlertSSE(alertSettlement);

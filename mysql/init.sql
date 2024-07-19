@@ -786,43 +786,43 @@ CREATE TRIGGER `after_alert_allow_changes_delete` AFTER DELETE ON `alert_allow_c
     SELECT allow_change_after INTO last_sms
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010207'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_email
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010208'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_marketing
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010202'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_member
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010203'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_note
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010204'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_bulletin
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010205'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_party
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010206'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     -- 롤백
@@ -915,43 +915,43 @@ CREATE TRIGGER `after_alert_allow_delete` AFTER DELETE ON `alert_allow` FOR EACH
     SELECT allow_change_after INTO last_sms
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010207'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_email
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010208'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_marketing
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010202'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_member
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010203'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_note
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010204'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_bulletin
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010205'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     SELECT allow_change_after INTO last_party
     FROM alert_allow_changes
     WHERE alert_allow_no = OLD.alert_allow_no AND type_code = 'T010206'
-    ORDER BY change_time DESC
+    ORDER BY allow_change_date DESC
     LIMIT 1;
 
     -- alert_allow 테이블에 데이터 업데이트
@@ -1050,11 +1050,59 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- 4. 샘플 데이터 삽입(임시)
-INSERT INTO member (m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
+-- 4-1. 회원
+INSERT IGNORE INTO member
+	(m_no, m_level, m_id, m_pw, m_name, m_email, m_phone, m_gender, m_addr, m_birthday, m_nick, status_code)
 VALUES
-	('M000001', 2, 'admin', 'admin', '관리자', 'admin@example.com', '010-9876-5432', 'F', '서울시 강북구', '1985-05-05', '관리자', 'S010101');
+	('M000001', 2, 'admin', 'admin', '관리자', 'admin@example.com', '010-9876-5432', 'F', '서울시 강북구', '1985-05-05', '관리자', 'S010101'),
+	('M000002', 1, 'user2', 'user2', '회원2', 'user2@gongzone.shop', '010-2345-2345', 'M', '전라북도 전주시 덕진구', '1992-02-02', '최초의회원', 'S010101'),
+	('M000003', 1, 'hanokfairy', 'hanokfairy', '고윤영', 'hanokfactory@gongzone.shop', '010-1234-5678', 'M', '전라북도 전주시 덕진구', '1990-01-01', '한옥마을요정', 'S010101'),
+	('M000004', 1, 'dntjrvv1', 'dntjrvv1', '전우석', 'dntjrvv1@gongzone.shop', '010-4567-4567', 'M', '전라북도 덕진구', '1999-01-01', '바나나맨', 'S010101'),
+	('M000005', 1, 'ominho123', 'ominho123', '오민호', 'ominho123@naver.com', '010-2345-4235', 'M', '', NULL, '크랙', 'S010101'),
+	('M000006', 1, 'rladmsquf3110', 'rladmsquf3110', '김우연', 'rladmsquf3110@naver.com', '010-3171-6838', 'F', '전', '2005-06-19', '젠키스', 'S010101'),
+	('M000007', 1, 'funnymonkey1', 'funnymonkey1', '원숭이', 'funnymonkey1@gongzone.shop', '010-1111-1111', 'M', '아마존 밀림', '2024-07-19', '바나나이스', 'S010101'),
+	('M000008', 1, 'crack123', 'crack123', '호민오', 'crack123@google.com', '010-5476-4573', 'M', '전라북도 덕진동', '2024-07-23', '', 'S010101');
 
-
-INSERT IGNORE INTO member_point (m_point_no, m_no)
+INSERT IGNORE INTO member_point
+	(m_point_no, m_no)
 VALUES
-	('MP000001', 'M000001');
+	('MP000001', 'M000001'),
+	('MP000002', 'M000002'),
+	('MP000003', 'M000003'),
+	('MP000004', 'M000004'),
+	('MP000005', 'M000005'),
+	('MP000006', 'M000006'),
+	('MP000007', 'M000007'),
+	('MP000008', 'M000008');
+
+-- 4-2. 게시글
+INSERT IGNORE INTO `board`
+	(`b_no`, `m_no`, `b_title`, `b_body`, `b_date`, `b_period`, `b_view_count`, `b_wish_count`, `b_report_count`, `status_code`)
+VALUES
+	('B000001', 'M000002', '대량 바나나튀김 250g 12봉 튀긴 슬라이스바나나칩 업소용', '<p>바나나칩 같이 구매하실분 구합니다 맛있어요</p>', '2024-07-19 01:33:05', '2024-08-01 14:59:59', 3, 0, 0, 'S040101');
+
+INSERT IGNORE INTO `file`
+	(`file_no`, `file_original_name`, `file_new_name`, `file_path`, `file_size`, `file_date`)
+VALUES
+	(1, '20240719 이미지004.png', '20240719이미지0043626523243466848.png', '/api/attachement/20240719/20240719이미지0043626523243466848.png', 379038, '2024-07-19 01:34:40');
+
+INSERT IGNORE INTO `file_relation`
+	(`file_relation_no`, `file_no`, `file_usage`)
+VALUES
+	(1, 1, 'B000001');
+
+INSERT IGNORE INTO `location`
+	(`location_no`, `b_no`, `location_do`, `location_si`, `location_gu`, `location_dong`, `location_detail`, `location_x`, `location_y`)
+VALUES
+	(1, 'B000001', '전북특별자치도', '전주시', '덕진구', '덕진동1가', '1401-18 맥도날드 주차장', 35.8438038057573, 127.12310555280546);
+
+-- 4-3. 파티
+INSERT IGNORE INTO `party`
+	(`p_no`, `b_no`, `c_code`, `p_url`, `p_amount`, `p_amount_remain`, `p_price`, `p_price_remain`, `p_start_date`, `p_end_date`, `status_code`)
+VALUES
+	('P000001', 'B000001', 'CF0403', 'https://smartstore.naver.com/fbstore/products/9810920546', 12, 8, 57880, 38584, '2024-07-19 01:33:05', NULL, 'S060101');
+
+INSERT IGNORE INTO `party_member`
+	(`p_member_no`, `p_no`, `m_no`, `pm_amount`, `pm_price`, `member_join_date`, `member_is_leader`)
+VALUES
+	('PM000001', 'P000001', 'M000002', 4, 19296, '2024-07-19 01:33:05', '파티장');
