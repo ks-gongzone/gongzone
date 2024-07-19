@@ -56,6 +56,14 @@
         LIMIT 1;
     </select>
 
+    <select id="loginNoByuserAgent">
+        SELECT login_no AS loginNo
+        FROM login
+        WHERE login_browser = #{userAgent}
+        ORDER BY login_no DESC
+        LIMIT 1;
+    </select>
+
     <!-- 기간별 접속 통계 -->
     <select id="loginInTimeDay" resultType="LoginStatistical">
         SELECT DATE_FORMAT(login_in_time, '%Y-%m-%d')                                          AS loginInTimeDateFormat,
