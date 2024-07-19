@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface InteractionService {
     // read
-    InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo, String searchName);
+    // InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo, String searchName);
     int getTotalMembers(String memberName);
     List<InteractionMember> findAllMembers(String currentUserNo, String memberName, String searchQuery, int page, int size);
     // following action

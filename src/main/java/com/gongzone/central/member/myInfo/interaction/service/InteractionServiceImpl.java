@@ -30,11 +30,13 @@ public class InteractionServiceImpl implements InteractionService{
         int offset = (page - 1) * size;
         List<InteractionMember> members = interactionMapper.findAllMembers(currentUserNo, memberName, offset, size);
         for (InteractionMember member : members) {
-            filterData(member, currentUserNo, member.getMemberNo(), searchQuery);
-            System.out.println("[서비스] 회원 번호 " + member.getMemberNo() + " 인기유저 여부 " + member.isPopular());
+            // filterData(member, currentUserNo, member.getMemberNo(), searchQuery);
+            System.out.println("[서비스] 회원 번호 " + member.getMemberNo() + " 위험유저 여부 " + member.isWarning());
         }
         return members;
     }
+
+    /*
     @Override
     public InteractionMember filterData(InteractionMember member, String currentUserNo, String targetMemberNo, String searchQuery) {
         System.out.println("[서비스] 회원 데이터 필터링 현재회원번호: " + member.getCurrentUserNo());
@@ -62,6 +64,7 @@ public class InteractionServiceImpl implements InteractionService{
                 .searchQuery(searchQuery)
                 .build();
     }
+    */
     @Override
     public int getTotalMembers(String memberName) {
         return interactionMapper.getTotalMembers(memberName);
