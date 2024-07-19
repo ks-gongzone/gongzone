@@ -56,10 +56,8 @@ public class PaymentServiceImpl implements PaymentService {
 	 */
 	@Override
 	public void charge(String memberNo, PointDTO request) {
-		String memberPointNo = pointService.getMemberPointNo(memberNo);
-
 		// 1. 포인트 내역 삽입
-		String historyNo = pointHistoryService.insert(memberPointNo, request);
+		String historyNo = pointHistoryService.insert(memberNo, request);
 
 		// 1-1. 충전 내역 생성
 		// TODO: 포트원 서버에 충전 정보 확인
@@ -71,7 +69,7 @@ public class PaymentServiceImpl implements PaymentService {
 		insert(payment);
 
 		// 3. 포인트 증가
-		pointService.updatePoint(memberPointNo, request);
+		pointService.updatePoint(memberNo, request);
 
 		// 4. 포인트 내역 업데이트(성공)
 		pointHistoryService.updateSuccess(historyNo, request);

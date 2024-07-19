@@ -53,7 +53,7 @@ public class WithdrawServiceImpl implements WithdrawService {
 		String memberPointNo = pointMapper.getMemberPointNo(memberNo);
 
 		// 1. 포인트 내역 삽입
-		String historyNo = pointHistoryService.insert(memberPointNo, request);
+		String historyNo = pointHistoryService.insert(memberNo, request);
 
 		// TODO: 실제 운영 계좌에서 포인트 출금 처리
 		// 1-1. 인출 내역 생성
@@ -70,7 +70,7 @@ public class WithdrawServiceImpl implements WithdrawService {
 
 		// 4. 포인트 내역 업데이트(성공)
 		pointHistoryService.updateSuccess(historyNo, request);
-		
+
 	}
 
 }
