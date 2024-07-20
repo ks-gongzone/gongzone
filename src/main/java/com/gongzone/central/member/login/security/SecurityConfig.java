@@ -40,7 +40,8 @@ public class SecurityConfig {
 			"/api/refresh",
 			"/api/attachement/**",
 			"/api/note/**",
-			"/api/alertSSE/**"
+			"/api/alertSSE/**",
+			"api/logout"
 	};
 
 	// 보안 필터 체인을 정의
