@@ -45,9 +45,11 @@ public class KakaoController {
                 result.put("redirectUrl", "/register?name=" + socialMember.getName() + "&email=" + socialMember.getEmail());
             } else {
                 result.put("success", true);
-                result.put("token", socialMember.getJwtToken());
+                result.put("accessToken", socialMember.getAccessToken());
+                result.put("refreshToken", socialMember.getRefreshToken());
                 result.put("memberNo", socialMember.getMemberNo());
                 result.put("pointNo", socialMember.getPointNo());
+                result.put("tokenExpiresIn", socialMember.getTokenExpiresIn());
                 result.put("redirectUrl", "/");
             }
             return ResponseEntity.ok(result);
