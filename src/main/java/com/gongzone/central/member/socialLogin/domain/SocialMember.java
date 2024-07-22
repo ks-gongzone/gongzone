@@ -13,12 +13,14 @@ public class SocialMember {
     private String phoneNumber;         // 전화번호
     private String gender;              // 성별
     private String tokenUri;            // 토큰 uri
-    private String accessToken;         // 액세스 토큰
-    private String refreshToken;        // 리프레시 토큰
+    private String socialAccessToken;   // 소셜 액세스 토큰
+    private String socialRefreshToken;  // 소셜 리프레시 토큰
     private Date accessTokenExpiry;     // 액세스 토큰 만료 시간
     private Date refreshTokenExpiry;    // 리프레시 토큰 만료 시간
-    private String jwtToken;
+    private String accessToken;
     private String memberNo;
     private String pointNo;
+    private String refreshToken;
     private String userAgent;
+    private long tokenExpiresIn;
 }

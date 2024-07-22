@@ -99,12 +99,12 @@ public class GoogleService {
             String responseBody = accessTokenResponse.getBody();
             JSONObject parse = (JSONObject) jsonParser.parse(responseBody);
 
-            String accessToken = (String) parse.get("access_token");
-            String refreshToken = (String) parse.get("refresh_token");
+            String socialAccessToken = (String) parse.get("access_token");
+            String socialRefreshToken = (String) parse.get("refresh_token");
             Long expiresIn = (Long) parse.get("expires_in");
 
             headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + accessToken);
+            headers.add("Authorization", "Bearer " + socialAccessToken);
             HttpEntity<?> userRequest = new HttpEntity<>(headers);
             ResponseEntity<String> userResponse = rt.exchange(GOOGLE_USER_INFO_URI, HttpMethod.GET, userRequest, String.class);
             responseBody = userResponse.getBody();
@@ -117,8 +117,8 @@ public class GoogleService {
             socialMember.setProvider("google");
             socialMember.setName(name);
             socialMember.setEmail(email);
-            socialMember.setAccessToken(accessToken);
-            socialMember.setRefreshToken(refreshToken);
+            socialMember.setSocialAccessToken(socialAccessToken);
+            socialMember.setSocialRefreshToken(socialRefreshToken);
             socialMember.setAccessTokenExpiry(new Date(System.currentTimeMillis() + expiresIn * 1000));
             socialMember.setRefreshTokenExpiry(new Date(System.currentTimeMillis() + expiresIn * 1000 * 2));
 
@@ -134,10 +134,14 @@ public class GoogleService {
                 Point point = pointService.getPoint(member.getMemberNo());
                 MemberDetails memberDetails = new MemberDetails(member, point);
                 String siteToken = jwtUtil.generateToken(memberDetails);
+                String siteRefreshToken = jwtUtil.generateRefreshToken(memberDetails);
+                long siteExpiresIn = jwtUtil.extractExpiration(siteToken).getTime();
 
-                socialMember.setJwtToken(siteToken);
+                socialMember.setAccessToken(siteToken);
+                socialMember.setRefreshToken(siteRefreshToken);
                 socialMember.setMemberNo(member.getMemberNo());
                 socialMember.setPointNo(point.getMemberPointNo());
+                socialMember.setTokenExpiresIn(siteExpiresIn);
 
                 loginLog.setMemberNo(socialMember.getMemberNo());
                 loginLogService.logLoginAttempt(loginLog);
@@ -161,8 +165,8 @@ public class GoogleService {
             token = new Token();
             token.setMemberNo(memberNo);
             token.setTokenType(socialMember.getProvider());
-            token.setTokenValueAcc(socialMember.getAccessToken());
-            token.setTokenValueRef(socialMember.getRefreshToken() != null ? socialMember.getRefreshToken() : "null");
+            token.setTokenValueAcc(socialMember.getSocialAccessToken());
+            token.setTokenValueRef(socialMember.getSocialRefreshToken() != null ? socialMember.getSocialRefreshToken() : "null");
             token.setTokenExpiresAcc(socialMember.getAccessTokenExpiry());
             token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry() != null
                     ? socialMember.getRefreshTokenExpiry()
@@ -171,9 +175,9 @@ public class GoogleService {
 
             tokenMapper.insert(token);
         } else {
-            token.setTokenValueAcc(socialMember.getAccessToken());
-            token.setTokenValueRef(socialMember.getRefreshToken() != null
-                    ? socialMember.getRefreshToken()
+            token.setTokenValueAcc(socialMember.getSocialAccessToken());
+            token.setTokenValueRef(socialMember.getSocialRefreshToken() != null
+                    ? socialMember.getSocialRefreshToken()
                     : token.getTokenValueRef());
             token.setTokenExpiresAcc(socialMember.getAccessTokenExpiry());
             token.setTokenExpiresRef(socialMember.getRefreshTokenExpiry() != null
@@ -184,6 +188,5 @@ public class GoogleService {
             tokenMapper.update(token);
         }
     }
-
 }
 

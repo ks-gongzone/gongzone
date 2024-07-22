@@ -101,19 +101,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
         }
-
-        if (isLogoutRequest(request)) {
-            MemberDetails memberDetails = (MemberDetails) this.memberDetailsService.loadUserByUsername(username);
-            String userAgent = request.getHeader("User-Agent");
-            String browser = loginLogService.getloginBrowserByCode(userAgent);
-            LoginLog loginLog = loginLogService.getLoginNoByMemberNo(memberDetails.getMemberNo(), browser);
-            loginLogService.logLogout(loginLog.getLoginNo());
-        }
-
         chain.doFilter(request, httpResponse);
-    }
-
-    private boolean isLogoutRequest(HttpServletRequest request) {
-        return request.getRequestURI().equals("/api/logout") && request.getMethod().equals("POST");
     }
 }
