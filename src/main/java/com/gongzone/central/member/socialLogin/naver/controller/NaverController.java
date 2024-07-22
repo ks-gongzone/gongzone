@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/naver")
@@ -22,7 +25,8 @@ public class NaverController {
     private final ObjectMapper objectMapper;
 
     @PostMapping("/token")
-    public ResponseEntity<SocialMember> naverToken(HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> naverToken(HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<>();
         try {
             String requestBody = (String) request.getAttribute("requestBody");
             if (requestBody == null) {
@@ -37,9 +41,16 @@ public class NaverController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            SocialMember socialMember = naverService.naverToken(naverRequest.getCode(), naverRequest.getUserAgent());
+            Map<String, Object> naverResponse = naverService.naverToken(naverRequest.getCode(), naverRequest.getUserAgent());
+            SocialMember socialMember = (SocialMember) naverResponse.get("socialMember");
 
-            return new ResponseEntity<>(socialMember, HttpStatus.OK);
+            result.put("accessToken", socialMember.getAccessToken());
+            result.put("refreshToken", socialMember.getRefreshToken());
+            result.put("memberNo", socialMember.getMemberNo());
+            result.put("pointNo", socialMember.getPointNo());
+            result.put("tokenExpiresIn", socialMember.getTokenExpiresIn());
+
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
