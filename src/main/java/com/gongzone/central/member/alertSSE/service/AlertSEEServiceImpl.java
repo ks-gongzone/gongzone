@@ -10,6 +10,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AlertSEEServiceImpl implements AlertSEEService {
@@ -92,5 +96,11 @@ public class AlertSEEServiceImpl implements AlertSEEService {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public Mono<List<Map<String, Object>>> countNewAlerts(String memberNo) {
+        return Mono.fromCallable(() -> alertSSEMapper.countNewAlerts(memberNo))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

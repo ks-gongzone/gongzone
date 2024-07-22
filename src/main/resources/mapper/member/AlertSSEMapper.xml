@@ -69,4 +69,20 @@
             alert_allow
         WHERE m_no = #{memberNo}
     </select>
+
+    <!-- 2024-07-22 한동환 신규 알림 카운팅 쿼리 추가 -->
+    <resultMap id="AlertCountResultMap" type="map">
+        <result property="alertCount" column="alertCount" />
+        <result property="alertDetail" column="alert_detail" />
+    </resultMap>
+
+    <select id="countNewAlerts" resultMap="AlertCountResultMap">
+        SELECT
+        COUNT(*) AS alertCount,
+        alert_detail
+        FROM alert
+        WHERE m_no = #{memberNo} AND alert_readtime IS NULL
+        GROUP BY alert_detail
+        ORDER BY alert_uptime DESC
+    </select>
 </mapper>
