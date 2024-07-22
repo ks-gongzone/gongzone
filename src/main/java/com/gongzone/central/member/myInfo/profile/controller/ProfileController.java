@@ -23,7 +23,7 @@ public class ProfileController {
 
     // 프로필 생성
     @PostMapping("/addProfilePicture")
-    public ResponseEntity<String> addProfilePicture(Authentication authentication, @RequestParam("image") MultipartFile file) {
+    public ResponseEntity<String> addProfilePicture(Authentication authentication, @RequestParam("file") MultipartFile file) {
         String token = ((MemberDetails) authentication.getPrincipal()).getToken();
         String memberNo = jwtUtil.extractMemberNo(token);
 
