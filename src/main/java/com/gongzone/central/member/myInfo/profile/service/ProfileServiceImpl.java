@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
@@ -41,7 +43,6 @@ public class ProfileServiceImpl implements ProfileService {
         System.out.println("[서비스] 파일 업로드 성공: " + memberNo);
     }
 
-    // 변경된 부분 주석 추가
     @Override
     @Transactional
     public FileUpload updateProfilePicture(String memberNo, MultipartFile file) {
@@ -88,5 +89,21 @@ public class ProfileServiceImpl implements ProfileService {
             }
         }
         return profile;
+    }
+
+    // 전체 프로필 카드 가져온다.
+    @Override
+    public List<Profile> getAllProfiles() {
+        List<Profile> profiles = profileMapper.getAllProfiles();
+        if (profiles != null && !profiles.isEmpty()) {
+            System.out.println("[서비스] 전체 회원 프로필 조회 성공");
+            for (Profile profile : profiles) {
+                System.out.println("[서비스] 회원 번호: " + profile.getMemberNo());
+                if (profile.getFiles() != null && !profile.getFiles().isEmpty()) {
+                    System.out.println("파일: " + profile.getFiles().get(0));
+                }
+            }
+        }
+        return profiles;
     }
 }

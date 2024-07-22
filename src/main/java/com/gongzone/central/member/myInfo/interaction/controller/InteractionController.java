@@ -1,9 +1,11 @@
 package com.gongzone.central.member.myInfo.interaction.controller;
 
+import com.gongzone.central.file.domain.FileUpload;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.myInfo.interaction.domain.InteractionMember;
 import com.gongzone.central.member.myInfo.interaction.service.InteractionService;
+import com.gongzone.central.member.myInfo.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,8 +22,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/members/interaction")
 public class InteractionController {
     private final InteractionService interactionService;
+    private final ProfileService profileService;
     private final JwtUtil jwtUtil;
-
 
     // 공통으로 사용할 메서드
     private String extractCurrentUserNo(Authentication authentication) {
@@ -40,7 +42,7 @@ public class InteractionController {
             @RequestParam(required = false, defaultValue = "") String memberName,
             @RequestParam(defaultValue = "") String searchQuery,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "9") int size,
             Authentication authentication) {
 
         String currentUserNo = extractCurrentUserNo(authentication);
@@ -98,7 +100,7 @@ public class InteractionController {
             @RequestParam(required = false, defaultValue = "") String memberName,
             @RequestParam(defaultValue = "") String searchQuery,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "9") int size,
             Authentication authentication) {
 
         String currentUserNo = extractCurrentUserNo(authentication);
@@ -132,7 +134,7 @@ public class InteractionController {
             @RequestParam(required = false, defaultValue = "") String memberName,
             @RequestParam(defaultValue = "") String searchQuery,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "9") int size,
             Authentication authentication) {
 
         String currentUserNo = extractCurrentUserNo(authentication);
