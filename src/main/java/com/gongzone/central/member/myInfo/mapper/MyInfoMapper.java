@@ -23,4 +23,5 @@ public interface MyInfoMapper {
     void updatePassword(@Param("memberNo") String memberNo, @Param("newPassword") String newPassword);
     void updateMemberNick(Map<String, Object> params);
     void updateMemberAddress(@Param("memberNo") String memberNo, @Param("newMemberAddress") String newMemberAddress);
+    void updateStatusCode(Map<String, Object> params);
 }

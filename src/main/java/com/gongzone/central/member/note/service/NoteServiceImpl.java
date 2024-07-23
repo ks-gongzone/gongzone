@@ -10,6 +10,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +57,11 @@ public class NoteServiceImpl implements NoteService {
         return Mono.fromRunnable(() -> noteMapper.updateDeleteNoteTarget(noteNo))
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
+    }
+
+    @Override
+    public Mono<List<Map<String, Object>>> countNewNotes(String memberNo) {
+        return Mono.fromCallable(() -> noteMapper.countNewNotes(memberNo))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

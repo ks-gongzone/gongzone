@@ -18,4 +18,5 @@ public interface MyInfoService {
 	void updatePassword (Member member, MyInformation myInformation);
 	void updateMemberNick (Member member, MyInformation myInformation);
 	void updateMemberAddress(Member member, MyInformation myInformation);
+	void updateStatusCode(String memberNo, String newStatusCode);
 }

@@ -19,6 +19,7 @@
         <result property="memberPhone" column="m_phone" />
         <result property="memberAddress" column="m_addr" />
         <result property="memberNick" column="m_nick" />
+        <result property="memberStatus" column="status_code" />
     </resultMap>
 
     <!-- Read -->
@@ -55,5 +56,9 @@
         UPDATE member SET m_addr = #{newMemberAddress}
         WHERE m_no = #{memberNo}
     </update>
-    
+
+    <update id="updateStatusCode" parameterType="map">
+        UPDATE member SET status_code = #{newStatusCode}
+        WHERE m_no = #{memberNo}
+    </update>
 </mapper>
