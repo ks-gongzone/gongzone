@@ -145,4 +145,21 @@ public class MyInfoServiceImpl implements MyInfoService {
         System.out.println("회원정보" + member);
         return member;
     }
+
+    @Override
+    public void updateStatusCode(String memberNo, String newStatusCode) {
+        Member existMember = myInfoMapper.findByNo(memberNo);
+
+        if (existMember == null) {
+            System.out.println("회원이 존재하지 않습니다.");
+            throw new RuntimeException("해당 유저가 존재하지 않습니다.");
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberNo", memberNo);
+        params.put("newStatusCode", newStatusCode);
+
+        myInfoMapper.updateStatusCode(params);
+        System.out.println("상태 코드 수정 완료");
+    }
+
 }
