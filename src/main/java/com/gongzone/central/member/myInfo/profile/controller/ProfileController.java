@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -94,6 +95,23 @@ public class ProfileController {
             }
         } catch (Exception e) {
             System.out.println("[컨트롤러] 프로필 조회 실패: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    // 전체 회원 프로필 사진 조회
+    @GetMapping("/allProfiles")
+    public ResponseEntity<List<Profile>> getAllProfiles() {
+        try {
+            List<Profile> profiles = profileService.getAllProfiles();
+            if (profiles != null) {
+                System.out.println("[컨트롤러] 전체 회원 프로필" + profiles);
+                return ResponseEntity.ok(profiles);
+            } else {
+                return ResponseEntity.status(404).body(null);
+            }
+        } catch (Exception e) {
+            System.out.println("[컨트롤러] 전체 프로필 조회 실패: " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
     }

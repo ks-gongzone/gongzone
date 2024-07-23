@@ -79,11 +79,22 @@
         WHERE file_usage = #{fileUsage}
     </select>
 
-    <select id="getProfileByMemberNo" resultType="com.gongzone.central.file.domain.FileUpload" parameterType="string">
-        SELECT f.*
-        FROM file f
-        JOIN file_relation fr ON f.file_no = fr.file_no
-        WHERE fr.file_usage = #{memberNo}
+    <!-- 전체 회원 프로필조회 -->
+    <select id="getAllProfiles" resultMap="ProfileResultMap">
+        SELECT
+            m.m_no,
+            fr.file_relation_no,
+            fr.file_no,
+            fr.file_usage,
+            f.file_no AS fileIdx,
+            f.file_original_name,
+            f.file_new_name,
+            f.file_path,
+            f.file_size,
+            f.file_date
+        FROM
+            member m
+        LEFT JOIN file_relation fr ON m.m_no = fr.file_usage
+        LEFT JOIN file f ON fr.file_no = f.file_no
     </select>
-
 </mapper>

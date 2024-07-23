@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/alertSSE")
@@ -38,5 +42,10 @@ public class AlertSEEController {
     @PostMapping("/updateDelete/{alertNo}")
     public Mono<Void> updateDeleteAlertSSE(@PathVariable int alertNo) {
         return alertSEEService.updateDeleteAlertSSE(alertNo);
+    }
+
+    @GetMapping("/AlertSSEListAndCount/{memberNo}")
+    public Mono<List<Map<String, Object>>> getAlertListAndCount(@PathVariable String memberNo) {
+        return alertSEEService.countNewAlerts(memberNo);
     }
 }

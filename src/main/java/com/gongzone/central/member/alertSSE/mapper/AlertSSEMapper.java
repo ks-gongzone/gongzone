@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Mapper
 public interface AlertSSEMapper {
@@ -17,4 +19,5 @@ public interface AlertSSEMapper {
     void updateReadTimeAlertSSE(int noteNo);
     void updateDeleteAlertSSE(int noteNo);
     AlertAllow getAlertAllow(String memberNo);
+    List<Map<String, Object>> countNewAlerts(String memberNo);
 }
