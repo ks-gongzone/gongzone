@@ -74,4 +74,17 @@
         WHERE note_no = #{noteNo}
     </update>
 
+    <!-- 쪽지 카운트와 세부 정보 조회 -->
+    <select id="countNewNotes" resultType="map">
+        SELECT
+        COUNT(*) AS noteCount,
+        note_body AS noteBody
+        FROM
+        note
+        WHERE
+        m_target_no = #{memberNo}
+        AND note_read_time IS NULL
+        GROUP BY note_body
+        ORDER BY note_send_time DESC
+    </select>
 </mapper>

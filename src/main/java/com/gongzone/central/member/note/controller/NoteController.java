@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -42,5 +45,10 @@ public class NoteController {
     @PostMapping("/note/updateDeleteTarget/{noteNo}")
     public Mono<Void> updateDeleteNoteTarget(@PathVariable int noteNo) {
         return noteService.updateDeleteNoteTarget(noteNo);
+    }
+
+    @GetMapping("/note/countNewNotes/{memberNo}")
+    public Mono<List<Map<String, Object>>> countNewNotes(@PathVariable String memberNo) {
+        return noteService.countNewNotes(memberNo);
     }
 }

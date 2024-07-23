@@ -219,6 +219,17 @@ public class MyInfoController {
             return ResponseEntity.status(404).build();
         }
     }
+
+    @PostMapping("/{memberNo}/updateStatus")
+    public ResponseEntity<String> updateStatus(@PathVariable String memberNo, @RequestBody MyInformation myInformation, Authentication authentication) {
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String extractedMemberNo = jwtUtil.extractMemberNo(token);
+
+        if (!extractedMemberNo.equals(memberNo)) {
+            return ResponseEntity.status(403).body("유효 토큰이 아닙니다.");
+        }
+
+        myInfoService.updateStatusCode(memberNo, myInformation.getNewStatusCode());
+        return ResponseEntity.ok("상태 코드 변경 성공.");
+    }
 }
-
-
