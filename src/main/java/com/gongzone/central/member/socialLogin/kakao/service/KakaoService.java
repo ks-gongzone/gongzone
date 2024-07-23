@@ -100,8 +100,7 @@ public class KakaoService {
 
             String socialAccessToken = (String) parse.get("access_token");
             String socialRefreshToken = (String) parse.get("refresh_token");
-            String expiresInStr = String.valueOf(parse.get("expires_in"));
-            long expiresIn = Long.parseLong(expiresInStr);
+            Long expiresIn = (Long) parse.get("expires_in");
 
             headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + socialAccessToken);
@@ -134,8 +133,9 @@ public class KakaoService {
                 result.put("socialMember", socialMember);
                 result.put("isNewMember", true);
             } else {
-                updateTokens(member.getMemberNo(), socialMember);
                 checkStatusCode.checkStatus(member.getMemberNo(), response);
+
+                updateTokens(member.getMemberNo(), socialMember);
 
                 Point point = pointService.getPoint(member.getMemberNo());
                 MemberDetails memberDetails = new MemberDetails(member, point);

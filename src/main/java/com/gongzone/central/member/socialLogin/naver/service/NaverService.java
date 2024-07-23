@@ -31,6 +31,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,12 +45,13 @@ public class NaverService {
     private final MemberMapper memberMapper;
     private final TokenMapper tokenMapper;
     private final PointMapper pointMapper;
+    private final PointService pointService;
     private final JwtUtil jwtUtil;
     private final Lock lock = new ReentrantLock();
+
     private final CheckStatusCode checkStatusCode;
     private final HttpServletResponse response;
     private final LoginLogService loginLogService;
-    private final PointService pointService;
     private final LoginMapper loginMapper;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
@@ -66,13 +69,13 @@ public class NaverService {
     @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
     private String NAVER_USER_INFO_URI;
 
-    public SocialMember naverToken(String code, String userAgent) throws Exception {
+    public Map<String, Object> naverToken(String code, String userAgent) throws Exception {
         lock.lock();
+        Map<String, Object> result = new HashMap<>();
+
         LoginLog loginLog = new LoginLog();
         String browser = loginLogService.getloginBrowserByCode(userAgent);
-        System.out.println("browser = " + browser);
         loginLog.setLoginBrowser(browser);
-        System.out.println("loginLog.getLoginBrowser() : " + loginLog.getLoginBrowser());
 
         try {
             RestTemplate rt = new RestTemplate();
@@ -115,7 +118,6 @@ public class NaverService {
             String phoneNumber = (String) responseParse.get("mobile_e164");
             String gender = (String) responseParse.get("gender");
 
-
             SocialMember socialMember = new SocialMember();
             socialMember.setProvider("naver");
             socialMember.setName(name);
@@ -131,6 +133,7 @@ public class NaverService {
 
             if (member == null) {
                 member = saveMember(socialMember);
+                result.put("socialMember", socialMember);
             } else {
                 checkStatusCode.checkStatus(member.getMemberNo(), response);
                 updateTokens(member.getMemberNo(), socialMember);
@@ -151,7 +154,9 @@ public class NaverService {
             loginLog.setMemberNo(socialMember.getMemberNo());
             loginLogService.logLoginAttempt(loginLog);
 
-            return socialMember;
+            result.put("socialMember", socialMember);
+
+            return result;
         } catch (Exception e) {
             int loginNo = loginMapper.loginNoByuserAgent(browser);
             loginLogService.logLoginFailure(loginNo);

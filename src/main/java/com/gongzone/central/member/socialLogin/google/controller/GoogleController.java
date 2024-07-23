@@ -1,9 +1,9 @@
 package com.gongzone.central.member.socialLogin.google.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import com.gongzone.central.member.socialLogin.domain.SocialRequest;
 import com.gongzone.central.member.socialLogin.google.service.GoogleService;
-import com.gongzone.central.member.socialLogin.domain.SocialMember;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
