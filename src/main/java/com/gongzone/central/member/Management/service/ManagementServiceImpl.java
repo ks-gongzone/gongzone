@@ -9,6 +9,7 @@ import com.gongzone.central.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,7 +20,25 @@ public class ManagementServiceImpl implements ManagementService {
 
     @Override
     public List<Member> getAllMembers() {
-        return managementMapper.findAll();
+        List<Member> lists = managementMapper.findAll();
+        List<Member> converList = new ArrayList<Member>();
+        lists.forEach(member -> {
+            converList.add(
+                    Member.builder()
+                            .memberNo(member.getMemberNo())
+                            .memberLevel(member.getMemberLevel())
+                            .memberEmail(member.getMemberEmail())
+                            .memberStatus(StatusCode.getDescriptionByCode(member.getMemberStatus()))
+                            .memberId(member.getMemberId())
+                            .memberPhone(member.getMemberPhone())
+                            .memberGender(member.getMemberGender())
+                            .memberAddress(member.getMemberAddress())
+                            .memberBirthday(member.getMemberBirthday())
+                            .memberNick(member.getMemberNick())
+                            .build()
+            );
+        });
+        return converList;
     }
 
     @Override

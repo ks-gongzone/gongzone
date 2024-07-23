@@ -6,6 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AlertSEEService {
 
@@ -15,4 +16,5 @@ public interface AlertSEEService {
     Mono<Void> updateReadAlertSSE(int alertNo);
     Mono<Void> updateDeleteAlertSSE(int alertNo);
     Mono<Void> sendAlert(AlertSSE alertSSE);
+    Mono<List<Map<String, Object>>> countNewAlerts(String memberNo);
 }

@@ -4,6 +4,7 @@ import com.gongzone.central.member.alertSSE.service.AlertSEEService;
 import com.gongzone.central.member.question.domain.QuestionMember;
 import com.gongzone.central.member.question.mapper.QuestionMapper;
 import com.gongzone.central.utils.StatusCode;
+import com.gongzone.central.utils.TypeCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionMember> getAllQuestionMembers() {
-        return questionMapper.findQuestionAll();
+        List<QuestionMember> questionMembers = questionMapper.findQuestionAll();
+        questionMembers.forEach(questionMember -> {
+            questionMember.setStatusCode(StatusCode.getDescriptionByCode(questionMember.getStatusCode()));
+            questionMember.setTypeCode(TypeCode.getDescriptionByCode(questionMember.getTypeCode()));
+        });
+        return questionMembers;
     }
 
     @Override

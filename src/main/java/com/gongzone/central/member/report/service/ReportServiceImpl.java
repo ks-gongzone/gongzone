@@ -4,6 +4,7 @@ import com.gongzone.central.member.report.domain.ReportMember;
 import com.gongzone.central.member.report.domain.ReportStatistical;
 import com.gongzone.central.member.report.mapper.ReportMapper;
 import com.gongzone.central.utils.StatusCode;
+import com.gongzone.central.utils.TypeCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,12 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ReportMember> getAllReportMember() {
-        return reportMapper.findReportAll();
+        List<ReportMember> reportMembers = reportMapper.findReportAll();
+        reportMembers.forEach(reportMember -> {
+            reportMember.setStatusCode(StatusCode.getDescriptionByCode(reportMember.getStatusCode()));
+            reportMember.setTypeCode(TypeCode.getDescriptionByCode(reportMember.getTypeCode()));
+        });
+        return reportMembers;
     }
 
     // 제재하는경우 인서트문 필요
