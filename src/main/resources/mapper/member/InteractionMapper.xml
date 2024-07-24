@@ -7,6 +7,7 @@
     <resultMap id="interactionMemberResultMap" type="com.gongzone.central.member.myInfo.interaction.domain.InteractionMember">
         <id     property="memberNo"     column="m_no" />
         <result property="memberName"   column="m_name" />
+        <result property="memberNick"   column="m_nick" />
         <result property="gender"       column="m_gender" />
         <!-- 테이블에 존재하지 않는 가상 컬럼 생성 -->
         <result property="isFollowing"  column="isFollowing"/>
@@ -32,6 +33,7 @@
         SELECT
             m.m_no,
             m.m_name,
+            m.m_nick,
             m.m_gender,
             CASE
                 WHEN f.m_no IS NOT NULL THEN TRUE

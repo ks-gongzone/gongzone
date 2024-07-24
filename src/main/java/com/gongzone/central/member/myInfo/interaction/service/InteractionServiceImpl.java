@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -28,13 +30,28 @@ public class InteractionServiceImpl implements InteractionService{
             int size) {
         System.out.println("[서비스] findAllMembers 메서드: " + currentUserNo);
         int offset = (page - 1) * size;
-        List<InteractionMember> members = interactionMapper.findAllMembers(currentUserNo, memberName, offset, size);
-        for (InteractionMember member : members) {
-            // filterData(member, currentUserNo, member.getMemberNo(), searchQuery);
-            System.out.println("[서비스] 회원 번호 " + member.getMemberNo() + " 위험유저 여부 " + member.isWarning());
+        List<InteractionMember> allMembers = new ArrayList<>();
+        int totalMembers = interactionMapper.getTotalMembers(memberName);
+
+        while (allMembers.size() < size && offset < totalMembers) {
+            List<InteractionMember> members = interactionMapper.findAllMembers(currentUserNo, memberName, offset, size);
+            List<InteractionMember> filteredMembers = members.stream()
+                    .filter(member -> !member.getMemberNo().equals("M000001") || currentUserNo.equals("M000001"))
+                    .collect(Collectors.toList());
+
+            allMembers.addAll(filteredMembers);
+            offset += size;
+
+            // 중복 추가 방지를 위해 size만큼 데이터를 가져온 후 필터링된 리스트로 업데이트
+            if (allMembers.size() > size) {
+                allMembers = allMembers.subList(0, size);
+            }
         }
-        return members;
+
+        // 최종 필터링된 리스트 반환
+        return allMembers;
     }
+
 
     @Override
     public int getTotalMembers(String memberName) {

@@ -115,4 +115,23 @@ public class ProfileController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    // 파일 파싱 API
+    @PostMapping("/parseFile")
+    public ResponseEntity<FileUpload> parseFile(Authentication authentication, @RequestParam("file") MultipartFile file) {
+        String token = ((MemberDetails) authentication.getPrincipal()).getToken();
+        String memberNo = jwtUtil.extractMemberNo(token);
+
+        if (memberNo == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+
+        try {
+            FileUpload fileUpload = profileService.parseFile(file);
+            return ResponseEntity.status(200).body(fileUpload);
+        } catch (Exception e) {
+            System.out.println("파일 파싱 실패: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

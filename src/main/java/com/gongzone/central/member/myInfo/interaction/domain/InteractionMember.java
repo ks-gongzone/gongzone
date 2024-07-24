@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class InteractionMember {
     private final String memberNo; // memberNo와 targetMemberNo 구분해서 사용
     private final String memberName;
+    private final String memberNick;
     private final char gender; // 성별은 남,녀를 M와 F으로 구분 male과 female
     private final boolean isFollowing;
     private final boolean isBlocked;
