@@ -14,4 +14,5 @@ public interface ProfileService {
     FileUpload updateProfilePicture(String memberNo, MultipartFile file);
     // 전체 회원의 프로필사진 조회
     List<Profile> getAllProfiles();
+    FileUpload parseFile(MultipartFile file);
 }

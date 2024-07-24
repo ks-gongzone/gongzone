@@ -106,4 +106,10 @@ public class ProfileServiceImpl implements ProfileService {
         }
         return profiles;
     }
+
+    // 프로필 편집 시 필요한 파일 파싱 데이터
+    public FileUpload parseFile(MultipartFile file) {
+        System.out.println("[파일파싱 서비스 시작]");
+        return fileUtil.parseFileInfo(file);
+    }
 }
