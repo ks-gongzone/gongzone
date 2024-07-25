@@ -119,5 +119,5 @@
 2) 백엔드 <br>
    git clone https://github.com/ks-gongzone/gongzone.git
 
-2. 애플리케이션 실행
+2. 애플리케이션 실행 <br>
    CentralApplication.java
