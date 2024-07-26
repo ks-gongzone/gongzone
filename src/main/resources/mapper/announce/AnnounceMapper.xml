@@ -28,7 +28,7 @@
             t.code_description
         FROM announce AS a
         INNER JOIN type_code AS t ON a.type_code = t.type_code
-        ORDER BY a.announce_no DESC
+        ORDER BY a.announce_date DESC
         LIMIT #{offset}, #{limit}
     </select>
     <!-- 타입 별 공지 조회 -->
