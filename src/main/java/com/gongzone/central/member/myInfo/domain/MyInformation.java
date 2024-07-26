@@ -18,9 +18,6 @@ public class MyInformation {
     private String newMemberNick; // null 가능
     private String newMemberAddress; // null 가능
     
-    private String statusCode; // 기존 코드
-    private String newStatusCode; // 새로운 코드
-
-    // private String currentMemberPhone;
-    // private String newMemberPhone;
+    private String statusCode;
+    private String newStatusCode;
 }
