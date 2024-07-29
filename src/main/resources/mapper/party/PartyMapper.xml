@@ -67,17 +67,16 @@
             pm.p_no AS partyNo,
             pm.pm_price AS requestPrice,
             pm.p_member_no AS partyMemberNo,
-            pr.r_no AS receptionNo
+            pr.r_no AS receptionNo,
+            COALESCE(pp.status_code, 'CodeNull') AS purchaseCode
         FROM
             party_member AS pm
                 INNER JOIN
-            member AS m
-            ON
-                pm.m_no = m.m_no
+            member AS m ON pm.m_no = m.m_no
                 LEFT JOIN
-            party_reception AS pr
-            ON
-                pm.p_member_no = pr.p_member_no
+            party_reception AS pr ON pm.p_member_no = pr.p_member_no
+                LEFT JOIN
+            party_purchase AS pp ON pm.p_member_no = pp.p_member_no
         WHERE
             pm.p_no = #{partyNo};
     </select>

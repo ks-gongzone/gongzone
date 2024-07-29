@@ -23,4 +23,5 @@ public class LocationSearch {
     private String price;
     private String partyNo;
     private Date endDate;
+    private String filePath;
 }
