@@ -21,9 +21,9 @@
   <insert id="insert">
     -- WithdrawMapper.insert: 포인트 인출 정보를 삽입한다.
     INSERT INTO point_withdraw
-      (point_history_no, withdraw_bank, withdraw_account, withdraw_name, withdraw_amount, status_code)
+      (point_history_no, withdraw_bank, withdraw_account, withdraw_name, withdraw_amount)
     VALUES
-      (#{pointHistoryNo}, #{withdrawBank}, #{withdrawAccount}, #{withdrawName}, #{withdrawAmount}, #{status});
+      (#{pointHistoryNo}, #{withdrawBank}, #{withdrawAccount}, #{withdrawName}, #{withdrawAmount});
   </insert>
 
   <select id="get" parameterType="String" resultMap="WithdrawResultMap">
