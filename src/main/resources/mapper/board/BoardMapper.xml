@@ -4,6 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gongzone.central.board.mapper.BoardMapper">
+    <update id="updatePartyPeriodStatus">
+        <![CDATA[
+        UPDATE party
+            JOIN board ON party.b_no = board.b_no
+            SET party.status_code = 'S060110'
+        WHERE board.b_period < NOW()
+          AND party.status_code = 'S060101';
+        ]]>
+    </update>
+
     <update id="updateBoardPeriodStatus">
         <![CDATA[
         UPDATE board
