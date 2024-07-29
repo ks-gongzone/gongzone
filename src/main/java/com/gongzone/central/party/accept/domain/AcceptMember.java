@@ -20,4 +20,5 @@ public class AcceptMember {
     private int requestPrice;
     private String partyMemberNo;
     private String receptionNo;
+    private String purchaseCode;
 }

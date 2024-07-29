@@ -21,11 +21,14 @@
             * cos(radians(l.location_y) - radians(#{longitude}))
             + sin(radians(#{latitude}))
             * sin(radians(l.location_x))
-            )) AS distance
+            )) AS distance,
+            f.file_path AS filePath
         FROM
             location AS l
             INNER JOIN board AS b ON l.b_no = b.b_no
             INNER JOIN party AS p ON p.b_no = b.b_no
+            INNER JOIN file_relation AS fr ON fr.file_usage = b.b_no
+            INNER JOIN file AS f ON fr.file_no = f.file_no
         HAVING
             distance <![CDATA[ <= ]]> 1
         ORDER BY
