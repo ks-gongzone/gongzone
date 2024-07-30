@@ -3,7 +3,7 @@ package com.gongzone.central.party.accept.service;
 import com.gongzone.central.board.domain.BoardReply;
 import com.gongzone.central.board.mapper.BoardMapper;
 import com.gongzone.central.member.alertSSE.domain.AlertSSE;
-import com.gongzone.central.member.alertSSE.service.AlertSEEService;
+import com.gongzone.central.member.alertSSE.service.AlertSSEService;
 import com.gongzone.central.member.mapper.MemberMapper;
 import com.gongzone.central.party.accept.domain.AcceptDetail;
 import com.gongzone.central.party.accept.domain.AcceptMember;
@@ -28,7 +28,7 @@ public class AcceptServiceImpl implements AcceptService {
 	private final AcceptMapper acceptMapper;
 	private final BoardMapper boardMapper;
 	private final MemberMapper memberMapper;
-	private final AlertSEEService alertSEEService;
+	private final AlertSSEService alertSSEService;
 
 	@Override
 	public PartyMemberPurchase getPurchaseInfo(String memberNo, String partyNo) {
@@ -215,18 +215,18 @@ public class AcceptServiceImpl implements AcceptService {
 		System.out.println("2222222222222222222");
 		System.out.println("newLastPartyMemberNo : " + memberNo);
 		return Mono.fromCallable(() -> {
-					   AlertSSE alertSSE = new AlertSSE();
-					   alertSSE.setMemberNo(memberNo);
-					   alertSSE.setTypeCode("T010206"); // 알림 유형 코드
-					   alertSSE.setAlertDetail("파티에 수락되었습니다.");
-					   return alertSSE;
-				   })
-				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
-				   .subscribeOn(Schedulers.boundedElastic())
-				   .doOnError(e -> {
-					   e.printStackTrace();
-				   })
-				   .then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
+					AlertSSE alertSSE = new AlertSSE();
+					alertSSE.setMemberNo(memberNo);
+					alertSSE.setTypeCode("T010206"); // 알림 유형 코드
+					alertSSE.setAlertDetail("파티에 수락되었습니다.");
+					return alertSSE;
+				})
+				.flatMap(alertSSE -> alertSSEService.sendAlert(alertSSE))
+				.subscribeOn(Schedulers.boundedElastic())
+				.doOnError(e -> {
+					e.printStackTrace();
+				})
+				.then(); // sendAlert의 반환 타입을 Mono<Void>로 변경
 	}
 
 	private Mono<Void> requestAlert(String memberNo) {
@@ -241,7 +241,7 @@ public class AcceptServiceImpl implements AcceptService {
 					   alertSSE.setAlertDetail("파티 신청이 있습니다.");
 					   return alertSSE;
 				   })
-				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .flatMap(alertSSE -> alertSSEService.sendAlert(alertSSE)) // 단일 줄로 변경
 				   .subscribeOn(Schedulers.boundedElastic())
 				   .doOnError(e -> {
 					   e.printStackTrace();
@@ -261,7 +261,7 @@ public class AcceptServiceImpl implements AcceptService {
 					   alertSSE.setAlertDetail("파티에서 강퇴되었습니다.");
 					   return alertSSE;
 				   })
-				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .flatMap(alertSSE -> alertSSEService.sendAlert(alertSSE)) // 단일 줄로 변경
 				   .subscribeOn(Schedulers.boundedElastic())
 				   .doOnError(e -> {
 					   e.printStackTrace();
@@ -281,7 +281,7 @@ public class AcceptServiceImpl implements AcceptService {
 					   alertSSE.setAlertDetail("파티 모집이 완료되었습니다. 결제를 진행해주세요!");
 					   return alertSSE;
 				   })
-				   .flatMap(alertSSE -> alertSEEService.sendAlert(alertSSE)) // 단일 줄로 변경
+				   .flatMap(alertSSE -> alertSSEService.sendAlert(alertSSE)) // 단일 줄로 변경
 				   .subscribeOn(Schedulers.boundedElastic())
 				   .doOnError(e -> {
 					   e.printStackTrace();

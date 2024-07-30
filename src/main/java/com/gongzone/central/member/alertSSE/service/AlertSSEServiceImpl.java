@@ -8,17 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
-public class AlertSEEServiceImpl implements AlertSEEService {
+public class AlertSSEServiceImpl implements AlertSSEService {
 
     private final AlertSSEMapper alertSSEMapper;
+    private final Map<String, Sinks.Many<AlertSSE>> sinks = new ConcurrentHashMap<>();
 
     @Override
     public Mono<AlertSSE> getAlertSSEBYNo(int alertNo) {
@@ -64,9 +66,11 @@ public class AlertSEEServiceImpl implements AlertSEEService {
                     alertAllow.setMemberNo(alertSSE.getMemberNo());
                     if (shouldSendAlert(alertAllow, alertType)) {
                         return Mono.fromCallable(() -> {
-                            alertSSEMapper.insertAlertSSE(alertSSE);
-                            return (Void) null;
-                        }).subscribeOn(Schedulers.boundedElastic());
+                                    alertSSEMapper.insertAlertSSE(alertSSE);
+                                    return (Void) null;
+                                }).subscribeOn(Schedulers.boundedElastic())
+                                .then()
+                                .doOnSuccess(unused -> emitAlert(alertSSE));
                     } else {
                         return Mono.error(new RuntimeException("Alert not allowed for type: " + alertType.toString()));
                     }
@@ -102,5 +106,20 @@ public class AlertSEEServiceImpl implements AlertSEEService {
     public Mono<List<Map<String, Object>>> countNewAlerts(String memberNo) {
         return Mono.fromCallable(() -> alertSSEMapper.countNewAlerts(memberNo))
                 .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Flux<AlertSSE> streamAlerts(String memberNo) {
+        return sinks.computeIfAbsent(memberNo, k -> Sinks.many().multicast().onBackpressureBuffer())
+                .asFlux()
+                .doOnCancel(() -> sinks.remove(memberNo));
+    }
+
+    @Override
+    public void emitAlert(AlertSSE alertSSE) {
+        Sinks.Many<AlertSSE> sink = sinks.get(alertSSE.getMemberNo());
+        if (sink != null) {
+            sink.tryEmitNext(alertSSE);
+        }
     }
 }
