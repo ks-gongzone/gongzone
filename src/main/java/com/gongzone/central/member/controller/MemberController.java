@@ -4,7 +4,6 @@ import com.gongzone.central.member.domain.Member;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.service.MemberService;
-import com.gongzone.central.point.domain.Point;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,8 +26,8 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> register(@RequestBody Member member) {
         Map<String, Object> result = new HashMap<>();
         try {
-            boolean registeredMember  = memberService.registerMember(member);
-            if (registeredMember ) {
+            boolean registeredMember = memberService.registerMember(member);
+            if (registeredMember) {
                 result.put("success", true);
             } else {
                 result.put("success", false);
@@ -46,7 +44,7 @@ public class MemberController {
     public ResponseEntity<Boolean> findMemberById(@RequestBody Map<String, String> request) {
         String memberId = request.get("memberId");
         Boolean checkId = memberService.getMemberById(memberId);
-        if(!checkId) {
+        if (!checkId) {
             return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.ok(false);
@@ -57,7 +55,7 @@ public class MemberController {
     public ResponseEntity<Boolean> findMemberByEmail(@RequestBody Map<String, String> request) {
         String memberEmail = request.get("memberEmail");
         Boolean checkEmail = memberService.getMemberByEmail(memberEmail);
-        if(!checkEmail) {
+        if (!checkEmail) {
             return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.ok(false);

@@ -41,6 +41,7 @@ public class SecurityConfig {
 			"/api/attachement/**",
 			"/api/note/**",
 			"/api/alertSSE/**",
+			"/api/alertSSE/stream/**",
 			"api/logout"
 	};
 

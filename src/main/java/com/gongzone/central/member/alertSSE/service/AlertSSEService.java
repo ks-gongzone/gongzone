@@ -1,6 +1,5 @@
 package com.gongzone.central.member.alertSSE.service;
 
-import com.gongzone.central.member.alertSSE.domain.AlertAllow;
 import com.gongzone.central.member.alertSSE.domain.AlertSSE;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -8,7 +7,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
-public interface AlertSEEService {
+public interface AlertSSEService {
 
     Mono<AlertSSE> getAlertSSEBYNo(int alertNo);
     Flux<AlertSSE> getAlertSSEByMemberNo(String memberNo);
@@ -17,4 +16,6 @@ public interface AlertSEEService {
     Mono<Void> updateDeleteAlertSSE(int alertNo);
     Mono<Void> sendAlert(AlertSSE alertSSE);
     Mono<List<Map<String, Object>>> countNewAlerts(String memberNo);
+    Flux<AlertSSE> streamAlerts(String memberNo);
+    void emitAlert(AlertSSE alertSSE);
 }

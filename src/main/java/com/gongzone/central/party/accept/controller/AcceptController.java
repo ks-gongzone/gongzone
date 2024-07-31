@@ -20,17 +20,13 @@ public class AcceptController {
 
     @GetMapping("/party/accept/{memberNo}")
     public List<AcceptDetail> getPartyList(@PathVariable String memberNo) {
-        System.out.println("Received request for party ID: " + memberNo);
         List<AcceptDetail> detail = acceptService.getListParty(memberNo);
-        System.out.println("Returning detail: " + detail);
         return detail;
     }
 
     @GetMapping("/party/detail/{partyNo}")
     public AcceptDetail getPartyDetail(@PathVariable String partyNo) {
-        System.out.println("Received request for party ID: " + partyNo);
         AcceptDetail detail = acceptService.getPartyDetailByPartyNo(partyNo);
-        System.out.println("Returning detail: " + detail);
         return detail;
     }
 
@@ -48,15 +44,11 @@ public class AcceptController {
     @GetMapping("/alertSSE/party/accept/{memberNo}/requestmember")
     public List<RequestMember> getRequestMember(@PathVariable String memberNo) {
         List<RequestMember> requestMember = acceptService.getRequestMember(memberNo);
-        System.out.println("Request members returned to client: " + requestMember);
         return requestMember;
     }
 
     @PostMapping("/alertSSE/party/accept/{memberNo}/Status")
     public Mono<ResponseEntity<String>> updateStatus(@PathVariable String memberNo, @RequestBody RequestStatus requestStatus) {
-        System.out.println("1111111111111111111");
-        System.out.println("1111111111111111111");
-        System.out.println("1111111111111111111");
         try {
             StatusCode status = StatusCode.fromCode(requestStatus.getStatusCode());
             return acceptService.getPartyStatusByNo(memberNo, requestStatus.getPartyNo(), status, requestStatus.getRequestAmount())

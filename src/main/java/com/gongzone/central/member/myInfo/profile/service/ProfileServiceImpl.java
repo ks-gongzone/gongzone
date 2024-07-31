@@ -27,20 +27,16 @@ public class ProfileServiceImpl implements ProfileService {
         if (fileUpload == null) {
             throw new RuntimeException("파일 파싱 실패");
         }
-        System.out.println("[서비스] 파일 정보 파싱 완료: " + fileUpload);
         // 2. 파일 정보 저장
         profileMapper.addFile(fileUpload);
-        System.out.println("[서비스] 파일 정보 저장 완료: " + fileUpload);
         // 3. 방금 삽입된 파일의 file_no 가져오기
         int fileNo = fileUpload.getFileIdx();
-        System.out.println("삽입된 파일번호: " + fileNo);
         // 4. 프로필 사진 정보 저장
         Profile profile = Profile.builder()
                 .fileNo(fileNo)
                 .fileUsage(memberNo)
                 .build();
         profileMapper.addFileRelation(profile);
-        System.out.println("[서비스] 파일 업로드 성공: " + memberNo);
     }
 
     @Override
@@ -51,10 +47,8 @@ public class ProfileServiceImpl implements ProfileService {
         if (fileUpload == null) {
             throw new IllegalArgumentException("파일 파싱 실패");
         }
-        System.out.println("[서비스] 파일 정보 파싱 완료: " + fileUpload); // 1. 콘솔 출력
         // 2. 파일 정보 저장
         profileMapper.addFile(fileUpload);
-        System.out.println("[서비스] 파일 정보 저장 완료: " + fileUpload); // 2. 콘솔 출력
         // 3. file_relation 업데이트
         Profile profile = Profile.builder()
                 .fileNo(fileUpload.getFileIdx())
@@ -62,10 +56,8 @@ public class ProfileServiceImpl implements ProfileService {
                 .build();
         if (profileMapper.existsFileRelation(memberNo)) {
             profileMapper.updateFileRelation(profile);
-            System.out.println("[서비스] 파일 릴레이션 업데이트 완료: " + profile); // 3. 콘솔 출력
         } else {
             profileMapper.addFileRelation(profile);
-            System.out.println("[서비스] 파일 릴레이션 추가 완료: " + profile); // 4. 콘솔 출력
         }
         return fileUpload; // 변경된 부분: 반환 타입이 void에서 FileUpload로 변경되었습니다.
     }
@@ -75,17 +67,10 @@ public class ProfileServiceImpl implements ProfileService {
     public Profile getProfile(String memberNo) {
         Profile profile = profileMapper.getProfile(memberNo);
         if (profile == null) {
-            System.out.println("프로필 조회 결과: " + profile);
-        } else {
-            System.out.println("[서비스 시작] 회원 번호: " + memberNo);
-            System.out.println("[서비스]프로필 정보: " + profile);
-            System.out.println("작성 글 수: " + profile.getBoardCount());
-            System.out.println("팔로워 수: " + profile.getFollower());
-            System.out.println("팔로잉 수: " + profile.getFollowing());
 
+        } else {
             // 파일 데이터 출력
             if (profile.getFiles() != null && !profile.getFiles().isEmpty()) {
-                System.out.println("파일: " + profile.getFiles().get(0));
             }
         }
         return profile;
@@ -96,9 +81,7 @@ public class ProfileServiceImpl implements ProfileService {
     public List<Profile> getAllProfiles() {
         List<Profile> profiles = profileMapper.getAllProfiles();
         if (profiles != null && !profiles.isEmpty()) {
-            System.out.println("[서비스] 전체 회원 프로필 조회 성공");
             for (Profile profile : profiles) {
-                System.out.println("[서비스] 회원 번호: " + profile.getMemberNo());
                 if (profile.getFiles() != null && !profile.getFiles().isEmpty()) {
                     System.out.println("파일: " + profile.getFiles().get(0));
                 }
@@ -109,7 +92,6 @@ public class ProfileServiceImpl implements ProfileService {
 
     // 프로필 편집 시 필요한 파일 파싱 데이터
     public FileUpload parseFile(MultipartFile file) {
-        System.out.println("[파일파싱 서비스 시작]");
         return fileUtil.parseFileInfo(file);
     }
 }

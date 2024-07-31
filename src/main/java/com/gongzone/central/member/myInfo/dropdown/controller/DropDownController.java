@@ -32,15 +32,12 @@ public class DropDownController {
         String extractedMemberNo = jwtUtil.extractMemberNo(token);
         String extractedPointNo = jwtUtil.extractPointNo(token);
 
-        System.out.println("[컨트롤러] 드롭다운 데이터 조회" + memberNo);
-
         if (!extractedMemberNo.equals(memberNo)) {
-            System.out.println("[컨트롤러] 로그인이 필요합니다.");
             return ResponseEntity.status(403).build();
         }
 
         DropDownInfo memberData = dropDownService.findByData(memberNo, extractedPointNo);
-        if(memberData != null) {
+        if (memberData != null) {
             DropDownInfo dropDownInfo = DropDownInfo.builder()
                     .memberNo(extractedMemberNo)
                     .memberName(memberData.getMemberName())

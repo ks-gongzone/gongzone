@@ -129,7 +129,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Board> getBoardInfo(String boardNo) {
-        System.out.println(boardNo);
         List<Board> response = boardMapper.getBoardInfo(boardNo);
         return response;
     }
@@ -152,7 +151,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Board> getBoardList(BoardSearchRequest request) {
-        System.out.println(request);
         List<Board> lists = boardMapper.getBoardList(request);
 
         String memberNo = request.getMemberNo();
