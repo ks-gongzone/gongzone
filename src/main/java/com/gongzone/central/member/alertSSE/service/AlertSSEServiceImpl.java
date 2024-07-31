@@ -50,15 +50,13 @@ public class AlertSSEServiceImpl implements AlertSSEService {
 
     @Override
     public Mono<Void> updateDeleteAlertSSE(int alertNo) {
-        return Mono.fromRunnable(() -> alertSSEMapper .updateDeleteAlertSSE(alertNo))
+        return Mono.fromRunnable(() -> alertSSEMapper.updateDeleteAlertSSE(alertNo))
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
 
     @Override
     public Mono<Void> sendAlert(AlertSSE alertSSE) {
-        System.out.println("알림 실행~~~~~~~");
-        System.out.println("alertSSE: " + alertSSE);
         return Mono.fromCallable(() -> alertSSEMapper.getAlertAllow(alertSSE.getMemberNo()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(alertAllow -> {

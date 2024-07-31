@@ -1,8 +1,8 @@
 package com.gongzone.central.member.myInfo.alert.service;
 
 import com.gongzone.central.member.domain.Member;
-import com.gongzone.central.member.myInfo.alert.mapper.AlertMapper;
 import com.gongzone.central.member.myInfo.alert.domain.MyAlert;
+import com.gongzone.central.member.myInfo.alert.mapper.AlertMapper;
 import com.gongzone.central.member.myInfo.service.MyInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,10 +25,8 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public MyAlert getAlertsByMemberNo(String memberNo) {
-        System.out.println("서비스 알람 MEMBER NO: " + memberNo);
         MyAlert alert = alertMapper.findAlertByMemberNo(memberNo);
         if (alert == null) {
-            System.out.println("getAlert: 새로운 알람 데이터 생성");
             alert = createDefaultAlert(memberNo);
         }
         return alert;
@@ -40,7 +38,6 @@ public class AlertServiceImpl implements AlertService {
             MyAlert existAlert = alertMapper.findAlertByMemberNo(myAlert.getMemberNo());
             setDefaultAlertValues(myAlert);
             if (existAlert == null) {
-                System.out.println("updateAlert: 새로운 알람 데이터 생성");
                 alertMapper.insertAlertSettings(myAlert);
             } else {
                 myAlert.setAlertAllowNo(existAlert.getAlertAllowNo());

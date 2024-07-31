@@ -1,13 +1,11 @@
 package com.gongzone.central.member.login.controller;
 
 import com.gongzone.central.member.login.domain.*;
-import com.gongzone.central.member.login.mapper.LoginMapper;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.CheckStatusCode;
 import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
-import com.gongzone.central.member.socialLogin.google.service.GoogleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +32,6 @@ public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final CheckStatusCode checkStatusCode;
     private final LoginLogService loginLogService;
-    private final GoogleService googleService;
-    private final LoginMapper loginMapper;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) throws AuthenticationException {

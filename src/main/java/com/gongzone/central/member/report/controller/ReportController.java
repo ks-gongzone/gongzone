@@ -75,7 +75,6 @@ public class ReportController {
     @PostMapping("/admin/statistical/report")
     public List<ReportStatistical> adminReportStatisticalDate() {
         List<ReportStatistical> reportStatisticals = reportService.getReportStatisticalDate();
-        System.out.println("reportStatisticals : " + reportStatisticals);
         return reportStatisticals;
     }
 }

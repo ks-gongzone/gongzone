@@ -1,6 +1,5 @@
 package com.gongzone.central.member.myInfo.interaction.controller;
 
-import com.gongzone.central.file.domain.FileUpload;
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.myInfo.interaction.domain.InteractionMember;
@@ -33,6 +32,7 @@ public class InteractionController {
         }
         return null;
     }
+
     /**
      * @작성일: 2024-07-11
      * @내용: [회원] 유저 조회 및 검색 조회
@@ -47,7 +47,6 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 비회원 상호 작용 조회 불가");
             return ResponseEntity.status(403).body(Collections.singletonMap("message", "비회원 상호 작용 조회 불가"));
         }
 
@@ -61,11 +60,9 @@ public class InteractionController {
 
         // 검색 조건에 해당하는 회원 조회
         if (searchQuery.isEmpty()) {
-            System.out.println("[컨트롤러] 전체 회원 조회");
             members = interactionService.findAllMembers(currentUserNo, memberName, searchQuery, page, size);
             totalMembers = interactionService.getTotalMembers(memberName);
         } else {
-            System.out.println("[컨트롤러] 검색어 수신: " + searchQuery);
             members = interactionService.findAllMembers(currentUserNo, "", searchQuery, page, size);
             totalMembers = interactionService.getTotalMembers(searchQuery);
         }
@@ -73,7 +70,6 @@ public class InteractionController {
         Map<String, Object> response = new HashMap<>();
         // 해당 메세지를 받으면 프론트에서 검색 첫페이지로 돌아가게함
         if (members.isEmpty()) {
-            System.out.println("[컨트롤러] 조회된 회원 정보 없음");
             response.put("message", "회원정보 없음");
             response.put("memberList", Collections.emptyList());
             response.put("currentPage", 1);
@@ -82,16 +78,13 @@ public class InteractionController {
             return ResponseEntity.ok(response);
         }
 
-        for (InteractionMember member : members) {
-            System.out.println("[컨트롤러] 회원 번호 " + member.getMemberNo() + " 위험유저 여부 " + member.isWarning());
-        }
-
         response.put("memberList", members);
         response.put("currentPage", page);
         response.put("totalCount", totalMembers);
         response.put("query", searchQuery);
         return ResponseEntity.ok(response);
     }
+
     /**
      * @내용: 특정 회원 팔로우 및 차단 목록 조회
      */
@@ -105,7 +98,6 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 비회원 상호 작용 조회 불가");
             return ResponseEntity.status(403).body(Collections.singletonMap("message", "비회원 상호 작용 조회 불가"));
         }
 
@@ -118,7 +110,6 @@ public class InteractionController {
         int totalMembers = followMembers.size();
 
         if (followMembers.isEmpty()) {
-            System.out.println("[컨트롤러] 조회된 회원 정보 없음");
             return ResponseEntity.status(404).body(Collections.singletonMap("message", "조회된 회원 정보 없음")); // 조회된 회원 정보가 없는 경우 404 반환
         }
 
@@ -139,7 +130,6 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 비회원 상호 작용 조회 불가");
             return ResponseEntity.status(403).body(Collections.singletonMap("message", "비회원 상호 작용 조회 불가"));
         }
 
@@ -152,7 +142,6 @@ public class InteractionController {
         int totalMembers = blockMembers.size();
 
         if (blockMembers.isEmpty()) {
-            System.out.println("[컨트롤러] 조회된 회원 정보 없음");
             return ResponseEntity.status(404).body(Collections.singletonMap("message", "조회된 회원 정보 없음")); // 조회된 회원 정보가 없는 경우 404 반환
         }
 
@@ -170,13 +159,10 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 팔로잉: 로그인 오류");
             return ResponseEntity.status(403).build();
         }
 
         String targetMemberNo = request.get("targetMemberNo");
-        System.out.println("[컨트롤러] 팔로잉 유저: " + currentUserNo);
-        System.out.println("[컨트롤러] 팔로잉 타겟: " + targetMemberNo);
 
         interactionService.followMember(currentUserNo, targetMemberNo);
         return ResponseEntity.ok().build();
@@ -189,13 +175,10 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 언팔로우: 로그인 오류");
             return ResponseEntity.status(403).build();
         }
 
         String targetMemberNo = request.get("targetMemberNo");
-        System.out.println("[컨트롤러] 언팔로우 유저: " + currentUserNo);
-        System.out.println("[컨트롤러] 언팔로우 타겟: " + targetMemberNo);
 
         interactionService.unFollowMember(currentUserNo, targetMemberNo);
         return ResponseEntity.ok().build();
@@ -208,13 +191,10 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 차단: 로그인 오류");
             return ResponseEntity.status(403).build();
         }
 
         String targetMemberNo = request.get("targetMemberNo");
-        System.out.println("[컨트롤러] 차단 유저: " + currentUserNo);
-        System.out.println("[컨트롤러] 차단 타겟: " + targetMemberNo);
 
         interactionService.blockMember(currentUserNo, targetMemberNo);
         return ResponseEntity.ok().build();
@@ -227,13 +207,10 @@ public class InteractionController {
 
         String currentUserNo = extractCurrentUserNo(authentication);
         if (currentUserNo == null) {
-            System.out.println("[컨트롤러] 차단 해제: 로그인 오류");
             return ResponseEntity.status(403).build();
         }
 
         String targetMemberNo = request.get("targetMemberNo");
-        System.out.println("[컨트롤러] 차단 해제 유저: " + currentUserNo);
-        System.out.println("[컨트롤러] 차단 해제 타겟: " + targetMemberNo);
 
         interactionService.unBlockMember(currentUserNo, targetMemberNo);
         return ResponseEntity.ok().build();
