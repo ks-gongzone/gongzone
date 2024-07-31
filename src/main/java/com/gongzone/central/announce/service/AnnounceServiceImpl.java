@@ -32,7 +32,6 @@ public class AnnounceServiceImpl implements AnnounceService {
 
     @Override
     public Announce findAnnounceDetail(int announceNo) {
-        System.out.println("[서비스]공지상세 조회: " + announceNo);
         return announceMapper.findAnnounceDetail(announceNo);
     }
 
@@ -43,7 +42,6 @@ public class AnnounceServiceImpl implements AnnounceService {
 
     @Override
     public void incrementViews(int announceNo) {
-        System.out.println("[서비스]조회수 증가 메서드 실행:" + announceNo);
         announceMapper.incrementViews(announceNo);
     }
 
@@ -53,34 +51,33 @@ public class AnnounceServiceImpl implements AnnounceService {
      */
     @Override
     public void createAnnounce(Announce announce) {
-        System.out.println("[서비스]작성 글 제목:" + announce.getAnnounceTitle());
         announceMapper.createAnnounce(announce);
     }
+
     /**
      * @작성일: 2024-07-09
      * @내용: 공지사항 수정
      */
     @Override
     public void updateAnnounce(Announce announce) {
-        System.out.println("[서비스] 공지사항 수정" + announce.getAnnounceNo());
         announceMapper.updateAnnounce(announce);
     }
+
     /**
      * @수정일: 2024-07-10
      * @내용: 공지사항 삭제
      */
     @Override
     public void deleteAnnounce(int announceNo) {
-        System.out.println("[서비스] 공지사항 삭제" + announceNo);
         announceMapper.deleteAnnounce(announceNo);
     }
+
     /**
      * @수정일: 2024-07-03
      * @내용: 타입 확인 후 에러처리
      */
     @Override
     public int countAnnounceByType(String type) {
-        System.out.println("[서비스]코드 확인: " + type);
         return announceMapper.countAnnounceByType(type);
     }
 }

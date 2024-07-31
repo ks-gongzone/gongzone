@@ -12,7 +12,6 @@ public class DropDownServiceImpl implements DropDownService {
 
     @Override
     public DropDownInfo findByData(String memberNo, String pointNo) {
-        System.out.println("[서비스] 드롭다운 데이터 로드" + memberNo);
         return dropDownMapper.findByData(memberNo, pointNo);
     }
 }

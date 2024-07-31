@@ -1,12 +1,14 @@
 package com.gongzone.central.member.login.security;
 
-import com.gongzone.central.member.login.domain.LoginLog;
 import com.gongzone.central.member.login.service.LoginLogService;
 import com.gongzone.central.member.login.service.MemberDetails;
 import com.gongzone.central.member.login.service.MemberDetailsService;
 import com.gongzone.central.member.service.MemberServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,12 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 @Component
 @RequiredArgsConstructor
@@ -77,7 +74,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
                 return;
             } catch (Exception e) {
-                System.out.println("JWT Token validation failed: " + e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is invalid or missing");
                 return;
             }

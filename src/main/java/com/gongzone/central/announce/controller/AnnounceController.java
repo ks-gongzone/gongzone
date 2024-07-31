@@ -6,11 +6,13 @@ import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.PresentationDirection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @작성일: 2024-07-02
@@ -23,6 +25,7 @@ import java.util.*;
 public class AnnounceController {
     private final AnnounceService announceService;
     private final JwtUtil jwtUtil;
+
     /**
      * @작성일: 2024-07-03
      * @내용: 변수명 통일을 위한 타입코드 설정
@@ -39,6 +42,7 @@ public class AnnounceController {
                 return null;
         }
     }
+
     /**
      * @작성일: 2024-07-02
      * @수정일: 2024-07-08
@@ -50,13 +54,12 @@ public class AnnounceController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String type) {
-        System.out.println("[컨트롤러] 공지 전체 조회");
 
         int offset = (page - 1) * size;
         List<Announce> announces;
         int totalCount;
 
-        if(type == null || type.isEmpty()) {
+        if (type == null || type.isEmpty()) {
             announces = announceService.findAllAnnounce(offset, size);
             totalCount = announceService.countAllAnnounce();
         } else {
@@ -84,20 +87,20 @@ public class AnnounceController {
 
         return response;
     }
+
     /**
      * @내용: 조회 수 증가
      */
     @PostMapping("/announce/{announceNo}/increment")
     public void incrementViews(@PathVariable int announceNo) {
-        System.out.println("조회 수 증가" + announceNo);
         announceService.incrementViews(announceNo);
     }
 
     @GetMapping("/announce/detail/{announceNo}")
-    public Announce findAnnounceDetail(@PathVariable int announceNo){
-        System.out.println("공지상세 글 조회" + announceNo);
+    public Announce findAnnounceDetail(@PathVariable int announceNo) {
         return announceService.findAnnounceDetail(announceNo);
     }
+
     /**
      * @수정일: 2024-07-09
      * @내용: 공지사항 작성
@@ -138,9 +141,9 @@ public class AnnounceController {
         announceService.createAnnounce(announce);
 
         response.put("message", "공지 작성 성공");
-        System.out.println("[컨트롤러] 공지사항 내용: " + announceTitle);
         return ResponseEntity.ok(response);
     }
+
     /**
      * @수정일: 2024-07-09
      * @내용: 공지사항 수정
@@ -152,13 +155,10 @@ public class AnnounceController {
             @RequestBody Announce announce,
             Authentication authentication) {
 
-        System.out.println("[컨트롤러]공지사항 수정");
         Map<String, String> response = new HashMap<>();
 
         String token = ((MemberDetails) authentication.getPrincipal()).getToken();
         String memberNo = jwtUtil.extractMemberNo(token);
-
-        System.out.println("memberNo: " + memberNo);
 
         Announce existAnnounce = announceService.findAnnounceDetail(announceNo);
 
@@ -186,6 +186,7 @@ public class AnnounceController {
         response.put("success", "공지사항 수정완료");
         return ResponseEntity.ok(response);
     }
+
     /**
      * @수정일: 2024-07-10
      * @내용: 공지사항 삭제
@@ -200,9 +201,7 @@ public class AnnounceController {
         String memberNo = jwtUtil.extractMemberNo(token);
         Announce existAnnounce = announceService.findAnnounceDetail(announceNo);
 
-        System.out.println("[컨트롤러] 공지사항 삭제" + memberNo);
-
-        if(!memberNo.equals("M000001")) {
+        if (!memberNo.equals("M000001")) {
             response.put("error", "[백앤드] 관리자가 아닙니다.");
             return ResponseEntity.status(403).body(response);
         }

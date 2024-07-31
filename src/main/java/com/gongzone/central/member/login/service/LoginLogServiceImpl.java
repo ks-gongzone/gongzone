@@ -21,13 +21,11 @@ public class LoginLogServiceImpl implements LoginLogService {
 
     @Override
     public void logLogout(int loginNo) {
-        System.out.println("loginNo : " + loginNo);
         loginMapper.logoutLogUpdate(loginNo);
     }
 
     @Override
     public void logLoginFailure(int loginNo) {
-        System.out.println("loginNo : " + loginNo);
         loginMapper.loginFalseLogUpdate(loginNo);
     }
 
@@ -53,7 +51,6 @@ public class LoginLogServiceImpl implements LoginLogService {
 
     @Override
     public List<LoginStatistical> getLoginStatisticalDate() {
-        System.out.println("getLoginstatisticalDate : " + loginMapper.loginInTimeDay());
         return loginMapper.loginInTimeDay();
     }
 }

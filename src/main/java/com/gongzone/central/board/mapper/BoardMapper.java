@@ -10,6 +10,8 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+    void updatePartyPeriodStatus();
+
     void updateBoardPeriodStatus();
 
     void deleteParty(String partyNo);

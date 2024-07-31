@@ -2,8 +2,8 @@ package com.gongzone.central.member.myInfo.alert.controller;
 
 import com.gongzone.central.member.login.security.JwtUtil;
 import com.gongzone.central.member.login.service.MemberDetails;
-import com.gongzone.central.member.myInfo.alert.service.AlertService;
 import com.gongzone.central.member.myInfo.alert.domain.MyAlert;
+import com.gongzone.central.member.myInfo.alert.service.AlertService;
 import com.gongzone.central.member.myInfo.service.MyInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +26,12 @@ public class AlertController {
     public ResponseEntity<Map<String, Object>> getAlertSettings(@PathVariable String memberNo, Authentication authentication) {
         String token = ((MemberDetails) authentication.getPrincipal()).getToken();
         String extractedMemberNo = jwtUtil.extractMemberNo(token);
-        System.out.println("알람 셋팅 중 memberNo=" + extractedMemberNo);
 
         if (extractedMemberNo == null || !extractedMemberNo.equals(memberNo)) {
             return ResponseEntity.status(403).build();
         }
 
         MyAlert alert = alertService.getAlertsByMemberNo(memberNo);
-        System.out.println("알람 값" + alert);
         Map<String, Object> response = new HashMap<>();
 
         if (alert != null) {
@@ -49,8 +47,6 @@ public class AlertController {
     public ResponseEntity<Map<String, String>> updateAlertSettings(@PathVariable String memberNo, @RequestBody Map<String, Object> alertData, Authentication authentication) {
         String token = ((MemberDetails) authentication.getPrincipal()).getToken();
         String extractedMemberNo = jwtUtil.extractMemberNo(token);
-        System.out.println("알람 설정 업데이트 중 memberNo=" + extractedMemberNo);
-        System.out.println("알람 설정 업데이트 중 myAlert=" + alertData);
 
         if (!extractedMemberNo.equals(memberNo)) {
             Map<String, String> response = new HashMap<>();
@@ -60,7 +56,6 @@ public class AlertController {
 
         MyAlert myAlert = new MyAlert().useMyAlert(memberNo, alertData);
         alertService.setDefaultAlertValues(myAlert); // 기본값 설정
-        System.out.println("알람 설정 업데이트 중 myAlert (memberNo 설정 후): " + myAlert);
         try {
             alertService.updateAlertSettings(myAlert);
             Map<String, String> response = new HashMap<>();
@@ -82,7 +77,6 @@ public class AlertController {
     public ResponseEntity<Map<String, String>> insertAlertSettings(@PathVariable String memberNo, @RequestBody Map<String, Object> alertData, Authentication authentication) {
         String token = ((MemberDetails) authentication.getPrincipal()).getToken();
         String extractedMemberNo = jwtUtil.extractMemberNo(token);
-        System.out.println("알람 설정 삽입 중 memberNo: " + memberNo);
 
         if (!extractedMemberNo.equals(memberNo)) {
             Map<String, String> response = new HashMap<>();
@@ -92,7 +86,6 @@ public class AlertController {
 
         MyAlert myAlert = new MyAlert().useMyAlert(memberNo, alertData);
         alertService.setDefaultAlertValues(myAlert); // 기본값 설정
-        System.out.println("알람 설정 삽입 중 myAlert (memberNo 설정 후): " + myAlert);
 
         try {
             alertService.insertAlertSettings(myAlert);
@@ -102,7 +95,6 @@ public class AlertController {
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "알림 설정 생성 중 오류 발생");
-            System.out.println("알림 설정 생성 중 오류 발생");
             return ResponseEntity.status(500).body(response);
         }
     }

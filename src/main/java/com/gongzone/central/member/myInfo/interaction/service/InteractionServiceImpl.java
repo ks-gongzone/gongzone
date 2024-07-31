@@ -12,9 +12,10 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class InteractionServiceImpl implements InteractionService{
+public class InteractionServiceImpl implements InteractionService {
 
     private final InteractionMapper interactionMapper;
+
     /**
      * @작성일: 2024-07-11
      * @수정일: 2024-07-11
@@ -28,7 +29,6 @@ public class InteractionServiceImpl implements InteractionService{
             String searchQuery,
             int page,
             int size) {
-        System.out.println("[서비스] findAllMembers 메서드: " + currentUserNo);
         int offset = (page - 1) * size;
         List<InteractionMember> allMembers = new ArrayList<>();
         int totalMembers = interactionMapper.getTotalMembers(memberName);
@@ -63,27 +63,21 @@ public class InteractionServiceImpl implements InteractionService{
      */
     @Override
     public void followMember(String currentUserNo, String targetMemberNo) {
-        System.out.println("팔로우신청멤버:" + currentUserNo);
-        System.out.println("타겟멤버:" + targetMemberNo);
         interactionMapper.insertFollow(currentUserNo, targetMemberNo);
     }
+
     @Override
     public void unFollowMember(String currentUserNo, String targetMemberNo) {
-        System.out.println("언 팔로우신청멤버:" + currentUserNo);
-        System.out.println("타겟멤버:" + targetMemberNo);
         interactionMapper.deleteFollow(currentUserNo, targetMemberNo);
     }
 
     @Override
     public void blockMember(String currentUserNo, String targetMemberNo) {
-        System.out.println("차단시도멤버:" + currentUserNo);
-        System.out.println("타겟멤버:" + targetMemberNo);
         interactionMapper.insertBlock(currentUserNo, targetMemberNo);
     }
+
     @Override
     public void unBlockMember(String currentUserNo, String targetMemberNo) {
-        System.out.println("차단해제시도멤버:" + currentUserNo);
-        System.out.println("타겟멤버:" + targetMemberNo);
         interactionMapper.deleteBlock(currentUserNo, targetMemberNo);
     }
 }

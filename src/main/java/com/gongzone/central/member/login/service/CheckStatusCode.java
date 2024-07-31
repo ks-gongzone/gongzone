@@ -16,23 +16,19 @@ public class CheckStatusCode {
     private final MemberService memberService;
 
     public void checkStatus(String memberNo, HttpServletResponse response) throws IOException {
-         Member member = memberService.getMemberByStatus(memberNo);
-         StatusCode statusCode = StatusCode.fromCode(member.getMemberStatus());
-            switch (statusCode) {
+        Member member = memberService.getMemberByStatus(memberNo);
+        StatusCode statusCode = StatusCode.fromCode(member.getMemberStatus());
+        switch (statusCode) {
             case S010102:
-                System.out.println("휴면");
                 response.sendError(HttpServletResponse.SC_GONE, "휴면");
                 return;
             case S010103:
-                System.out.println("제재");
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "제재");
                 return;
             case S010104:
-                System.out.println("탈퇴");
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "탈퇴");
                 return;
             default:    // 정상상태
-                System.out.println("정상");
                 break;
         }
     }
